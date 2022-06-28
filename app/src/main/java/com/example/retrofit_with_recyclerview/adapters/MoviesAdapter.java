@@ -9,10 +9,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.retrofit_with_recyclerview.R;
+import com.example.retrofit_with_recyclerview.response.MovieMapper;
 
+import java.util.List;
 import java.util.zip.Inflater;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
+
+    List<MovieMapper> movieMapperList;
+
+    public MoviesAdapter(List<MovieMapper> movieMapperList) {
+        this.movieMapperList = movieMapperList;
+    }
 
     @NonNull
     @Override
@@ -24,7 +32,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
-        holder.movieTittle.setText(position + "º Título Teste");
+        String movieTittle = this.movieMapperList.get(position).getMovieTittle();
+        holder.movieTittle.setText(movieTittle);
     }
 
     @Override
