@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        System.out.println("um passo antes do callback de sucesso");
         ApiService.getInstance().getMovies(this.apkiKey).enqueue(new Callback<MovieListMapper>() {
             @Override
             /**
@@ -42,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
              */
             public void onResponse(Call<MovieListMapper> call, Response<MovieListMapper> response) {
                 if(response.isSuccessful()){
-                    System.out.println("entrou no callback de sucesso");
                     //Obtendo Filmes
                     List<MovieMapper> movieMapperList = response.body().getMovies();
 
@@ -60,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<MovieListMapper> call, Throwable t) {
-
+                throw new RuntimeException(t.getMessage());
             }
         });
 

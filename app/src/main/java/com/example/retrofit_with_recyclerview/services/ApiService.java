@@ -9,7 +9,7 @@ public class ApiService {
     public static MovieService getInstance(){
         if(movieService == null){
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("https://api.themoviedb.org/3")
+                    .baseUrl("https://api.themoviedb.org/3/")
                     .addConverterFactory(MoshiConverterFactory.create())
                     .build();
 

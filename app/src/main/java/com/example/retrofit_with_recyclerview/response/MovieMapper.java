@@ -7,7 +7,7 @@ import com.squareup.moshi.Json;
  */
 public class MovieMapper {
     // Anotação que identifica o atributo do JSON que será mapeado para o atributo anotado.
-    @Json(name = "original_tittle")
+    @Json(name = "original_title")
     private final String movieTittle;
 
     @Json(name = "poster_path")

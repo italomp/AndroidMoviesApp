@@ -7,6 +7,6 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface MovieService {
-    @GET("/movie/popular")
+    @GET("movie/popular")
     Call<MovieListMapper> getMovies(@Query("api_key") String apiKey);
 }
