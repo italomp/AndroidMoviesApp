@@ -2,11 +2,11 @@ package com.example.retrofit_with_recyclerview.models;
 
 public class Movie {
     private String movieTittle;
-    private String postPath;
+    private String posterPath;
 
-    public Movie(String movieTittle, String postPath) {
+    public Movie(String movieTittle, String posterPath) {
         this.movieTittle = movieTittle;
-        this.postPath = postPath;
+        this.posterPath = posterPath;
     }
 
     public String getMovieTittle() {
@@ -17,11 +17,11 @@ public class Movie {
         this.movieTittle = movieTittle;
     }
 
-    public String getPostPath() {
-        return postPath;
+    public String getPosterPath() {
+        return posterPath;
     }
 
-    public void setPostPath(String postPath) {
-        this.postPath = postPath;
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
     }
 }

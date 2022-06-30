@@ -1,6 +1,7 @@
 package com.example.retrofit_with_recyclerview.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setRecyclerView(){
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(MainActivity.this, 2);
         this.moviesAdapter = new MoviesAdapter();
 
         this.recyclerView = findViewById(R.id.recycler_movies);
