@@ -9,17 +9,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.retrofit_with_recyclerview.R;
-import com.example.retrofit_with_recyclerview.response.MovieMapper;
+import com.example.retrofit_with_recyclerview.models.Movie;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
 
-    List<MovieMapper> movieMapperList;
+    List<Movie> movieList;
 
-    public MoviesAdapter(List<MovieMapper> movieMapperList) {
-        this.movieMapperList = movieMapperList;
+    public MoviesAdapter() {
+        //instanciando só pra não ter que fazer a  verificação de null.
+        this.movieList = new ArrayList<>();
     }
 
     @NonNull
@@ -32,13 +33,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
-        String movieTittle = this.movieMapperList.get(position).getMovieTittle();
+        String movieTittle = this.movieList.get(position).getMovieTittle();
         holder.movieTittle.setText(movieTittle);
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return this.movieList.size();
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
@@ -48,5 +49,15 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             super(itemView);
             this.movieTittle = itemView.findViewById(R.id.movie_tittle);
         }
+    }
+
+    public void setMovieList(@NonNull List<Movie> movieList){
+        this.movieList = movieList;
+        /**
+         * O android possui algum observer monitorando esse adapter.
+         * Eu não sei qual é, mas sei que o método abaixo notifica todos os observers
+         * que monitoram esse adpter sobre uma mudança em seus dados
+         */
+        notifyDataSetChanged();
     }
 }

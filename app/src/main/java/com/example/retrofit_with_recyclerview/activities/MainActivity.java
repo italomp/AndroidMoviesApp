@@ -4,18 +4,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.graphics.Movie;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.retrofit_with_recyclerview.R;
 import com.example.retrofit_with_recyclerview.adapters.MoviesAdapter;
-import com.example.retrofit_with_recyclerview.response.MovieListMapper;
-import com.example.retrofit_with_recyclerview.response.MovieMapper;
+import com.example.retrofit_with_recyclerview.models.Movie;
+import com.example.retrofit_with_recyclerview.util.MovieMapper;
+import com.example.retrofit_with_recyclerview.response.MovieResponseList;
+import com.example.retrofit_with_recyclerview.response.MovieResponse;
 import com.example.retrofit_with_recyclerview.services.ApiService;
 
 import java.util.List;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,7 +30,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ApiService.getInstance().getMovies(this.apkiKey).enqueue(new Callback<MovieListMapper>() {
+
+        this.setRecyclerView();
+        this.getMovies();
+    }
+
+    public void setRecyclerView(){
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        this.moviesAdapter = new MoviesAdapter();
+
+        this.recyclerView = findViewById(R.id.recycler_movies);
+        this.recyclerView.setLayoutManager(layoutManager);
+        this.recyclerView.setHasFixedSize(true);
+        this.recyclerView.setAdapter(this.moviesAdapter);
+    }
+
+    public void getMovies(){
+        ApiService.getInstance().getMovies(this.apkiKey).enqueue(new Callback<MovieResponseList>() {
             @Override
             /**
              * Callback para caso de sucesso.
@@ -39,28 +56,28 @@ public class MainActivity extends AppCompatActivity {
              * Para realizar os passos acima, preciso instanciar o adapter e o recyclerview aqui,
              * além de realizar algumas configurações no recyclerview.
              */
-            public void onResponse(Call<MovieListMapper> call, Response<MovieListMapper> response) {
+            public void onResponse(Call<MovieResponseList> call, Response<MovieResponseList> response) {
+                // Status code de 200 a 299
                 if(response.isSuccessful()){
-                    //Obtendo Filmes
-                    List<MovieMapper> movieMapperList = response.body().getMovies();
-
-                    //Instanciando o adapter
-                    moviesAdapter = new MoviesAdapter(movieMapperList);
-
-                    // Configurando o recyclerview
-                    recyclerView = findViewById(R.id.recycler_movies);
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-                    recyclerView.setLayoutManager(layoutManager);
-                    recyclerView.setHasFixedSize(true);
-                    recyclerView.setAdapter(moviesAdapter);
+                    List<MovieResponse> movieResponseList = response.body().getMovies();
+                    List<Movie> movieList = MovieMapper.fromMovieResponseToMovie(movieResponseList);
+                    moviesAdapter.setMovieList(movieList);
+                }
+                else{
+                    // Poderia tratar alguns casos de erro específicos...
+                    showErrorMessage("HTTP Status Code: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<MovieListMapper> call, Throwable t) {
+            public void onFailure(Call<MovieResponseList> call, Throwable t) {
+                showErrorMessage("Falha ao carregar filmes");
                 throw new RuntimeException(t.getMessage());
             }
         });
+    }
 
+    public void showErrorMessage(String msg){
+        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
 }
