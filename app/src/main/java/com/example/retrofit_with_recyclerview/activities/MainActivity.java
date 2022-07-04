@@ -2,7 +2,6 @@ package com.example.retrofit_with_recyclerview.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
@@ -12,8 +11,8 @@ import com.example.retrofit_with_recyclerview.R;
 import com.example.retrofit_with_recyclerview.adapters.MoviesAdapter;
 import com.example.retrofit_with_recyclerview.models.Movie;
 import com.example.retrofit_with_recyclerview.util.MovieMapper;
-import com.example.retrofit_with_recyclerview.response.MovieResponseList;
-import com.example.retrofit_with_recyclerview.response.MovieResponse;
+import com.example.retrofit_with_recyclerview.responses.MovieResponseList;
+import com.example.retrofit_with_recyclerview.responses.MovieResponse;
 import com.example.retrofit_with_recyclerview.services.ApiService;
 
 import java.util.List;

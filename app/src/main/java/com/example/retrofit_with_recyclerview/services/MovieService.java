@@ -1,6 +1,6 @@
 package com.example.retrofit_with_recyclerview.services;
 
-import com.example.retrofit_with_recyclerview.response.MovieResponseList;
+import com.example.retrofit_with_recyclerview.responses.MovieResponseList;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
