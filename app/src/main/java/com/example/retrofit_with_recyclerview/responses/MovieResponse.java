@@ -15,7 +15,11 @@ public class MovieResponse {
     @Json(name = "poster_path")
     private final String postPath;
 
-    public MovieResponse(String movieTittle, String postPath) {
+    @Json(name = "id")
+    private final long id;
+
+    public MovieResponse(long id, String movieTittle, String postPath) {
+        this.id = id;
         this.movieTittle = movieTittle;
         this.postPath = postPath;
     }
@@ -26,5 +30,9 @@ public class MovieResponse {
 
     public String getPostPath() {
         return postPath;
+    }
+
+    public long getId() {
+        return id;
     }
 }

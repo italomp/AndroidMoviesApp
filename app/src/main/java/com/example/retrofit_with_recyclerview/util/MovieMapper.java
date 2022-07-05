@@ -11,7 +11,10 @@ public class MovieMapper {
     public static List<Movie> fromMovieResponseToMovie(List<MovieResponse> movieResponseList){
         List<Movie> movieList = new ArrayList<>();
         for(MovieResponse movieResponse: movieResponseList){
-            Movie newMovie = new Movie(movieResponse.getMovieTittle(), movieResponse.getPostPath());
+            Movie newMovie = new Movie(
+                    movieResponse.getId(),
+                    movieResponse.getMovieTittle(),
+                    movieResponse.getPostPath());
             movieList.add(newMovie);
         }
         return movieList;

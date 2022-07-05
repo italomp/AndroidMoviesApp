@@ -14,6 +14,7 @@ import com.example.retrofit_with_recyclerview.util.MovieMapper;
 import com.example.retrofit_with_recyclerview.responses.MovieResponseList;
 import com.example.retrofit_with_recyclerview.responses.MovieResponse;
 import com.example.retrofit_with_recyclerview.services.ApiService;
+import com.example.retrofit_with_recyclerview.util.SecurityConstants;
 
 import java.util.List;
 
@@ -24,7 +25,6 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     MoviesAdapter moviesAdapter;
-    private final String apkiKey = "246bda00932bacb8f512a68b3af13f71";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setRecyclerView(){
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(MainActivity.this, 2);
-        this.moviesAdapter = new MoviesAdapter();
+        this.moviesAdapter = new MoviesAdapter(MainActivity.this);
 
         this.recyclerView = findViewById(R.id.recycler_movies);
         this.recyclerView.setLayoutManager(layoutManager);
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getMovies(){
-        ApiService.getInstance().getMovies(this.apkiKey).enqueue(new Callback<MovieResponseList>() {
+        ApiService.getInstance().getMovies(SecurityConstants.apiKey).enqueue(new Callback<MovieResponseList>() {
             @Override
             /**
              * Callback para caso de sucesso.
