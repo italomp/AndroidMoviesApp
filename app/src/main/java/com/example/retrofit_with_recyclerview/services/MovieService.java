@@ -1,5 +1,6 @@
 package com.example.retrofit_with_recyclerview.services;
 
+import com.example.retrofit_with_recyclerview.responses.CrewResponse;
 import com.example.retrofit_with_recyclerview.responses.MovieDetailsResponse;
 import com.example.retrofit_with_recyclerview.responses.MovieResponse;
 import com.example.retrofit_with_recyclerview.responses.MovieResponseList;
@@ -15,4 +16,9 @@ public interface MovieService {
 
     @GET("movie/{id}")
     Call<MovieDetailsResponse> getMovieDetails(@Path("id") long id, @Query("api_key") String apiKey);
+
+    // Talvez dê erro querer acessar a listagem diretamente.
+    // Posso precisar criar um objeto que ecapsule esse atributo crew que está presente na response.
+    @GET("movie/{movie_id}/credits")
+    Call<CrewResponse> getCreditsByMovie(@Path("movie_id") long movieId, @Query("api_key") String apiKey);
 }

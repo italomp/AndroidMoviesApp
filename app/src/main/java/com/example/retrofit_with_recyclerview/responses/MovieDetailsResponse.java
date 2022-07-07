@@ -2,8 +2,6 @@ package com.example.retrofit_with_recyclerview.responses;
 
 import com.squareup.moshi.Json;
 
-import java.util.List;
-
 public class MovieDetailsResponse extends MovieResponse{
     //sinopse, directories, stories, screenplays,
     @Json(name = "overview")
@@ -13,25 +11,25 @@ public class MovieDetailsResponse extends MovieResponse{
     //private final List<String> screenwriters;
     //private final List<String> storyCreators;
 
-    @Json(name = "vote_avarage")
-    private final Float voteAvarage;
+    @Json(name = "vote_average")
+    private final Float voteAverage;
 
     public MovieDetailsResponse(long id, String movieTittle, String postPath, String overview /*,
                                 List<String> directors, List<String> screenwriters,
-                                List<String> storyCreatos*/, Float voteAvarage) {
+                                List<String> storyCreatos*/, Float voteAverage) {
         super(id, movieTittle, postPath);
         this.overview = overview;
         //this.directors = directors;
         //this.screenwriters = screenwriters;
         //this.storyCreators = storyCreatos;
-        this.voteAvarage = voteAvarage;
+        this.voteAverage = voteAverage;
     }
 
     public String getOverview() {
         return overview;
     }
 
-    public Float getVoteAvarage() {
-        return voteAvarage;
+    public Float getVoteAverage() {
+        return voteAverage;
     }
 }

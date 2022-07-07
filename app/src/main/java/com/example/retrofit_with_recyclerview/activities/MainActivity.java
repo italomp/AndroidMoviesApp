@@ -16,6 +16,7 @@ import com.example.retrofit_with_recyclerview.responses.MovieResponse;
 import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.SecurityConstants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
