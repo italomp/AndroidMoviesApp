@@ -136,6 +136,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
         CrewResponse crewResponse = response.body();
         List<String> departments = crewResponse.getAllDepartments();
 
+        LinearLayout layoutCrewList = findViewById(R.id.crew_list);
+
         for(String department: departments){
             // Obtendo funcionários do departamento
             int maxLength = 4;
@@ -144,13 +146,15 @@ public class MovieDetailsActivity extends AppCompatActivity {
             // Setando valores do crew_list_item (departamento e funcionários)
             View crewListItem = getLayoutInflater().inflate(R.layout.crew_list_item, null, false);
             TextView departmentView = crewListItem.findViewById(R.id.department);
-            TextView departmentEmployeesView = crewListItem.findViewById(R.id.department_employees);
-            departmentView.setText(department + ": ");
-            departmentEmployeesView.setText(crewEmployees);
+            TextView employeesView = crewListItem.findViewById(R.id.department_employees);
 
             // Adicionando o crew_list_item à crew_list
-            LinearLayout layoutCrewList = findViewById(R.id.crew_list);
-            layoutCrewList.addView(crewListItem);
+            if(!crewEmployees.equals("")){
+                departmentView.setText(department + ": ");
+                employeesView.setText(crewEmployees);
+
+                layoutCrewList.addView(crewListItem);
+            }
         }
     }
 }
