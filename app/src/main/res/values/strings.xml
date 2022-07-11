@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">retrofit_with_recyclerview</string>
     <string name="movie_poster_description">Movie Poster</string>
+    <string name="loading">Carregando...</string>
 </resources>

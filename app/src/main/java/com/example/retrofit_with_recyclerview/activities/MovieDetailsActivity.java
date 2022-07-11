@@ -13,6 +13,7 @@ import com.example.retrofit_with_recyclerview.R;
 import com.example.retrofit_with_recyclerview.responses.CrewResponse;
 import com.example.retrofit_with_recyclerview.responses.MovieDetailsResponse;
 import com.example.retrofit_with_recyclerview.services.ApiService;
+import com.example.retrofit_with_recyclerview.util.LoadingDialog;
 import com.example.retrofit_with_recyclerview.util.SecurityConstants;
 import com.squareup.picasso.Picasso;
 
@@ -29,16 +30,28 @@ public class MovieDetailsActivity extends AppCompatActivity {
     TextView noteAverageView;
     TextView overviewView;
     LinearLayout layoutCrewList;
+    LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
-        this.receivingMovieId();
-        this.launchingTheMovieDetailsViews();
-        this.layoutCrewList = findViewById(R.id.crew_list);
-        this.getMovieDetails();
+        receivingMovieId();
+        launchingTheMovieDetailsViews();
+        layoutCrewList = findViewById(R.id.crew_list);
+        loadingDialog = new LoadingDialog(MovieDetailsActivity.this);
+
+        Runnable getMoviesRunnable = new Runnable() {
+            @Override
+            public void run() {
+                getMovieDetails();
+            }
+        };
+
+        Thread backgroundThread = new Thread(getMoviesRunnable);
+        backgroundThread.start();
+        loadingDialog.startLoadingDialog();
     }
 
     public void receivingMovieId(){
@@ -100,10 +113,16 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
                         // HTTP status code diferente de 200 a 299
                         else showMessageError("HTTP status code: " + response.code());
+
+                        // Desbloqueando a tela principal
+                        loadingDialog.dismiss();
                     }
 
                     @Override
                     public void onFailure(Call<CrewResponse> call, Throwable t) {
+                        // Desbloqueando a tela principal
+                        loadingDialog.dismiss();
+
                         showMessageError("Falha ao carreegar visualização de integrantes da equipe.");
                         throw new RuntimeException(t.getMessage());
                     }
