@@ -1,7 +1,7 @@
 package com.example.retrofit_with_recyclerview.util;
 
 import com.example.retrofit_with_recyclerview.models.Movie;
-import com.example.retrofit_with_recyclerview.responses.MovieResponse;
+import com.example.retrofit_with_recyclerview.responses.movies.MovieResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class MovieMapper {
         for(MovieResponse movieResponse: movieResponseList){
             Movie newMovie = new Movie(
                     movieResponse.getId(),
-                    movieResponse.getMovieTittle(),
+                    movieResponse.getTitle(),
                     movieResponse.getPostPath());
             movieList.add(newMovie);
         }

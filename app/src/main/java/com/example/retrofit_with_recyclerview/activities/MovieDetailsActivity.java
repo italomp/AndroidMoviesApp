@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.example.retrofit_with_recyclerview.R;
 import com.example.retrofit_with_recyclerview.responses.CrewResponse;
-import com.example.retrofit_with_recyclerview.responses.MovieDetailsResponse;
+import com.example.retrofit_with_recyclerview.responses.movies.MovieDetailsResponse;
 import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.LoadingDialog;
 import com.example.retrofit_with_recyclerview.util.SecurityConstants;
@@ -67,14 +67,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     public void getMovieDetails(){
-        ApiService.getInstance()
+        ApiService.getMovieService()
                 .getMovieDetails(this.movieId, SecurityConstants.apiKey)
                 .enqueue(new Callback<MovieDetailsResponse>() {
                     @Override
                     public void onResponse(Call<MovieDetailsResponse> call, Response<MovieDetailsResponse> response) {
                         // Status code de 200 a 299
                         if(response.isSuccessful()){
-                            String movieTitle = response.body().getMovieTittle();
+                            String movieTitle = response.body().getTitle();
                             String movieOverview = response.body().getOverview();
                             String postPath = response.body().getPostPath();
                             Float noteAverage = response.body().getVoteAverage();
@@ -103,7 +103,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     public void getCrew() {
-        ApiService.getInstance()
+        ApiService.getMovieService()
                 .getCreditsByMovie(movieId, SecurityConstants.apiKey)
                 .enqueue(new Callback<CrewResponse>() {
                     @Override

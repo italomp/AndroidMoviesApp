@@ -1,4 +1,4 @@
-package com.example.retrofit_with_recyclerview.responses;
+package com.example.retrofit_with_recyclerview.responses.movies;
 
 import com.squareup.moshi.Json;
 

@@ -41,7 +41,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         Movie currentMovie = this.movieList.get(position);
-        String movieTittle = currentMovie.getMovieTittle();
+        String movieTittle = currentMovie.getTitle();
         String posterPath = currentMovie.getPosterPath();
         long movieId = currentMovie.getId();
 
