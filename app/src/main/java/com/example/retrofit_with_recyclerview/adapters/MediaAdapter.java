@@ -45,10 +45,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         Media currentMedia = this.mediaList.get(position);
-        Movie movie = null;
-        Show show = null;
-
-        parseMedia(holder, currentMedia, movie, show, position);
+        parseMedia(holder, currentMedia, position);
     }
 
     @Override
@@ -92,14 +89,12 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
      * Esse método recebe uma Media, verifica se ela é um Movie ou um Show e seta
      * o parâmetro recebido correspondente (Media ou Show).
      */
-    public void parseMedia(MovieViewHolder holder, Media media, Movie movie, Show show, int position){
+    public void parseMedia(MovieViewHolder holder, Media media, int position){
         long mediaId = 1L; // esta valor não
         String mediaTitle = null;
         String posterPath = null;
 
         // Media é Movie
-        // Faço um Casting da media nessa checagem e algumas não podem ser vconvertidas para Movie.
-
         if(Constants.MOVIE_TYPE.equals(media.getMediaType())){
             mediaId = ((Movie) media).getId();
             mediaTitle = ((Movie) media).getTitle();
@@ -131,12 +126,13 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
         else{
             List<Media> mediaList = ((Person) media).getMoviesAndShows();
 
-            // removendo o elemento para não cair num loop infinito.
-            this.mediaList.remove(position);
-
             if(!mediaList.isEmpty()){
-                this.mediaList.addAll(mediaList);
-                notifyDataSetChanged();
+                // removendo o elemento para não cair num loop infinito.
+                this.mediaList.remove(position);
+
+                List<Media> newList = this.mediaList;
+                newList.addAll(mediaList);
+                setMediaList(newList);
             }
         }
     }

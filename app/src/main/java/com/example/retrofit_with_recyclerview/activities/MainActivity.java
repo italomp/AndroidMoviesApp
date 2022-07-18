@@ -119,6 +119,12 @@ public class MainActivity extends AppCompatActivity {
                                     List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
                                     renderingMediasOrNotFoundMessage(mediaList);
                                 }
+                                else{
+                                    Toast.makeText(
+                                            getApplicationContext(),
+                                            "HTTP Status Code: " + response.code(),
+                                            Toast.LENGTH_LONG).show();
+                                }
                             }
 
                             @Override
@@ -132,8 +138,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void renderingMediasOrNotFoundMessage(List<Media> mediaList){
-        if (!mediaList.isEmpty())
+        if (!mediaList.isEmpty()){
             mediaAdapter.setMediaList(mediaList);
+        }
 
         else
             Toast.makeText(
