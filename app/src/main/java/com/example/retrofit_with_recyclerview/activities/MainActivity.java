@@ -10,14 +10,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.retrofit_with_recyclerview.R;
-import com.example.retrofit_with_recyclerview.adapters.MoviesAdapter;
-import com.example.retrofit_with_recyclerview.models.Movie;
-import com.example.retrofit_with_recyclerview.responses.shows.ShowResponse;
-import com.example.retrofit_with_recyclerview.util.MovieMapper;
-import com.example.retrofit_with_recyclerview.responses.movies.MovieResponseList;
-import com.example.retrofit_with_recyclerview.responses.movies.MovieResponse;
+import com.example.retrofit_with_recyclerview.adapters.MediaAdapter;
+import com.example.retrofit_with_recyclerview.models.Media;
+import com.example.retrofit_with_recyclerview.util.MediaMapper;
+import com.example.retrofit_with_recyclerview.responses.MediaResponseList;
+import com.example.retrofit_with_recyclerview.responses.MediaResponse;
 import com.example.retrofit_with_recyclerview.services.ApiService;
-import com.example.retrofit_with_recyclerview.util.SecurityConstants;
+import com.example.retrofit_with_recyclerview.util.Constants;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.List;
@@ -42,7 +41,7 @@ import retrofit2.Response;
  */
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
-    MoviesAdapter moviesAdapter;
+    MediaAdapter mediaAdapter;
     TextInputEditText inputSearch;
     Button searchButton;
     boolean thereIsNotResultFoundInSearch;
@@ -64,23 +63,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void setRecyclerView(){
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(MainActivity.this, 2);
-        this.moviesAdapter = new MoviesAdapter(MainActivity.this);
+        this.mediaAdapter = new MediaAdapter(MainActivity.this);
 
         this.recyclerView = findViewById(R.id.recycler_movies);
         this.recyclerView.setLayoutManager(layoutManager);
         this.recyclerView.setHasFixedSize(true);
-        this.recyclerView.setAdapter(this.moviesAdapter);
+        this.recyclerView.setAdapter(this.mediaAdapter);
     }
 
     public void getMovies(){
-        ApiService.getMovieService().getMovies(SecurityConstants.apiKey).enqueue(new Callback<MovieResponseList>() {
+        ApiService.getMovieService().getMovies(Constants.apiKey).enqueue(new Callback<MediaResponseList>() {
             @Override
-            public void onResponse(Call<MovieResponseList> call, Response<MovieResponseList> response) {
+            public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
                 // Status code de 200 a 299
                 if(response.isSuccessful()){
-                    List<MovieResponse> movieResponseList = response.body().getMovies();
-                    List<Movie> movieList = MovieMapper.fromMovieResponseToMovie(movieResponseList);
-                    moviesAdapter.setMovieList(movieList);
+                    List<MediaResponse> mediaResponseList = response.body().getMediaList();
+                    List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
+                    mediaAdapter.setMediaList(mediaList);
                 }
                 else{
                     // Poderia tratar alguns casos de erro específicos...
@@ -89,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<MovieResponseList> call, Throwable t) {
+            public void onFailure(Call<MediaResponseList> call, Throwable t) {
                 showErrorMessage("Falha ao carregar filmes");
                 throw new RuntimeException(t.getMessage());
             }
@@ -107,56 +106,41 @@ public class MainActivity extends AppCompatActivity {
         this.searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Obter o valor do input
-                String searchValue = inputSearch.getText().toString();
+                String inputValue = inputSearch.getText().toString();
 
-                // Pesquisar filmes e shows com base na query.
-                // obs: a query pode ser o nome de uma pessoa (ator ou diretor, eu acho)
-
-                // Pesquisando movies
-                ApiService.getMovieService()
-                        .searchMovies(SecurityConstants.apiKey, searchValue)
-                        .enqueue(new Callback<MovieResponseList>() {
+                // Pesquisando Filmes, Shows e Pessoas
+                ApiService.getMediaService()
+                        .multiSearch(Constants.apiKey, inputValue)
+                        .enqueue(new Callback<MediaResponseList>() {
                             @Override
-                            public void onResponse(Call<MovieResponseList> call, Response<MovieResponseList> response) {
-                                // HTTP status code de 200 a 299
+                            public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
                                 if(response.isSuccessful()){
-                                    List<MovieResponse> result = response.body().getMovies();
-                                    List<Movie> movies = MovieMapper.fromMovieResponseToMovie(result);
-                                    renderingMoviesOrNotFoundMessage(movies);
+                                    List<MediaResponse> mediaResponseList = response.body().getMediaList();
+                                    List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
+                                    renderingMediasOrNotFoundMessage(mediaList);
                                 }
                             }
 
                             @Override
-                            public void onFailure(Call<MovieResponseList> call, Throwable t) {
-                                // mostrar alguma mensagem de erro
+                            public void onFailure(Call<MediaResponseList> call, Throwable t) {
+
                             }
                         });
-
-                /*ApiService.getShowService()
-                        .searchShows(SecurityConstants.apiKey, searchValue)
-                        .enqueue(new Callback<ShowResponse>() {
-                            @Override
-                            public void onResponse(Call<ShowResponse> call, Response<ShowResponse> response) {
-                                if(response.isSuccessful()){
-
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<ShowResponse> call, Throwable t) {
-                                // mostrar alguma mensagem de erro
-                            }
-                        });*/
             }
         });
     }
 
-    public void renderingMoviesOrNotFoundMessage(List<Movie> movieList){
-        if (!movieList.isEmpty()) moviesAdapter.setMovieList(movieList);
-        else Toast.makeText(
-                MainActivity.this,
-                "Nenhum filme foi encontrado, com base nesse input.",
-                Toast.LENGTH_LONG).show();
+
+    public void renderingMediasOrNotFoundMessage(List<Media> mediaList){
+        if (!mediaList.isEmpty())
+            mediaAdapter.setMediaList(mediaList);
+
+        else
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Nenhuma mídia foi encontrada.",
+                    Toast.LENGTH_LONG).show();
     }
+
+
 }
