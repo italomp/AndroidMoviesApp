@@ -23,8 +23,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MovieDetailsActivity extends AppCompatActivity {
-    private long movieId;
+public class MediaDetailsActivity extends AppCompatActivity {
+    private long mediaId;
     ImageView posterView;
     TextView titleView;
     TextView noteAverageView;
@@ -40,7 +40,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         receivingMovieId();
         launchingTheMovieDetailsViews();
         layoutCrewList = findViewById(R.id.crew_list);
-        loadingDialog = new LoadingDialog(MovieDetailsActivity.this);
+        loadingDialog = new LoadingDialog(MediaDetailsActivity.this);
 
         Runnable getMoviesRunnable = new Runnable() {
             @Override
@@ -56,7 +56,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     public void receivingMovieId(){
         Bundle received_data = getIntent().getExtras();
-        this.movieId = received_data.getLong("movieId");
+        this.mediaId = received_data.getLong("movieId");
     }
 
     public void launchingTheMovieDetailsViews(){
@@ -68,7 +68,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     public void getMovieDetails(){
         ApiService.getMovieService()
-                .getMovieDetails(this.movieId, Constants.apiKey)
+                .getMovieDetails(this.mediaId, Constants.apiKey)
                 .enqueue(new Callback<MediaDetailsResponse>() {
                     @Override
                     public void onResponse(Call<MediaDetailsResponse> call, Response<MediaDetailsResponse> response) {
@@ -104,7 +104,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     public void getCrew() {
         ApiService.getMovieService()
-                .getCreditsByMovie(movieId, Constants.apiKey)
+                .getCreditsByMovie(mediaId, Constants.apiKey)
                 .enqueue(new Callback<CrewResponse>() {
                     @Override
                     public void onResponse(Call<CrewResponse> call, Response<CrewResponse> response) {
@@ -148,7 +148,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     public void showMessageError(String msg){
-        Toast.makeText(MovieDetailsActivity.this, msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MediaDetailsActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
 
     public void setCrewList(Response<CrewResponse> response){

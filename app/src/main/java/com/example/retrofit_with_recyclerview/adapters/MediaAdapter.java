@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.retrofit_with_recyclerview.R;
-import com.example.retrofit_with_recyclerview.activities.MovieDetailsActivity;
+import com.example.retrofit_with_recyclerview.activities.MediaDetailsActivity;
 import com.example.retrofit_with_recyclerview.models.Media;
 import com.example.retrofit_with_recyclerview.models.Movie;
 import com.example.retrofit_with_recyclerview.models.Person;
@@ -78,7 +78,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(view.getContext(), MovieDetailsActivity.class);
+                Intent intent = new Intent(view.getContext(), MediaDetailsActivity.class);
                 intent.putExtra("movieId", id);
                 context.startActivity(intent);
             }

@@ -25,34 +25,16 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Essa classe representa aactivity principal.
- *
- * recyclerView é o item de listagem dos movies.
- *
- * moviesAdapter é o adaptador do recyclerView.
- *
- * inputSearch e searchButton são elementos que compõem a ferramenta de pesquisa
- * de filmese shows com base num input do usuário.
- *
- * thereIsNotResultFoundInSearch é uma variável de controle para saber se houve algum resultado
- * na busca por filmes através de um input do usuário. O result ou uma mensagem de not found serão
- * exibidos condicionalmente com base nessa variável.
- */
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     MediaAdapter mediaAdapter;
     TextInputEditText inputSearch;
     Button searchButton;
-    boolean thereIsNotResultFoundInSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Iniciando variável de controle.
-        this.thereIsNotResultFoundInSearch = false;
 
         // iniciando views
         this.setSearchViews();
@@ -115,11 +97,13 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
                                 if(response.isSuccessful()){
+                                    System.out.println("entrou no if do onResponse");
                                     List<MediaResponse> mediaResponseList = response.body().getMediaList();
                                     List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
                                     renderingMediasOrNotFoundMessage(mediaList);
                                 }
                                 else{
+                                    System.out.println("entrou no else do onResponse");
                                     Toast.makeText(
                                             getApplicationContext(),
                                             "HTTP Status Code: " + response.code(),
@@ -148,6 +132,4 @@ public class MainActivity extends AppCompatActivity {
                     "Nenhuma mídia foi encontrada.",
                     Toast.LENGTH_LONG).show();
     }
-
-
 }

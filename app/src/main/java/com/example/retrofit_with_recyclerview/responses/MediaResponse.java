@@ -126,6 +126,7 @@ public class MediaResponse {
     }
 
     public String toString(){
-        return "id: " + id + " tittle: " + title + " name: " + name + " postPath: " + postPath+ " moviesAndShows: " + moviesAndShows + " mediaType: " + mediaType;
+        return "id: " + id + " tittle: " + title + " name: " + name + " postPath: " + postPath +
+                " moviesAndShows: " + moviesAndShows + " mediaType: " + mediaType;
     }
 }
