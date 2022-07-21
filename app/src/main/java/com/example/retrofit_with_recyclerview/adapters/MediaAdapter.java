@@ -15,7 +15,6 @@ import com.example.retrofit_with_recyclerview.R;
 import com.example.retrofit_with_recyclerview.activities.MediaDetailsActivity;
 import com.example.retrofit_with_recyclerview.models.Media;
 import com.example.retrofit_with_recyclerview.models.Movie;
-import com.example.retrofit_with_recyclerview.models.Person;
 import com.example.retrofit_with_recyclerview.models.Show;
 import com.example.retrofit_with_recyclerview.util.Constants;
 import com.squareup.picasso.Picasso;
@@ -106,7 +105,6 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
                     .into(holder.imagePosterMovie);
 
             this.addClickEventListtenerOnView(holder.itemView, mediaId);
-            System.out.println("Adicionou o Movie: " + mediaId + " - " + mediaTitle);
         }
 
         // Media é Show
@@ -121,7 +119,6 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
                     .into(holder.imagePosterMovie);
 
             this.addClickEventListtenerOnView(holder.itemView, mediaId);
-            System.out.println("Adicionou o Show: " + mediaId + " - " + mediaTitle);
         }
     }
 

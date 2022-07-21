@@ -24,5 +24,4 @@ public interface MovieService {
 
     @GET("search/movie")
     Call<MediaResponseList> searchMovies(@Query("api_key") String apiKey, @Query("query") String query);
-
 }

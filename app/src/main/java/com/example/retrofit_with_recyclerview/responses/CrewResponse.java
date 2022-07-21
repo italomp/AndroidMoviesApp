@@ -1,9 +1,12 @@
 package com.example.retrofit_with_recyclerview.responses;
 
+import com.squareup.moshi.Json;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CrewResponse {
+    @Json(name = "crew")
     private final List<EmployeeResponse> crew;
 
     public CrewResponse(List<EmployeeResponse> crew) {
@@ -39,7 +42,7 @@ public class CrewResponse {
     public List<String> getEmployeesByDepartment(String department, int maxLengthList){
         ArrayList<String> employeeList = new ArrayList<>();
         for(int i = 0; i < this.crew.size(); i++){
-            if (i == maxLengthList) break;
+            if (employeeList.size() == maxLengthList) break;
 
             EmployeeResponse emp = this.crew.get(i);
             if (department.equalsIgnoreCase(emp.getDepartment())){
@@ -48,4 +51,5 @@ public class CrewResponse {
         }
         return employeeList;
     }
+
 }
