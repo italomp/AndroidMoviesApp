@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.retrofit_with_recyclerview.R;
+import com.example.retrofit_with_recyclerview.models.Media;
 import com.example.retrofit_with_recyclerview.responses.CrewResponse;
 import com.example.retrofit_with_recyclerview.responses.EmployeeResponse;
 import com.example.retrofit_with_recyclerview.responses.MediaDetailsResponse;
@@ -25,7 +26,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MediaDetailsActivity extends AppCompatActivity {
-    private long mediaId;
+    private Media media;
     ImageView posterView;
     TextView titleView;
     TextView noteAverageView;
@@ -57,7 +58,7 @@ public class MediaDetailsActivity extends AppCompatActivity {
 
     public void receivingMovieId(){
         Bundle received_data = getIntent().getExtras();
-        this.mediaId = received_data.getLong("movieId");
+        this.media = (Media) received_data.getSerializable("media");
     }
 
     public void launchingTheMovieDetailsViews(){
@@ -69,7 +70,7 @@ public class MediaDetailsActivity extends AppCompatActivity {
 
     public void getMovieDetails(){
         ApiService.getMovieService()
-                .getMovieDetails(this.mediaId, Constants.apiKey)
+                .getMovieDetails(this.media.getId(), Constants.apiKey)
                 .enqueue(new Callback<MediaDetailsResponse>() {
                     @Override
                     public void onResponse(Call<MediaDetailsResponse> call, Response<MediaDetailsResponse> response) {
@@ -86,7 +87,7 @@ public class MediaDetailsActivity extends AppCompatActivity {
                             setPosterView(postPath);
 
                             // Fazer requisição da equipe
-                            getCrew();
+                            getCrew(media);
                         }
                         // Demais status code
                         else{
@@ -103,31 +104,37 @@ public class MediaDetailsActivity extends AppCompatActivity {
                 });
     }
 
-    public void getCrew() {
-        ApiService.getMovieService()
-                .getCreditsByMovie(mediaId, Constants.apiKey)
-                .enqueue(new Callback<CrewResponse>() {
-                    @Override
-                    public void onResponse(Call<CrewResponse> call, Response<CrewResponse> response) {
-                        // HTTP status code de 200 a 299
-                        if (response.isSuccessful()) setCrewList(response);
+    public void getCrew(Media media) {
+        if(Constants.MOVIE_TYPE.equals(this.media.getSubType())){
+            ApiService.getMovieService()
+                    .getCreditsByMovie(media.getId(), Constants.apiKey)
+                    .enqueue(new Callback<CrewResponse>() {
+                        @Override
+                        public void onResponse(Call<CrewResponse> call, Response<CrewResponse> response) {
+                            // HTTP status code de 200 a 299
+                            if (response.isSuccessful()) setCrewList(response);
 
-                        // HTTP status code diferente de 200 a 299
-                        else showMessageError("HTTP status code: " + response.code());
+                                // HTTP status code diferente de 200 a 299
+                            else showMessageError("HTTP status code: " + response.code());
 
-                        // Desbloqueando a tela principal
-                        loadingDialog.dismiss();
-                    }
+                            // Desbloqueando a tela principal
+                            loadingDialog.dismiss();
+                        }
 
-                    @Override
-                    public void onFailure(Call<CrewResponse> call, Throwable t) {
-                        // Desbloqueando a tela principal
-                        loadingDialog.dismiss();
+                        @Override
+                        public void onFailure(Call<CrewResponse> call, Throwable t) {
+                            // Desbloqueando a tela principal
+                            loadingDialog.dismiss();
 
-                        showMessageError("Falha ao carreegar visualização de integrantes da equipe.");
-                        throw new RuntimeException(t.getMessage());
-                    }
-                });
+                            showMessageError("Falha ao carreegar visualização de integrantes da equipe.");
+                            throw new RuntimeException(t.getMessage());
+                        }
+                    });
+        }
+        else if(Constants.SHOW_TYPE.equals(this.media.getSubType())){
+            //REQUISITAR SHOW CREW AQUI
+        }
+
     }
 
     public void setPosterView(String postPath) {

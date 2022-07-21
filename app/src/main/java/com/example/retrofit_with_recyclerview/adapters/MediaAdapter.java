@@ -19,6 +19,7 @@ import com.example.retrofit_with_recyclerview.models.Show;
 import com.example.retrofit_with_recyclerview.util.Constants;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,12 +74,12 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
         notifyDataSetChanged();
     }
 
-    public void addClickEventListtenerOnView(View view, long id){
+    public void addClickEventListtenerOnView(View view, Media media){
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(view.getContext(), MediaDetailsActivity.class);
-                intent.putExtra("movieId", id);
+                intent.putExtra("media", media);
                 context.startActivity(intent);
             }
         });
@@ -104,7 +105,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
                     .load("https://image.tmdb.org/t/p/w342/" + posterPath)
                     .into(holder.imagePosterMovie);
 
-            this.addClickEventListtenerOnView(holder.itemView, mediaId);
+            this.addClickEventListtenerOnView(holder.itemView, media);
         }
 
         // Media é Show
@@ -118,7 +119,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
                     .load("https://image.tmdb.org/t/p/w342/" + posterPath)
                     .into(holder.imagePosterMovie);
 
-            this.addClickEventListtenerOnView(holder.itemView, mediaId);
+            this.addClickEventListtenerOnView(holder.itemView, media);
         }
     }
 

@@ -2,10 +2,11 @@ package com.example.retrofit_with_recyclerview.models;
 
 import com.example.retrofit_with_recyclerview.util.Constants;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class Media {
+public abstract class Media implements Serializable {
     protected final long id;
     protected final String mediaType;
 
@@ -50,6 +51,10 @@ public abstract class Media {
 
         else
             return Constants.SHOW_TYPE;
+    }
+
+    public long getId() {
+        return id;
     }
 
     @Override

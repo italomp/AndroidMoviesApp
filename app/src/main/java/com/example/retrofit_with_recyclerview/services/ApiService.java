@@ -6,6 +6,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
 public class ApiService {
     private static MovieService movieService;
     private static MediaService mediaService;
+    private static ShowService showService;
 
     public static MovieService getMovieService(){
         if(movieService == null){
@@ -29,5 +30,17 @@ public class ApiService {
             mediaService = retrofit.create(MediaService.class);
         }
         return mediaService;
+    }
+
+    public static ShowService getShowService(){
+        if(showService == null){
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://api.themoviedb.org/3/")
+                    .addConverterFactory(MoshiConverterFactory.create())
+                    .build();
+
+            showService = retrofit.create(ShowService.class);
+        }
+        return showService;
     }
 }
