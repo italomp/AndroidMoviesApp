@@ -45,7 +45,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         Media currentMedia = this.mediaList.get(position);
-        parseMedia(holder, currentMedia, position);
+        parseMedia(holder, currentMedia);
     }
 
     @Override
@@ -89,13 +89,13 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
      * Esse método recebe uma Media, verifica se ela é um Movie ou um Show e seta
      * o parâmetro recebido correspondente (Media ou Show).
      */
-    public void parseMedia(MovieViewHolder holder, Media media, int position){
+    public void parseMedia(MovieViewHolder holder, Media media){
         long mediaId = 1L; // esta valor não
         String mediaTitle = null;
         String posterPath = null;
 
         // Media é Movie
-        if(Constants.MOVIE_TYPE.equals(media.getMediaType())){
+        if(Constants.MOVIE_TYPE.equals(media.getSubType())){
             mediaId = ((Movie) media).getId();
             mediaTitle = ((Movie) media).getTitle();
             posterPath = ((Movie) media).getPosterPath();
@@ -106,10 +106,11 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
                     .into(holder.imagePosterMovie);
 
             this.addClickEventListtenerOnView(holder.itemView, mediaId);
+            System.out.println("Adicionou o Movie: " + mediaId + " - " + mediaTitle);
         }
 
         // Media é Show
-        else if(Constants.SHOW_TYPE.equals(media.getMediaType())){
+        else if(Constants.SHOW_TYPE.equals(media.getSubType())){
             mediaId = ((Show) media).getId();
             mediaTitle = ((Show) media).getName();
             posterPath = ((Show) media).getPosterPath();
@@ -120,21 +121,23 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
                     .into(holder.imagePosterMovie);
 
             this.addClickEventListtenerOnView(holder.itemView, mediaId);
+            System.out.println("Adicionou o Show: " + mediaId + " - " + mediaTitle);
         }
+    }
 
-        // Média é Person
-        else{
-            List<Media> mediaList = ((Person) media).getMoviesAndShows();
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
-            if(!mediaList.isEmpty()){
-                // removendo o elemento para não cair num loop infinito.
-                this.mediaList.remove(position);
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 
-                List<Media> newList = this.mediaList;
-                newList.addAll(mediaList);
-                setMediaList(newList);
-            }
-        }
+    @Override
+    public void setHasStableIds(boolean hasStableIds) {
+        super.setHasStableIds(hasStableIds);
     }
 
 }

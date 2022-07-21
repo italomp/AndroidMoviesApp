@@ -77,17 +77,17 @@ public class MediaResponse {
      */
     public Media getEntity(){
         // Media é Movie
-        if (Constants.MOVIE_TYPE.equals(mediaType) || title != null)
+        if ((Constants.MOVIE_TYPE.equals(mediaType) || title != null) && moviesAndShows == null)
             return new Movie(id, title, postPath, Constants.MOVIE_TYPE);
 
         // Media é Person
         else if(Constants.PERSON_TYPE.equals(mediaType) || moviesAndShows != null){
             System.out.println("PERSON: " + toString());
-            return new Person(name, mapperMediaResponseListToMediaList(), Constants.PERSON_TYPE);
+            return new Person(id, name, mapperMediaResponseListToMediaList(), Constants.PERSON_TYPE);
         }
 
         //Media é Show
-        else if (Constants.SHOW_TYPE.equals(mediaType) || name != null)
+        else if ((Constants.SHOW_TYPE.equals(mediaType) || name != null) && moviesAndShows == null)
             return new Show(id, name, postPath, Constants.SHOW_TYPE);
 
         else

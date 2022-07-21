@@ -3,33 +3,34 @@ package com.example.retrofit_with_recyclerview.models;
 import com.example.retrofit_with_recyclerview.util.Constants;
 
 import java.util.List;
+import java.util.Objects;
 
 public abstract class Media {
+    protected final long id;
     protected final String mediaType;
 
     protected final String title; //Movie
     protected final List<Media> moviesAndShows; // Person
 
-    public Media(String mediaType) {
+    public Media(long id, String mediaType) {
+        this.id = id;
         this.mediaType = mediaType;
         this.moviesAndShows = null;
         this.title = null;
     }
 
-    public Media(String mediaType, String title) {
+    public Media(long id, String mediaType, String title) {
+        this.id = id;
         this.mediaType = mediaType;
         this.title = title;
         this.moviesAndShows = null;
     }
 
-    public Media(String mediaType, List<Media> moviesAndShows) {
+    public Media(long id, String mediaType, List<Media> moviesAndShows) {
+        this.id = id;
         this.mediaType = mediaType;
         this.moviesAndShows = moviesAndShows;
         this.title = null;
-    }
-
-    public String getMediaType() {
-        return mediaType;
     }
 
     public String getTitle() {
@@ -41,8 +42,26 @@ public abstract class Media {
     }
 
     public String getSubType(){
-        if (title != null) return Constants.MOVIE_TYPE;
-        else if (!moviesAndShows.isEmpty()) return Constants.PERSON_TYPE;
-        else return Constants.SHOW_TYPE;
+        if (title != null || Constants.MOVIE_TYPE.equals(mediaType))
+            return Constants.MOVIE_TYPE;
+
+        else if (Constants.PERSON_TYPE.equals(mediaType) || moviesAndShows != null)
+            return Constants.PERSON_TYPE;
+
+        else
+            return Constants.SHOW_TYPE;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Media media = (Media) o;
+        return id == media.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -12,14 +12,22 @@ import android.widget.Toast;
 import com.example.retrofit_with_recyclerview.R;
 import com.example.retrofit_with_recyclerview.adapters.MediaAdapter;
 import com.example.retrofit_with_recyclerview.models.Media;
+import com.example.retrofit_with_recyclerview.models.Movie;
+import com.example.retrofit_with_recyclerview.models.Person;
+import com.example.retrofit_with_recyclerview.models.Show;
 import com.example.retrofit_with_recyclerview.util.MediaMapper;
 import com.example.retrofit_with_recyclerview.responses.MediaResponseList;
 import com.example.retrofit_with_recyclerview.responses.MediaResponse;
 import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.Constants;
 import com.google.android.material.textfield.TextInputEditText;
+import com.squareup.picasso.Picasso;
 
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     public void setRecyclerView(){
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(MainActivity.this, 2);
         this.mediaAdapter = new MediaAdapter(MainActivity.this);
+        this.mediaAdapter.setHasStableIds(true);
 
         this.recyclerView = findViewById(R.id.recycler_movies);
         this.recyclerView.setLayoutManager(layoutManager);
@@ -97,13 +106,27 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
                                 if(response.isSuccessful()){
-                                    System.out.println("entrou no if do onResponse");
+                                    // Limpando o recycler view
+                                    mediaAdapter.setMediaList(new ArrayList<Media>());
+
                                     List<MediaResponse> mediaResponseList = response.body().getMediaList();
                                     List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
+
+                                    System.out.println("IMPRIMIDO MEDIAS RECEBIDAS NA PESQUISA MÚLTIPLA");
+                                    for(MediaResponse m : mediaResponseList){
+                                        System.out.println(m.toString());
+                                    }
+
+                                    mediaList = parseMedia(mediaList);
+
+                                    System.out.println("IMPRIMIDO MEDIAS APÓS PARSE");
+                                    for(MediaResponse m : mediaResponseList){
+                                        System.out.println(m.toString());
+                                    }
+
                                     renderingMediasOrNotFoundMessage(mediaList);
                                 }
                                 else{
-                                    System.out.println("entrou no else do onResponse");
                                     Toast.makeText(
                                             getApplicationContext(),
                                             "HTTP Status Code: " + response.code(),
@@ -131,5 +154,26 @@ public class MainActivity extends AppCompatActivity {
                     getApplicationContext(),
                     "Nenhuma mídia foi encontrada.",
                     Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * Esse método recebe uma lista de Medias contendo Medias do tipo Person e retorna
+     * uma lista de Medias contendo apenas Movies e Shows.
+     */
+    public List<Media> parseMedia(List<Media> mediaList){
+        List<Media> result = new ArrayList<>();
+        Set<Media> mediaSet = new HashSet<>();
+
+        for(Media media : mediaList){
+            if(Constants.MOVIE_TYPE.equals(media.getSubType()) || Constants.SHOW_TYPE.equals(media.getSubType())){
+                mediaSet.add(media);
+            }
+            else{
+                mediaSet.addAll(((Person) media).getMoviesAndShows());
+            }
+        }
+
+        result.addAll(mediaSet);
+        return mediaList;
     }
 }
