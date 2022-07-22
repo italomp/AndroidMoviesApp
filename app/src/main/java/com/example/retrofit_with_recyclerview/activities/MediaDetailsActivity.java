@@ -114,14 +114,11 @@ public class MediaDetailsActivity extends AppCompatActivity {
                             throw new RuntimeException(t.getMessage());
                         }
                     });
-
         }
 
     }
 
     public void getCrew(Media media) {
-        System.out.println(this.media.toString());
-
         if(Util.isItMovie(this.media)){
             ApiService.getMovieService()
                     .getCreditsByMovie(media.getId(), Constants.API_KEY)
@@ -134,12 +131,8 @@ public class MediaDetailsActivity extends AppCompatActivity {
                             // HTTP status code diferente de 200 a 299
                             else showMessageError("HTTP status code: " + response.code());
 
-                            System.out.println("vai executar o loadingDialog");
-
                             // Desbloqueando a tela principal
                             loadingDialog.dismiss();
-
-                            System.out.println("executou o loadingDialog");
                         }
 
                         @Override
@@ -197,14 +190,14 @@ public class MediaDetailsActivity extends AppCompatActivity {
     }
 
     public void setDetailViews(Response<MediaDetailsResponse> response){
-        String movieTitle = Util.isItMovie(media) ? response.body().getTitle() : response.body().getName();
-        String movieOverview = response.body().getOverview();
+        String mediaTitle = Util.isItMovie(media) ? response.body().getTitle() : response.body().getName();
+        String mediaOverview = response.body().getOverview();
         String postPath = response.body().getPostPath();
         Float noteAverage = response.body().getVoteAverage();
 
-        setTitleView(movieTitle);
+        setTitleView(mediaTitle);
         setNoteAverageView(noteAverage);
-        setOverviewView(movieOverview);
+        setOverviewView(mediaOverview);
         setPosterView(postPath);
     }
 

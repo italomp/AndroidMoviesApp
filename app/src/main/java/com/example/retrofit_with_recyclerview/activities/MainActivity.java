@@ -109,17 +109,8 @@ public class MainActivity extends AppCompatActivity {
                                     List<MediaResponse> mediaResponseList = response.body().getMediaList();
                                     List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
 
-                                    System.out.println("IMPRIMIDO MEDIAS RECEBIDAS NA PESQUISA MÚLTIPLA");
-                                    for(MediaResponse m : mediaResponseList){
-                                        System.out.println(m.toString());
-                                    }
-
+                                    // Extraindo Movies e Shows de objetos Person
                                     mediaList = parseMedia(mediaList);
-
-                                    System.out.println("IMPRIMIDO MEDIAS APÓS PARSE");
-                                    for(MediaResponse m : mediaResponseList){
-                                        System.out.println(m.toString());
-                                    }
 
                                     renderingMediasOrNotFoundMessage(mediaList);
                                 }
