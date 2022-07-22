@@ -8,6 +8,7 @@
         <entry key="app/src/main/res/drawable/search_icon.xml" value="0.189" />
         <entry key="app/src/main/res/drawable/search_icon_background.xml" value="0.19" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.27807971014492755" />
+        <entry key="app/src/main/res/layout/activity_media_details.xml" value="0.13405797101449277" />
         <entry key="app/src/main/res/layout/activity_movie_details.xml" value="0.25" />
         <entry key="app/src/main/res/layout/crew_list_item.xml" value="0.15012224938875304" />
         <entry key="app/src/main/res/layout/loading_dialog.xml" value="0.25" />

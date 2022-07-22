@@ -39,7 +39,7 @@ public class MediaDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_details);
 
-        receivingMovieId();
+        receivingMedia();
         launchingTheMovieDetailsViews();
         layoutCrewList = findViewById(R.id.crew_list);
         loadingDialog = new LoadingDialog(MediaDetailsActivity.this);
@@ -56,7 +56,7 @@ public class MediaDetailsActivity extends AppCompatActivity {
         loadingDialog.startLoadingDialog();
     }
 
-    public void receivingMovieId(){
+    public void receivingMedia(){
         Bundle received_data = getIntent().getExtras();
         this.media = (Media) received_data.getSerializable("media");
     }
