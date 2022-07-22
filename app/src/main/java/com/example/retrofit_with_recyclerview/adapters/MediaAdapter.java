@@ -16,10 +16,9 @@ import com.example.retrofit_with_recyclerview.activities.MediaDetailsActivity;
 import com.example.retrofit_with_recyclerview.models.Media;
 import com.example.retrofit_with_recyclerview.models.Movie;
 import com.example.retrofit_with_recyclerview.models.Show;
-import com.example.retrofit_with_recyclerview.util.Constants;
+import com.example.retrofit_with_recyclerview.util.Util;
 import com.squareup.picasso.Picasso;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,13 +89,11 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
      * o parâmetro recebido correspondente (Media ou Show).
      */
     public void parseMedia(MovieViewHolder holder, Media media){
-        long mediaId = 1L; // esta valor não
         String mediaTitle = null;
         String posterPath = null;
 
         // Media é Movie
-        if(Constants.MOVIE_TYPE.equals(media.getSubType())){
-            mediaId = ((Movie) media).getId();
+        if(Util.isItMovie(media)){
             mediaTitle = ((Movie) media).getTitle();
             posterPath = ((Movie) media).getPosterPath();
 
@@ -109,8 +106,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
         }
 
         // Media é Show
-        else if(Constants.SHOW_TYPE.equals(media.getSubType())){
-            mediaId = ((Show) media).getId();
+        else if(Util.isItShow(media)){
             mediaTitle = ((Show) media).getName();
             posterPath = ((Show) media).getPosterPath();
 

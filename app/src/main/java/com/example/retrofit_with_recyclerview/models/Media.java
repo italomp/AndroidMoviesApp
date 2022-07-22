@@ -69,4 +69,8 @@ public abstract class Media implements Serializable {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public String toString(){
+        return "id: " + this.id + "; title: " + this.title + "; mediaType: " + this.mediaType;
+    }
 }

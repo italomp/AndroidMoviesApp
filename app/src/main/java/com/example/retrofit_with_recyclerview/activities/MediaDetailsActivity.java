@@ -12,11 +12,11 @@ import android.widget.Toast;
 import com.example.retrofit_with_recyclerview.R;
 import com.example.retrofit_with_recyclerview.models.Media;
 import com.example.retrofit_with_recyclerview.responses.CrewResponse;
-import com.example.retrofit_with_recyclerview.responses.EmployeeResponse;
 import com.example.retrofit_with_recyclerview.responses.MediaDetailsResponse;
 import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.LoadingDialog;
 import com.example.retrofit_with_recyclerview.util.Constants;
+import com.example.retrofit_with_recyclerview.util.Util;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class MediaDetailsActivity extends AppCompatActivity {
         Runnable getMoviesRunnable = new Runnable() {
             @Override
             public void run() {
-                getMovieDetails();
+                getMediaDetails();
             }
         };
 
@@ -68,57 +68,78 @@ public class MediaDetailsActivity extends AppCompatActivity {
         this.overviewView = findViewById(R.id.details_movie_sinopse);
     }
 
-    public void getMovieDetails(){
-        ApiService.getMovieService()
-                .getMovieDetails(this.media.getId(), Constants.apiKey)
-                .enqueue(new Callback<MediaDetailsResponse>() {
-                    @Override
-                    public void onResponse(Call<MediaDetailsResponse> call, Response<MediaDetailsResponse> response) {
-                        // Status code de 200 a 299
-                        if(response.isSuccessful()){
-                            String movieTitle = response.body().getTitle();
-                            String movieOverview = response.body().getOverview();
-                            String postPath = response.body().getPostPath();
-                            Float noteAverage = response.body().getVoteAverage();
-
-                            setTitleView(movieTitle);
-                            setNoteAverageView(noteAverage);
-                            setOverviewView(movieOverview);
-                            setPosterView(postPath);
-
-                            // Fazer requisição da equipe
-                            getCrew(media);
+    public void getMediaDetails(){
+        if(Util.isItMovie(this.media)){
+            ApiService.getMovieService()
+                    .getMovieDetails(this.media.getId(), Constants.API_KEY)
+                    .enqueue(new Callback<MediaDetailsResponse>() {
+                        @Override
+                        public void onResponse(Call<MediaDetailsResponse> call, Response<MediaDetailsResponse> response) {
+                            // Status code de 200 a 299
+                            if(response.isSuccessful()){
+                                setDetailViews(response);
+                                getCrew(media);
+                            }
+                            // Demais status code
+                            else{
+                                showMessageError("HTTP status code: " + response.code());
+                            }
                         }
-                        // Demais status code
-                        else{
-                            showMessageError("HTTP status code: " + response.code());
+
+                        @Override
+                        public void onFailure(Call<MediaDetailsResponse> call, Throwable t) {
+                            showMessageError("Falha ao carreegar página de detalhes");
+                            throw new RuntimeException(t.getMessage());
                         }
-                    }
+                    });
+        }
+        else if (Util.isItShow(this.media)) {
+            ApiService.getShowService()
+                    .getShowDetails(media.getId(), Constants.API_KEY)
+                    .enqueue(new Callback<MediaDetailsResponse>() {
+                        @Override
+                        public void onResponse(Call<MediaDetailsResponse> call, Response<MediaDetailsResponse> response) {
+                            if (response.isSuccessful()) {
+                                setDetailViews(response);
+                                getCrew(media);
+                            }
+                            else{
+                                showMessageError("HTTP status code: " + response.code());
+                            }
+                        }
 
-                    @Override
-                    public void onFailure(Call<MediaDetailsResponse> call, Throwable t) {
-                        showMessageError("Falha ao carreegar página de detalhes");
-                        throw new RuntimeException(t.getMessage());
-                    }
+                        @Override
+                        public void onFailure(Call<MediaDetailsResponse> call, Throwable t) {
+                            showMessageError("Falha ao carreegar página de detalhes");
+                            throw new RuntimeException(t.getMessage());
+                        }
+                    });
 
-                });
+        }
+
     }
 
     public void getCrew(Media media) {
-        if(Constants.MOVIE_TYPE.equals(this.media.getSubType())){
+        System.out.println(this.media.toString());
+
+        if(Util.isItMovie(this.media)){
             ApiService.getMovieService()
-                    .getCreditsByMovie(media.getId(), Constants.apiKey)
+                    .getCreditsByMovie(media.getId(), Constants.API_KEY)
                     .enqueue(new Callback<CrewResponse>() {
                         @Override
                         public void onResponse(Call<CrewResponse> call, Response<CrewResponse> response) {
                             // HTTP status code de 200 a 299
                             if (response.isSuccessful()) setCrewList(response);
 
-                                // HTTP status code diferente de 200 a 299
+                            // HTTP status code diferente de 200 a 299
                             else showMessageError("HTTP status code: " + response.code());
+
+                            System.out.println("vai executar o loadingDialog");
 
                             // Desbloqueando a tela principal
                             loadingDialog.dismiss();
+
+                            System.out.println("executou o loadingDialog");
                         }
 
                         @Override
@@ -131,8 +152,28 @@ public class MediaDetailsActivity extends AppCompatActivity {
                         }
                     });
         }
-        else if(Constants.SHOW_TYPE.equals(this.media.getSubType())){
+        else if(Util.isItShow(this.media)){
             //REQUISITAR SHOW CREW AQUI
+            ApiService.getShowService()
+                    .getCreditsByShow(media.getId(), Constants.API_KEY)
+                    .enqueue(new Callback<CrewResponse>() {
+                        @Override
+                        public void onResponse(Call<CrewResponse> call, Response<CrewResponse> response) {
+                            if(response.isSuccessful()) setCrewList(response);
+
+                            else showMessageError("HTTP status code: " + response.code());
+
+                            loadingDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onFailure(Call<CrewResponse> call, Throwable t) {
+                            loadingDialog.dismiss();
+
+                            showMessageError("Falha ao carreegar visualização de integrantes da equipe.");
+                            throw new RuntimeException(t.getMessage());
+                        }
+                    });
         }
 
     }
@@ -153,6 +194,18 @@ public class MediaDetailsActivity extends AppCompatActivity {
 
     public void setOverviewView(String overviewView) {
         this.overviewView.setText(overviewView);
+    }
+
+    public void setDetailViews(Response<MediaDetailsResponse> response){
+        String movieTitle = Util.isItMovie(media) ? response.body().getTitle() : response.body().getName();
+        String movieOverview = response.body().getOverview();
+        String postPath = response.body().getPostPath();
+        Float noteAverage = response.body().getVoteAverage();
+
+        setTitleView(movieTitle);
+        setNoteAverageView(noteAverage);
+        setOverviewView(movieOverview);
+        setPosterView(postPath);
     }
 
     public void showMessageError(String msg){

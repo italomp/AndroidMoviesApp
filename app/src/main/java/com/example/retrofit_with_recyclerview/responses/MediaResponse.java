@@ -82,7 +82,6 @@ public class MediaResponse {
 
         // Media é Person
         else if(Constants.PERSON_TYPE.equals(mediaType) || moviesAndShows != null){
-            System.out.println("PERSON: " + toString());
             return new Person(id, name, mapperMediaResponseListToMediaList(), Constants.PERSON_TYPE);
         }
 

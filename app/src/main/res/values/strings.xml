@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">retrofit_with_recyclerview</string>
+    <string name="app_name">Android Movies App</string>
     <string name="movie_poster_description">Movie Poster</string>
     <string name="loading">Carregando...</string>
     <string name="placeholder_search">Buscar por um Filme, Show ou Pessoa...</string>

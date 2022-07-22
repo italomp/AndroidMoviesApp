@@ -12,18 +12,15 @@ import android.widget.Toast;
 import com.example.retrofit_with_recyclerview.R;
 import com.example.retrofit_with_recyclerview.adapters.MediaAdapter;
 import com.example.retrofit_with_recyclerview.models.Media;
-import com.example.retrofit_with_recyclerview.models.Movie;
 import com.example.retrofit_with_recyclerview.models.Person;
-import com.example.retrofit_with_recyclerview.models.Show;
 import com.example.retrofit_with_recyclerview.util.MediaMapper;
 import com.example.retrofit_with_recyclerview.responses.MediaResponseList;
 import com.example.retrofit_with_recyclerview.responses.MediaResponse;
 import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.Constants;
+import com.example.retrofit_with_recyclerview.util.Util;
 import com.google.android.material.textfield.TextInputEditText;
-import com.squareup.picasso.Picasso;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -63,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getMovies(){
-        ApiService.getMovieService().getMovies(Constants.apiKey).enqueue(new Callback<MediaResponseList>() {
+        ApiService.getMovieService().getMovies(Constants.API_KEY).enqueue(new Callback<MediaResponseList>() {
             @Override
             public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
                 // Status code de 200 a 299
@@ -101,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Pesquisando Filmes, Shows e Pessoas
                 ApiService.getMediaService()
-                        .multiSearch(Constants.apiKey, inputValue)
+                        .multiSearch(Constants.API_KEY, inputValue)
                         .enqueue(new Callback<MediaResponseList>() {
                             @Override
                             public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
@@ -165,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         Set<Media> mediaSet = new HashSet<>();
 
         for(Media media : mediaList){
-            if(Constants.MOVIE_TYPE.equals(media.getSubType()) || Constants.SHOW_TYPE.equals(media.getSubType())){
+            if(Util.isItMovie(media) || Util.isItShow(media)){
                 mediaSet.add(media);
             }
             else{
