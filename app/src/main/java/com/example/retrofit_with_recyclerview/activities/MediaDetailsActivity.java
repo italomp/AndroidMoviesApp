@@ -181,7 +181,7 @@ public class MediaDetailsActivity extends AppCompatActivity {
         this.titleView.setText(title);
     }
 
-    public void setNoteAverageView(float average) {
+    public void setNoteAverageView(int average) {
         this.noteAverageView.setText("Avaliação do usuário: " + String.valueOf(average) + "%");
     }
 
@@ -193,7 +193,7 @@ public class MediaDetailsActivity extends AppCompatActivity {
         String mediaTitle = Util.isItMovie(media) ? response.body().getTitle() : response.body().getName();
         String mediaOverview = response.body().getOverview();
         String postPath = response.body().getPostPath();
-        Float noteAverage = response.body().getVoteAverage();
+        Integer noteAverage = response.body().getVoteAverage();
 
         setTitleView(mediaTitle);
         setNoteAverageView(noteAverage);

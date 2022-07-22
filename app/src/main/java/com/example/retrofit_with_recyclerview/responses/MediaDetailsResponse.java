@@ -7,7 +7,7 @@ public class MediaDetailsResponse extends MediaResponse {
     private final String overview;
 
     @Json(name = "vote_average")
-    private final Float voteAverage;
+    private final Float voteAverage; // range de 0 a 10
 
     public MediaDetailsResponse(long id, String movieTittle, String postPath,
                                 String overview, Float voteAverage) {
@@ -20,7 +20,10 @@ public class MediaDetailsResponse extends MediaResponse {
         return overview;
     }
 
-    public Float getVoteAverage() {
-        return voteAverage;
+    /**
+     * @return a média do filme num range de 0 a 100.
+     */
+    public Integer getVoteAverage() {
+        return this.voteAverage.intValue() * 10;
     }
 }
