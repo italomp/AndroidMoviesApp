@@ -37,7 +37,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View listItem = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.movies_adapter, parent, false);
+                .inflate(R.layout.media_adapter, parent, false);
         return new MovieViewHolder(listItem);
     }
 
@@ -58,8 +58,8 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
 
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.movieTittle = itemView.findViewById(R.id.movie_tittle);
-            this.imagePosterMovie = itemView.findViewById(R.id.image_movie_poster);
+            this.movieTittle = itemView.findViewById(R.id.media_tittle);
+            this.imagePosterMovie = itemView.findViewById(R.id.image_media_poster);
         }
     }
 

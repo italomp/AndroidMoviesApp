@@ -37,7 +37,7 @@ public class MediaDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_details);
+        setContentView(R.layout.activity_media_details);
 
         receivingMovieId();
         launchingTheMovieDetailsViews();
@@ -62,10 +62,10 @@ public class MediaDetailsActivity extends AppCompatActivity {
     }
 
     public void launchingTheMovieDetailsViews(){
-        this.posterView = findViewById(R.id.details_movie_poster);
-        this.titleView = findViewById(R.id.details_movie_title);
+        this.posterView = findViewById(R.id.details_media_poster);
+        this.titleView = findViewById(R.id.details_media_title);
         this.noteAverageView = findViewById(R.id.vote_avarage);
-        this.overviewView = findViewById(R.id.details_movie_sinopse);
+        this.overviewView = findViewById(R.id.details_media_sinopse);
     }
 
     public void getMediaDetails(){

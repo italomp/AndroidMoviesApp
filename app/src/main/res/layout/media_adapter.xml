@@ -10,16 +10,16 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/image_movie_poster"
+            android:id="@+id/image_media_poster"
             android:layout_width="match_parent"
             android:layout_height="220dp"
             android:scaleType="fitXY" />
 
         <TextView
-            android:id="@+id/movie_tittle"
+            android:id="@+id/media_tittle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/image_movie_poster"
+            android:layout_below="@id/image_media_poster"
             android:textAlignment="center"
             android:layout_centerHorizontal="true"
             android:padding="16dp"
