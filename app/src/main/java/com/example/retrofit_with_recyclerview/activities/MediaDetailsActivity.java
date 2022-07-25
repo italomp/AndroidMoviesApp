@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,7 +16,6 @@ import com.example.retrofit_with_recyclerview.models.Media;
 import com.example.retrofit_with_recyclerview.responses.CrewResponse;
 import com.example.retrofit_with_recyclerview.responses.MediaDetailsResponse;
 import com.example.retrofit_with_recyclerview.services.ApiService;
-import com.example.retrofit_with_recyclerview.util.LoadingDialog;
 import com.example.retrofit_with_recyclerview.util.Constants;
 import com.example.retrofit_with_recyclerview.util.Util;
 import com.squareup.picasso.Picasso;
@@ -32,28 +33,21 @@ public class MediaDetailsActivity extends AppCompatActivity {
     TextView noteAverageView;
     TextView overviewView;
     LinearLayout layoutCrewList;
-    LoadingDialog loadingDialog;
+    ProgressBar loadScreen;
+    ScrollView mediaDetailsScroll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_details);
 
+        getViewsReferences();
+
+        this.hiddenContent();
+        this.showProgressBar();
+
         receivingMedia();
-        launchingTheMovieDetailsViews();
-        layoutCrewList = findViewById(R.id.crew_list);
-        loadingDialog = new LoadingDialog(MediaDetailsActivity.this);
-
-        Runnable getMoviesRunnable = new Runnable() {
-            @Override
-            public void run() {
-                getMediaDetails();
-            }
-        };
-
-        Thread backgroundThread = new Thread(getMoviesRunnable);
-        backgroundThread.start();
-        loadingDialog.startLoadingDialog();
+        getMediaDetails();
     }
 
     public void receivingMedia(){
@@ -61,11 +55,14 @@ public class MediaDetailsActivity extends AppCompatActivity {
         this.media = (Media) received_data.getSerializable("media");
     }
 
-    public void launchingTheMovieDetailsViews(){
+    public void getViewsReferences(){
         this.posterView = findViewById(R.id.details_media_poster);
         this.titleView = findViewById(R.id.details_media_title);
         this.noteAverageView = findViewById(R.id.vote_avarage);
         this.overviewView = findViewById(R.id.details_media_sinopse);
+        this.loadScreen = findViewById(R.id.load_screen);
+        this.mediaDetailsScroll = findViewById(R.id.media_details_scroll);
+        this.layoutCrewList = findViewById(R.id.crew_list);
     }
 
     public void getMediaDetails(){
@@ -82,13 +79,15 @@ public class MediaDetailsActivity extends AppCompatActivity {
                             }
                             // Demais status code
                             else{
+                                hiddenProgressBar();
                                 showMessageError("HTTP status code: " + response.code());
                             }
                         }
 
                         @Override
                         public void onFailure(Call<MediaDetailsResponse> call, Throwable t) {
-                            showMessageError("Falha ao carreegar página de detalhes");
+                            hiddenProgressBar();
+                            showMessageError("Falha ao carreegar tela de detalhes");
                             throw new RuntimeException(t.getMessage());
                         }
                     });
@@ -104,12 +103,14 @@ public class MediaDetailsActivity extends AppCompatActivity {
                                 getCrew(media);
                             }
                             else{
+                                hiddenProgressBar();
                                 showMessageError("HTTP status code: " + response.code());
                             }
                         }
 
                         @Override
                         public void onFailure(Call<MediaDetailsResponse> call, Throwable t) {
+                            hiddenProgressBar();
                             showMessageError("Falha ao carreegar página de detalhes");
                             throw new RuntimeException(t.getMessage());
                         }
@@ -132,21 +133,19 @@ public class MediaDetailsActivity extends AppCompatActivity {
                             else showMessageError("HTTP status code: " + response.code());
 
                             // Desbloqueando a tela principal
-                            loadingDialog.dismiss();
+                            hiddenProgressBar();
+                            showContent();
                         }
 
                         @Override
                         public void onFailure(Call<CrewResponse> call, Throwable t) {
-                            // Desbloqueando a tela principal
-                            loadingDialog.dismiss();
-
+                            hiddenProgressBar();
                             showMessageError("Falha ao carreegar visualização de integrantes da equipe.");
                             throw new RuntimeException(t.getMessage());
                         }
                     });
         }
         else if(Util.isItShow(this.media)){
-            //REQUISITAR SHOW CREW AQUI
             ApiService.getShowService()
                     .getCreditsByShow(media.getId(), Constants.API_KEY)
                     .enqueue(new Callback<CrewResponse>() {
@@ -156,13 +155,13 @@ public class MediaDetailsActivity extends AppCompatActivity {
 
                             else showMessageError("HTTP status code: " + response.code());
 
-                            loadingDialog.dismiss();
+                            hiddenProgressBar();
+                            showContent();
                         }
 
                         @Override
                         public void onFailure(Call<CrewResponse> call, Throwable t) {
-                            loadingDialog.dismiss();
-
+                            hiddenProgressBar();
                             showMessageError("Falha ao carreegar visualização de integrantes da equipe.");
                             throw new RuntimeException(t.getMessage());
                         }
@@ -229,5 +228,21 @@ public class MediaDetailsActivity extends AppCompatActivity {
                 layoutCrewList.addView(crewListItem);
             }
         }
+    }
+
+    private void showProgressBar(){
+        this.loadScreen.setVisibility(View.VISIBLE);
+    }
+
+    private void hiddenContent(){
+        this.mediaDetailsScroll.setVisibility(View.INVISIBLE);
+    }
+
+    private void hiddenProgressBar(){
+        this.loadScreen.setVisibility(View.INVISIBLE);
+    }
+
+    private void showContent(){
+        this.mediaDetailsScroll.setVisibility(View.VISIBLE);
     }
 }
