@@ -3,6 +3,7 @@ package com.example.retrofit_with_recyclerview.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.retrofit_with_recyclerview.R;
 import com.example.retrofit_with_recyclerview.adapters.MediaAdapter;
+import com.example.retrofit_with_recyclerview.adapters.ViewPagerAdapter;
 import com.example.retrofit_with_recyclerview.models.Media;
 import com.example.retrofit_with_recyclerview.models.Person;
 import com.example.retrofit_with_recyclerview.util.MediaMapper;
@@ -19,6 +21,7 @@ import com.example.retrofit_with_recyclerview.responses.MediaResponse;
 import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.Constants;
 import com.example.retrofit_with_recyclerview.util.Util;
+import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
@@ -36,18 +39,79 @@ public class MainActivity extends AppCompatActivity {
     TextInputEditText inputSearch;
     Button searchButton;
 
+    TabLayout tabLayout;
+    ViewPager2 viewPager;
+    ViewPagerAdapter viewPagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // iniciando views
-        this.setSearchViews();
-        this.setRecyclerView();
+        tabLayout = findViewById(R.id.tab_layout);
+        viewPager = findViewById(R.id.view_pager);
+        viewPagerAdapter = new ViewPagerAdapter(this);
+        viewPager.setAdapter(viewPagerAdapter);
 
-        this.getMovies();
+        /**
+         * Adicionando evento de seleção à TabLayout.
+         *
+         * Importante:
+         *  Se o usuário clicar nas guias, o comportamento funciona perfeitamente.
+         *
+         *  Se o usuário arrastar a tela para o lado, o conteúdo mudará de um fragmento
+         *  para outro. Entretanto,  a estilo da guia não muda para indicar que ela foi
+         *  selecionada.
+         */
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            // Se for selecionada
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                // Informando ao viewPager qual aba foi selecionada
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            // Se for deselecionada/perder o foco.
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            // Se for selecionada novamente
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        /**
+         *  Método usado para selecionar o fragmento do tabLayout, cujo seu conteúdo já está
+         *  sendo exibido na tela, entretanto o fragmento ainda não foi selecionado/clickado.
+         *
+         *  Esse tipo de evento que motiva a criação desse método, é causado quando o usuário
+         *  arrasta a tela para o lado, ao invés de selecionar uma guia do tabLayout.
+         */
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+
+                // Informando ao tabLayout a página/tela/fragmento selecionada.
+                tabLayout.getTabAt(position).select();
+            }
+        });
+
+
+
+        // iniciando views
+        // Ao invés de chamar essemétodo, configurarei o fragment
+        //this.setSearchViews();
+        //this.setRecyclerView();
+
+        //this.getMovies();
     }
 
+    // Deveria ser algo do tipo "configurar Fragment"
     public void setRecyclerView(){
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(MainActivity.this, 2);
         this.mediaAdapter = new MediaAdapter(MainActivity.this);
@@ -59,6 +123,25 @@ public class MainActivity extends AppCompatActivity {
         this.recyclerView.setAdapter(this.mediaAdapter);
     }
 
+    // Deve ser do fragment
+    public void showErrorMessage(String msg){
+        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    // Deve ser do Fragment
+    public void renderingMediasOrNotFoundMessage(List<Media> mediaList){
+        if (!mediaList.isEmpty()){
+            mediaAdapter.setMediaList(mediaList);
+        }
+
+        else
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Nenhuma mídia foi encontrada.",
+                    Toast.LENGTH_LONG).show();
+    }
+
+    // Posso passar os dados para o fragmento listá-los ou pedir para ele printar o not found
     public void getMovies(){
         ApiService.getMovieService().getMovies(Constants.API_KEY).enqueue(new Callback<MediaResponseList>() {
             @Override
@@ -83,10 +166,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void showErrorMessage(String msg){
-        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-    }
 
+
+    // Posso passar os dados para o fragmento listá-los ou pedir para ele printar o not found
     public void setSearchViews(){
         this.inputSearch = findViewById(R.id.searchInput);
         this.searchButton = findViewById(R.id.searchButton);
@@ -131,18 +213,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-    public void renderingMediasOrNotFoundMessage(List<Media> mediaList){
-        if (!mediaList.isEmpty()){
-            mediaAdapter.setMediaList(mediaList);
-        }
-
-        else
-            Toast.makeText(
-                    getApplicationContext(),
-                    "Nenhuma mídia foi encontrada.",
-                    Toast.LENGTH_LONG).show();
-    }
 
     /**
      * Esse método recebe uma lista de Medias contendo Medias do tipo Person e retorna
