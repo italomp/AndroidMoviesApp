@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
     ViewPager2 viewPager;
     ViewPagerAdapter viewPagerAdapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,4 +55,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 }

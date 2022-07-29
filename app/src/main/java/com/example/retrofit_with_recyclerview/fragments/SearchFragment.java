@@ -1,5 +1,6 @@
 package com.example.retrofit_with_recyclerview.fragments;
 
+
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -45,6 +46,7 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         setRecyclerView(view);
@@ -62,6 +64,7 @@ public class SearchFragment extends Fragment {
         this.mediaAdapter.setHasStableIds(true);
 
         this.recyclerView = view.findViewById(R.id.recycler_medias);
+
         this.recyclerView.setLayoutManager(layoutManager);
         this.recyclerView.setHasFixedSize(true);
         this.recyclerView.setAdapter(this.mediaAdapter);
@@ -99,6 +102,7 @@ public class SearchFragment extends Fragment {
                 else{
                     // Poderia tratar alguns casos de erro específicos...
                     showErrorMessage(view, "HTTP Status Code: " + response.code());
+
                 }
             }
 
@@ -110,12 +114,11 @@ public class SearchFragment extends Fragment {
         });
     }
 
-
-
     // Posso passar os dados para o fragmento listá-los ou pedir para ele printar o not found
     public void setSearchViews(View view){
         this.inputSearch = view.findViewById(R.id.searchInput);
         this.searchButton = view.findViewById(R.id.searchButton);
+
 
         this.searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,6 +146,7 @@ public class SearchFragment extends Fragment {
                                 else{
                                     Toast.makeText(
                                             view.getContext(),
+
                                             "HTTP Status Code: " + response.code(),
                                             Toast.LENGTH_LONG).show();
                                 }
@@ -156,7 +160,6 @@ public class SearchFragment extends Fragment {
             }
         });
     }
-
 
     /**
      * Esse método recebe uma lista de Medias contendo Medias do tipo Person e retorna
@@ -178,9 +181,5 @@ public class SearchFragment extends Fragment {
         result.addAll(mediaSet);
         return mediaList;
     }
-
-
-
-
 
 }

@@ -10,13 +10,12 @@ import android.view.ViewGroup;
 
 import com.example.retrofit_with_recyclerview.R;
 
-public class StatisticsFragment extends Fragment {
 
+public class StatisticsFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
