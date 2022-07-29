@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.retrofit_with_recyclerview.R;
-import com.example.retrofit_with_recyclerview.activities.MainActivity;
 import com.example.retrofit_with_recyclerview.adapters.MediaAdapter;
 import com.example.retrofit_with_recyclerview.models.Media;
 import com.example.retrofit_with_recyclerview.models.Person;
@@ -46,7 +45,138 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
+
+        setRecyclerView(view);
+        setSearchViews(view);
+        getMovies(view);
+
+        return view;
+    }
+
+    // Deveria ser algo do tipo "configurar Fragment"
+    // Passar uma View como parâmetro
+    public void setRecyclerView(View view){
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(view.getContext(), 2);
+        this.mediaAdapter = new MediaAdapter(view.getContext());
+        this.mediaAdapter.setHasStableIds(true);
+
+        this.recyclerView = view.findViewById(R.id.recycler_medias);
+        this.recyclerView.setLayoutManager(layoutManager);
+        this.recyclerView.setHasFixedSize(true);
+        this.recyclerView.setAdapter(this.mediaAdapter);
+    }
+
+    // Deve ser do fragment
+    public void showErrorMessage(View view, String msg){
+        Toast.makeText(view.getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    // Deve ser do Fragment
+    public void renderingMediasOrNotFoundMessage(View view, List<Media> mediaList){
+        if (!mediaList.isEmpty()){
+            mediaAdapter.setMediaList(mediaList);
+        }
+
+        else
+            Toast.makeText(
+                    view.getContext(),
+                    "Nenhuma mídia foi encontrada.",
+                    Toast.LENGTH_LONG).show();
+    }
+
+    // Posso passar os dados para o fragmento listá-los ou pedir para ele printar o not found
+    public void getMovies(View view){
+        ApiService.getMovieService().getMovies(Constants.API_KEY).enqueue(new Callback<MediaResponseList>() {
+            @Override
+            public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
+                // Status code de 200 a 299
+                if(response.isSuccessful()){
+                    List<MediaResponse> mediaResponseList = response.body().getMediaList();
+                    List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
+                    mediaAdapter.setMediaList(mediaList);
+                }
+                else{
+                    // Poderia tratar alguns casos de erro específicos...
+                    showErrorMessage(view, "HTTP Status Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MediaResponseList> call, Throwable t) {
+                showErrorMessage(view,"Falha ao carregar filmes");
+                throw new RuntimeException(t.getMessage());
+            }
+        });
+    }
+
+
+
+    // Posso passar os dados para o fragmento listá-los ou pedir para ele printar o not found
+    public void setSearchViews(View view){
+        this.inputSearch = view.findViewById(R.id.searchInput);
+        this.searchButton = view.findViewById(R.id.searchButton);
+
+        this.searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String inputValue = inputSearch.getText().toString();
+
+                // Pesquisando Filmes, Shows e Pessoas
+                ApiService.getMediaService()
+                        .multiSearch(Constants.API_KEY, inputValue)
+                        .enqueue(new Callback<MediaResponseList>() {
+                            @Override
+                            public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
+                                if(response.isSuccessful()){
+                                    // Limpando o recycler view
+                                    mediaAdapter.setMediaList(new ArrayList<Media>());
+
+                                    List<MediaResponse> mediaResponseList = response.body().getMediaList();
+                                    List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
+
+                                    // Extraindo Movies e Shows de objetos Person
+                                    mediaList = parseMedia(mediaList);
+
+                                    renderingMediasOrNotFoundMessage(view, mediaList);
+                                }
+                                else{
+                                    Toast.makeText(
+                                            view.getContext(),
+                                            "HTTP Status Code: " + response.code(),
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<MediaResponseList> call, Throwable t) {
+
+                            }
+                        });
+            }
+        });
+    }
+
+
+    /**
+     * Esse método recebe uma lista de Medias contendo Medias do tipo Person e retorna
+     * uma lista de Medias contendo apenas Movies e Shows.
+     */
+    public List<Media> parseMedia(List<Media> mediaList){
+        List<Media> result = new ArrayList<>();
+        Set<Media> mediaSet = new HashSet<>();
+
+        for(Media media : mediaList){
+            if(Util.isItMovie(media) || Util.isItShow(media)){
+                mediaSet.add(media);
+            }
+            else{
+                mediaSet.addAll(((Person) media).getMoviesAndShows());
+            }
+        }
+
+        result.addAll(mediaSet);
+        return mediaList;
     }
 
 

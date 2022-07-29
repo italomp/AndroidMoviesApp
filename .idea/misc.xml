@@ -3,16 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.17300724637681159" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.19" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.19" />
         <entry key="app/src/main/res/drawable/search_icon.xml" value="0.189" />
         <entry key="app/src/main/res/drawable/search_icon_background.xml" value="0.19" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="app/src/main/res/layout/activity_media_details.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_movie_details.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_search.xml" value="0.18177083333333333" />
         <entry key="app/src/main/res/layout/crew_list_item.xml" value="0.22" />
-        <entry key="app/src/main/res/layout/fragment_search.xml" value="0.18177083333333333" />
+        <entry key="app/src/main/res/layout/fragment_search.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_statistics.xml" value="0.18177083333333333" />
         <entry key="app/src/main/res/layout/loading_dialog.xml" value="0.25" />
         <entry key="app/src/main/res/layout/movie_list_item.xml" value="0.27807971014492755" />
