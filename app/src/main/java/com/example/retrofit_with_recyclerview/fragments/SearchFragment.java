@@ -45,8 +45,6 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         setRecyclerView(view);
@@ -56,8 +54,6 @@ public class SearchFragment extends Fragment {
         return view;
     }
 
-    // Deveria ser algo do tipo "configurar Fragment"
-    // Passar uma View como parâmetro
     public void setRecyclerView(View view){
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(view.getContext(), 2);
         this.mediaAdapter = new MediaAdapter(view.getContext());
@@ -70,12 +66,10 @@ public class SearchFragment extends Fragment {
         this.recyclerView.setAdapter(this.mediaAdapter);
     }
 
-    // Deve ser do fragment
     public void showErrorMessage(View view, String msg){
         Toast.makeText(view.getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
-    // Deve ser do Fragment
     public void renderingMediasOrNotFoundMessage(View view, List<Media> mediaList){
         if (!mediaList.isEmpty()){
             mediaAdapter.setMediaList(mediaList);
@@ -88,7 +82,6 @@ public class SearchFragment extends Fragment {
                     Toast.LENGTH_LONG).show();
     }
 
-    // Posso passar os dados para o fragmento listá-los ou pedir para ele printar o not found
     public void getMovies(View view){
         ApiService.getMovieService().getMovies(Constants.API_KEY).enqueue(new Callback<MediaResponseList>() {
             @Override
@@ -114,7 +107,6 @@ public class SearchFragment extends Fragment {
         });
     }
 
-    // Posso passar os dados para o fragmento listá-los ou pedir para ele printar o not found
     public void setSearchViews(View view){
         this.inputSearch = view.findViewById(R.id.searchInput);
         this.searchButton = view.findViewById(R.id.searchButton);
