@@ -1,9 +1,8 @@
 package com.example.retrofit_with_recyclerview.fragments;
 
-import android.content.Context;
+
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +34,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 public class SearchFragment extends Fragment {
     RecyclerView recyclerView;
     MediaAdapter mediaAdapter;
@@ -46,30 +46,50 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
+
+        setRecyclerView(view);
+        setSearchViews(view);
+        getMovies(view);
+
+        return view;
     }
 
-
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        this.setRecyclerView();
-        this.setSearchViews();
-        this.getMovies();
-    }
-
-
-    public void setRecyclerView(){
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
-        this.mediaAdapter = new MediaAdapter(getContext());
+    // Deveria ser algo do tipo "configurar Fragment"
+    // Passar uma View como parâmetro
+    public void setRecyclerView(View view){
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(view.getContext(), 2);
+        this.mediaAdapter = new MediaAdapter(view.getContext());
         this.mediaAdapter.setHasStableIds(true);
-        this.recyclerView = this.getActivity().findViewById(R.id.recycler_movies);
+
+        this.recyclerView = view.findViewById(R.id.recycler_medias);
+
         this.recyclerView.setLayoutManager(layoutManager);
         this.recyclerView.setHasFixedSize(true);
         this.recyclerView.setAdapter(this.mediaAdapter);
     }
 
-    public void getMovies(){
+    // Deve ser do fragment
+    public void showErrorMessage(View view, String msg){
+        Toast.makeText(view.getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    // Deve ser do Fragment
+    public void renderingMediasOrNotFoundMessage(View view, List<Media> mediaList){
+        if (!mediaList.isEmpty()){
+            mediaAdapter.setMediaList(mediaList);
+        }
+
+        else
+            Toast.makeText(
+                    view.getContext(),
+                    "Nenhuma mídia foi encontrada.",
+                    Toast.LENGTH_LONG).show();
+    }
+
+    // Posso passar os dados para o fragmento listá-los ou pedir para ele printar o not found
+    public void getMovies(View view){
         ApiService.getMovieService().getMovies(Constants.API_KEY).enqueue(new Callback<MediaResponseList>() {
             @Override
             public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
@@ -81,25 +101,24 @@ public class SearchFragment extends Fragment {
                 }
                 else{
                     // Poderia tratar alguns casos de erro específicos...
-                    showErrorMessage("HTTP Status Code: " + response.code());
+                    showErrorMessage(view, "HTTP Status Code: " + response.code());
+
                 }
             }
 
             @Override
             public void onFailure(Call<MediaResponseList> call, Throwable t) {
-                showErrorMessage("Falha ao carregar filmes");
+                showErrorMessage(view,"Falha ao carregar filmes");
                 throw new RuntimeException(t.getMessage());
             }
         });
     }
 
-    public void showErrorMessage(String msg){
-        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-    }
+    // Posso passar os dados para o fragmento listá-los ou pedir para ele printar o not found
+    public void setSearchViews(View view){
+        this.inputSearch = view.findViewById(R.id.searchInput);
+        this.searchButton = view.findViewById(R.id.searchButton);
 
-    public void setSearchViews(){
-        this.inputSearch = this.getActivity().findViewById(R.id.searchInput);
-        this.searchButton = this.getActivity().findViewById(R.id.searchButton);
 
         this.searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,11 +141,12 @@ public class SearchFragment extends Fragment {
                                     // Extraindo Movies e Shows de objetos Person
                                     mediaList = parseMedia(mediaList);
 
-                                    renderingMediasOrNotFoundMessage(mediaList);
+                                    renderingMediasOrNotFoundMessage(view, mediaList);
                                 }
                                 else{
                                     Toast.makeText(
-                                            getContext(),
+                                            view.getContext(),
+
                                             "HTTP Status Code: " + response.code(),
                                             Toast.LENGTH_LONG).show();
                                 }
@@ -139,19 +159,6 @@ public class SearchFragment extends Fragment {
                         });
             }
         });
-    }
-
-
-    public void renderingMediasOrNotFoundMessage(List<Media> mediaList){
-        if (!mediaList.isEmpty()){
-            mediaAdapter.setMediaList(mediaList);
-        }
-
-        else
-            Toast.makeText(
-                    getContext(),
-                    "Nenhuma mídia foi encontrada.",
-                    Toast.LENGTH_LONG).show();
     }
 
     /**

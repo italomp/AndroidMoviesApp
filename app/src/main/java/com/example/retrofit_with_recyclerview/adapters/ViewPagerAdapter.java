@@ -1,6 +1,5 @@
 package com.example.retrofit_with_recyclerview.adapters;
 
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -16,6 +15,11 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         super(fragmentActivity);
     }
 
+
+    /**
+     * @param position é a posição do fragmento (aba do TabLayout)
+     * @return o conteúdo de cada fragmento.
+     */
     @NonNull
     @Override
     public Fragment createFragment(int position) {
@@ -29,9 +33,13 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         }
     }
 
+
+    /**
+     * @return a quantidade de itens/abas que serão exibidas no TabLayout.
+     */
     @Override
     public int getItemCount() {
-        int tabAmount = 2;
-        return tabAmount;
+        return 2;
+
     }
 }
