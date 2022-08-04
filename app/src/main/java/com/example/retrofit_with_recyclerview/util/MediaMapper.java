@@ -2,6 +2,7 @@ package com.example.retrofit_with_recyclerview.util;
 
 import com.example.retrofit_with_recyclerview.models.Media;
 import com.example.retrofit_with_recyclerview.models.Movie;
+import com.example.retrofit_with_recyclerview.responses.MediaDetailsResponse;
 import com.example.retrofit_with_recyclerview.responses.MediaResponse;
 
 import java.util.ArrayList;
@@ -16,5 +17,9 @@ public class MediaMapper {
             mediaList.add(newMovie);
         }
         return mediaList;
+    }
+
+    public static Movie fromMediaDetailsToMovie(MediaDetailsResponse mediaDetailsResponse){
+        return (Movie) mediaDetailsResponse.getEntity();
     }
 }

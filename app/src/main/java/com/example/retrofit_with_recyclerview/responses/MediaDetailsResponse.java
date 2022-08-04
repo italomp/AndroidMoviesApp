@@ -10,8 +10,8 @@ public class MediaDetailsResponse extends MediaResponse {
     private final Float voteAverage; // range de 0 a 10
 
     public MediaDetailsResponse(long id, String movieTittle, String postPath,
-                                String overview, Float voteAverage) {
-        super(id, movieTittle, null, postPath, null, null);
+                                String overview, Float voteAverage, int revenue, int budget) {
+        super(id, movieTittle, null, postPath, null, null, revenue, budget);
         this.overview = overview;
         this.voteAverage = voteAverage;
     }

@@ -22,6 +22,11 @@ public interface MovieService {
     @GET("movie/{movie_id}/credits")
     Call<CrewResponse> getCreditsByMovie(@Path("movie_id") long movieId, @Query("api_key") String apiKey);
 
-    @GET("search/movie")
-    Call<MediaResponseList> searchMovies(@Query("api_key") String apiKey, @Query("query") String query);
+    @GET("discover/movie")
+    Call<MediaResponseList> getMoviesByYear(@Query("api_key") String apiKey, @Query("year") int year);
+
+    @GET("discover/movie")
+    Call<MediaResponseList> getMoviesByYear(@Query("api_key") String apiKey,
+                                            @Query("primary_release_year") int year, @Query("sort_by") String sortBy);
+
 }

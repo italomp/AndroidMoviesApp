@@ -16,7 +16,6 @@ import java.util.List;
  * Dúvida: Que mal faz essa classe já ser o model?
  */
 public class MediaResponse {
-    // Anotação que identifica o atributo do JSON que será mapeado para o atributo anotado.
     @Json(name = "id")
     private final long id;
 
@@ -35,13 +34,22 @@ public class MediaResponse {
     @Json(name = "media_type")
     private final String mediaType;
 
-    public MediaResponse(long id, String title, String name, String postPath, List<MediaResponse> mediaResponse, String mediaType) {
+    @Json(name = "revenue")
+    private final int revenue;
+
+    @Json(name = "budget")
+    private final int budget;
+
+    public MediaResponse(long id, String title, String name, String postPath,
+                         List<MediaResponse> mediaResponse, String mediaType, int revenue, int budget) {
         this.id = id;
         this.title = title;
         this.name = name;
         this.postPath = postPath;
         this.moviesAndShows = mediaResponse;
         this.mediaType = mediaType;
+        this.budget = budget;
+        this.revenue = revenue;
     }
 
     public long getId() {
@@ -68,6 +76,14 @@ public class MediaResponse {
         return moviesAndShows;
     }
 
+    public int getRevenue() {
+        return revenue;
+    }
+
+    public int getBudget() {
+        return budget;
+    }
+
     /**
      * Retorna o tipo específico (subtipo) de Media.
      *
@@ -78,12 +94,11 @@ public class MediaResponse {
     public Media getEntity(){
         // Media é Movie
         if ((Constants.MOVIE_TYPE.equals(mediaType) || title != null) && moviesAndShows == null)
-            return new Movie(id, title, postPath, Constants.MOVIE_TYPE);
+            return new Movie(id, title, postPath, Constants.MOVIE_TYPE, this.revenue, this.budget);
 
         // Media é Person
-        else if(Constants.PERSON_TYPE.equals(mediaType) || moviesAndShows != null){
+        else if(Constants.PERSON_TYPE.equals(mediaType) || moviesAndShows != null)
             return new Person(id, name, mapperMediaResponseListToMediaList(), Constants.PERSON_TYPE);
-        }
 
         //Media é Show
         else if ((Constants.SHOW_TYPE.equals(mediaType) || name != null) && moviesAndShows == null)
