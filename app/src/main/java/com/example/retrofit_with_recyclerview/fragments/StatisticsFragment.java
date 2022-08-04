@@ -19,6 +19,11 @@ import com.example.retrofit_with_recyclerview.responses.MediaResponseList;
 import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.Constants;
 import com.example.retrofit_with_recyclerview.util.MediaMapper;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -37,7 +42,7 @@ public class StatisticsFragment extends Fragment implements Observer {
     private Observable topTenRevenue;
     private final String SORT_BY_REVENUE = "revenue.desc";
     private final String SORT_BY_BUDGET = "budget.desc";
-
+    BarChart barChart;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -45,6 +50,8 @@ public class StatisticsFragment extends Fragment implements Observer {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_statistics, container, false);
+
+        barChart = view.findViewById(R.id.bar_chart);
 
         this.topTenBudget = new TopTen(SORT_BY_BUDGET);
         this.topTenRevenue = new TopTen(SORT_BY_REVENUE);
@@ -138,6 +145,29 @@ public class StatisticsFragment extends Fragment implements Observer {
             topTenMovieList.stream().forEach(mv -> System.out.println(mv.getTitle() +
                     " budget: " + mv.getBudget() + " revenue:" + mv.getRevenue()));
             System.out.println("\n");
+
+            List<BarEntry> entries = new ArrayList<>();
+            for(int i = 0; i < topTenMovieList.size(); i++){
+                Movie mv = topTenMovieList.get(i);
+                entries.add(new BarEntry(i, mv.getRevenue(), mv.getTitle()));
+            }
+
+            BarDataSet dataSet = new BarDataSet(entries, "Top 10 - Filmes Mais Lucrativos");
+            BarData data = new BarData(dataSet);
+
+            // Adicionando cor às Barras
+            dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+
+            // Espaço entre as barras
+            data.setBarWidth(0.9f);
+
+            barChart.setData(data);
+
+            // Pondos as barras centralizadas aos pontos de X
+            barChart.setFitBars(true);
+
+            // Fazer refresh
+            barChart.invalidate();
         }
     }
 
