@@ -1,9 +1,13 @@
 package com.example.retrofit_with_recyclerview.fragments;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.TooltipCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -23,6 +27,9 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
@@ -43,6 +50,7 @@ public class StatisticsFragment extends Fragment implements Observer {
     private final String SORT_BY_REVENUE = "revenue.desc";
     private final String SORT_BY_BUDGET = "budget.desc";
     BarChart barChart;
+    Context context;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -50,6 +58,8 @@ public class StatisticsFragment extends Fragment implements Observer {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_statistics, container, false);
+
+        this.context = view.getContext();
 
         barChart = view.findViewById(R.id.bar_chart);
 
@@ -147,16 +157,22 @@ public class StatisticsFragment extends Fragment implements Observer {
             System.out.println("\n");
 
             List<BarEntry> entries = new ArrayList<>();
+
             for(int i = 0; i < topTenMovieList.size(); i++){
                 Movie mv = topTenMovieList.get(i);
-                entries.add(new BarEntry(i, mv.getRevenue(), mv.getTitle()));
+                int barValue = mv.getRevenue();
+                entries.add(new BarEntry(i, barValue));
             }
+
 
             BarDataSet dataSet = new BarDataSet(entries, "Top 10 - Filmes Mais Lucrativos");
             BarData data = new BarData(dataSet);
 
-            // Adicionando cor às Barras
+            // Adicionando cor às barras
             dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+
+            // Removendo exibição de valores das barras
+            data.setDrawValues(false);
 
             // Espaço entre as barras
             data.setBarWidth(0.9f);
@@ -168,6 +184,37 @@ public class StatisticsFragment extends Fragment implements Observer {
 
             // Fazer refresh
             barChart.invalidate();
+
+            // Adicionar evento de click às barras
+            barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void onValueSelected(Entry e, Highlight h) {
+                    // Pegar o índice da barra selecionada
+                    int x = barChart.getBarData().getDataSetForEntry(e).getEntryIndex((BarEntry) e);
+
+                    // EXIBIR O TOOLTIP...
+                    barChart.setTooltipText("clicou na barra " + entries.get(x));
+                    System.out.println("Barra " + entries.get(x) + " selecionada.");
+
+
+                }
+
+                @Override
+                public void onNothingSelected() {
+
+                }
+            });
+            /**
+             * new Tooltip.builder(view)
+             * .setTexte(string txt)
+             * .setTextColor(int color)
+             * .setGravity(int gravity)
+             * .sertCornerRadius(float radius)
+             * .setDismissOnClick(true)
+             * .show()
+             *
+             */
         }
     }
 
