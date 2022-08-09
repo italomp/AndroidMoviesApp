@@ -5,8 +5,37 @@
     android:layout_height="match_parent"
     tools:context=".fragments.StatisticsFragment">
 
-    <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/bar_chart"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/spinner_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/select_year" />
+
+            <Spinner
+                android:id="@+id/spinner_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/description_spinner_year" />
+        </LinearLayout>
+
+        <!-- Essa margem do top é uma gambiarra temporrária para exibir o tooltip -->
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/bar_chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/spinner_header"
+            android:layout_marginTop="30dp"
+            />
+    </RelativeLayout>
+
 </FrameLayout>

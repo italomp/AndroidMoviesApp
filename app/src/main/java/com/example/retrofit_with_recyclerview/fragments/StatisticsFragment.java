@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.retrofit_with_recyclerview.R;
@@ -55,6 +57,9 @@ public class StatisticsFragment extends Fragment implements Observer {
     ToolTipsManager toolTipsManager;
     ToolTip.Builder toolTipBuilder;
 
+    Spinner spinnerYear;
+    ArrayAdapter<CharSequence> spinnerAdapter;
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,6 +74,13 @@ public class StatisticsFragment extends Fragment implements Observer {
         this.topTenBudget.addObserver(this);
         this.topTenRevenue.addObserver(this);
         this.toolTipsManager = new ToolTipsManager();
+
+        // Configurando Spinner
+        spinnerYear = view.findViewById(R.id.spinner_year);
+        spinnerAdapter = ArrayAdapter.createFromResource(view.getContext(),
+                R.array.select_year, android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerYear.setAdapter(spinnerAdapter);
 
         int year = 2020;
 
