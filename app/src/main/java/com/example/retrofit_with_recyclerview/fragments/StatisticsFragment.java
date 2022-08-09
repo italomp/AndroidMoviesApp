@@ -1,13 +1,10 @@
 package com.example.retrofit_with_recyclerview.fragments;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.widget.TooltipCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -29,8 +26,11 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.IBarLineScatterCandleBubbleDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.tomergoldst.tooltips.ToolTip;
+import com.tomergoldst.tooltips.ToolTipsManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -52,6 +52,9 @@ public class StatisticsFragment extends Fragment implements Observer {
     BarChart barChart;
     Context context;
 
+    ToolTipsManager toolTipsManager;
+    ToolTip.Builder toolTipBuilder;
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,13 +63,12 @@ public class StatisticsFragment extends Fragment implements Observer {
         View view = inflater.inflate(R.layout.fragment_statistics, container, false);
 
         this.context = view.getContext();
-
-        barChart = view.findViewById(R.id.bar_chart);
-
+        this.barChart = view.findViewById(R.id.bar_chart);
         this.topTenBudget = new TopTen(SORT_BY_BUDGET);
         this.topTenRevenue = new TopTen(SORT_BY_REVENUE);
         this.topTenBudget.addObserver(this);
         this.topTenRevenue.addObserver(this);
+        this.toolTipsManager = new ToolTipsManager();
 
         int year = 2020;
 
@@ -160,10 +162,9 @@ public class StatisticsFragment extends Fragment implements Observer {
 
             for(int i = 0; i < topTenMovieList.size(); i++){
                 Movie mv = topTenMovieList.get(i);
-                int barValue = mv.getRevenue();
-                entries.add(new BarEntry(i, barValue));
+                long barValue = mv.getRevenue();
+                entries.add(new BarEntry(i, barValue, mv));
             }
-
 
             BarDataSet dataSet = new BarDataSet(entries, "Top 10 - Filmes Mais Lucrativos");
             BarData data = new BarData(dataSet);
@@ -179,7 +180,7 @@ public class StatisticsFragment extends Fragment implements Observer {
 
             barChart.setData(data);
 
-            // Pondos as barras centralizadas aos pontos de X
+            // Pondo as barras centralizadas aos pontos de X
             barChart.setFitBars(true);
 
             // Fazer refresh
@@ -190,13 +191,19 @@ public class StatisticsFragment extends Fragment implements Observer {
                 @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void onValueSelected(Entry e, Highlight h) {
-                    // Pegar o índice da barra selecionada
-                    int x = barChart.getBarData().getDataSetForEntry(e).getEntryIndex((BarEntry) e);
+                    String movieTitle = ((Movie) barChart
+                            .getDataSetByTouchPoint(e.getX(), e.getY())
+                            .getEntryForIndex((int) e.getX()).getData()).getTitle();
 
-                    // EXIBIR O TOOLTIP...
-                    barChart.setTooltipText("clicou na barra " + entries.get(x));
-                    System.out.println("Barra " + entries.get(x) + " selecionada.");
+                    System.out.println(movieTitle + " - " + e.getY());
 
+                    toolTipBuilder = new ToolTip.Builder(context,
+                            barChart,
+                            (ViewGroup) barChart.getParent(),
+                            movieTitle,
+                            ToolTip.POSITION_ABOVE);
+                    toolTipBuilder.setBackgroundColor(getResources().getColor(R.color.gray));
+                    toolTipsManager.show(toolTipBuilder.build());
 
                 }
 
@@ -205,16 +212,7 @@ public class StatisticsFragment extends Fragment implements Observer {
 
                 }
             });
-            /**
-             * new Tooltip.builder(view)
-             * .setTexte(string txt)
-             * .setTextColor(int color)
-             * .setGravity(int gravity)
-             * .sertCornerRadius(float radius)
-             * .setDismissOnClick(true)
-             * .show()
-             *
-             */
+
         }
     }
 
@@ -234,16 +232,16 @@ public class StatisticsFragment extends Fragment implements Observer {
 
             if(this.topTen.size() == 10 && this.orderBy == SORT_BY_REVENUE){
                 setChanged();                           // O estado mudou
-                notifyObservers(sortDescByRevenue());   // Notificando objetos
+                notifyObservers(getTopTenRevenueDesc());   // Notificando objetos
             }
             else if(this.topTen.size() == 10 && this.orderBy == SORT_BY_BUDGET){
                 setChanged();                           // O estado mudou
-                notifyObservers(sortDescByRevenue());   // Notificando objetos
+                notifyObservers(getTopTenRevenueDesc());   // Notificando objetos
             }
         }
 
         @RequiresApi(api = Build.VERSION_CODES.N)
-        public List<Movie> sortDescByRevenue(){
+        public List<Movie> getTopTenRevenueDesc(){
             return this.topTen.stream().sorted(new Comparator<Movie>() {
                 @Override
                 public int compare(Movie mv1, Movie mv2) {

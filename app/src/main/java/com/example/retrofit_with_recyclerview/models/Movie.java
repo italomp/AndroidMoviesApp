@@ -4,8 +4,8 @@ public class Movie extends Media {
     private final long id;
     private final String title;
     private final String posterPath;
-    private final int revenue;
-    private final int budget;
+    private final long revenue;
+    private final long budget;
 
     public Movie(long id, String title, String posterPath, String mediaType) {
         super(id, mediaType, title);
@@ -37,11 +37,11 @@ public class Movie extends Media {
         return posterPath;
     }
 
-    public int getRevenue() {
+    public long getRevenue() {
         return revenue;
     }
 
-    public int getBudget() {
+    public long getBudget() {
         return budget;
     }
 }
