@@ -35,13 +35,13 @@ public class MediaResponse {
     private final String mediaType;
 
     @Json(name = "revenue")
-    private final int revenue;
+    private final long revenue;
 
     @Json(name = "budget")
-    private final int budget;
+    private final long budget;
 
     public MediaResponse(long id, String title, String name, String postPath,
-                         List<MediaResponse> mediaResponse, String mediaType, int revenue, int budget) {
+                         List<MediaResponse> mediaResponse, String mediaType, long revenue, long budget) {
         this.id = id;
         this.title = title;
         this.name = name;
@@ -76,11 +76,11 @@ public class MediaResponse {
         return moviesAndShows;
     }
 
-    public int getRevenue() {
+    public long getRevenue() {
         return revenue;
     }
 
-    public int getBudget() {
+    public long getBudget() {
         return budget;
     }
 

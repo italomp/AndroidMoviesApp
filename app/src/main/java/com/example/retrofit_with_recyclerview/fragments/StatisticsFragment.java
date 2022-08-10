@@ -10,8 +10,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.example.retrofit_with_recyclerview.R;
@@ -31,6 +33,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarLineScatterCandleBubbleDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.material.navigation.NavigationBarView;
 import com.tomergoldst.tooltips.ToolTip;
 import com.tomergoldst.tooltips.ToolTipsManager;
 
@@ -81,8 +84,25 @@ public class StatisticsFragment extends Fragment implements Observer {
                 R.array.select_year, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerYear.setAdapter(spinnerAdapter);
+        spinnerYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // limpar a listagem atual
+                ((TopTen) topTenRevenue).setTopTen(new ArrayList<>());
 
-        int year = 2020;
+                int year = Integer.parseInt(spinnerYear.getSelectedItem().toString());
+                System.out.println("valor do spinner: " + spinnerYear.getSelectedItem().toString());
+                getMoviesByYear(year, SORT_BY_REVENUE, (TopTen) topTenRevenue);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        int year = Integer.parseInt(spinnerYear.getSelectedItem().toString());
+        System.out.println("valor do spinner: " + spinnerYear.getSelectedItem().toString());
 
         //this.getMoviesByYear(year, this.SORT_BY_BUDGET, (TopTen) this.topTenBudget);
         this.getMoviesByYear(year, this.SORT_BY_REVENUE, (TopTen) this.topTenRevenue);
@@ -98,6 +118,7 @@ public class StatisticsFragment extends Fragment implements Observer {
      * @param topTen é um observable que encapsula a lista à qual eu quero adicionar os filmes retornados
      */
     public void getMoviesByYear(int year, String sortBy, TopTen topTen){
+        System.out.println("entrou no getMoviesByYear");
         ApiService.getMovieService()
                 .getMoviesByYear(Constants.API_KEY, year, sortBy)
                 .enqueue(new Callback<MediaResponseList>() {
@@ -105,6 +126,7 @@ public class StatisticsFragment extends Fragment implements Observer {
                     @Override
                     public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
                         if(response.isSuccessful()){
+                            System.out.println("entrou no onResponse do getMoviesByYear");
                             List<MediaResponse> mediaResponseList = response.body().getMediaList();
                             getBudgetAndRevenue(mediaResponseList, topTen);
                         }
@@ -129,6 +151,7 @@ public class StatisticsFragment extends Fragment implements Observer {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void getBudgetAndRevenue(List<MediaResponse> mediaResponseList, TopTen topTen){
+        System.out.println("entrou no getBudgetAndRevenue");
         int totalAmount = 10;
 
         for(int i = 0; i < mediaResponseList.size(); i++){
@@ -142,8 +165,11 @@ public class StatisticsFragment extends Fragment implements Observer {
                         @Override
                         public void onResponse(Call<MediaDetailsResponse> call, Response<MediaDetailsResponse> response) {
                             if(response.isSuccessful()){
+                                System.out.println("entrou no onResponse do getBudgetAndRevenue");
+                                System.out.println("topTen.size ANTES de adicionar os movies: " + topTen.topTen.size());
                                 Movie movie = MediaMapper.fromMediaDetailsToMovie(response.body());
                                 topTen.addMovie(movie);
+                                System.out.println("topTen.size DEPOIS de adicionar os movies: " + topTen.topTen.size());
                             }
                             else{
                                 showMessageError("Http Status code: " + response.code());
@@ -153,6 +179,7 @@ public class StatisticsFragment extends Fragment implements Observer {
                         @Override
                         public void onFailure(Call<MediaDetailsResponse> call, Throwable t) {
                             showMessageError("Falha ao pesquisar detalhes do filme: " + current.getTitle());
+                            t.printStackTrace();
                         }
                     });
         }
@@ -162,6 +189,7 @@ public class StatisticsFragment extends Fragment implements Observer {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void update(Observable observable, Object obj1){
+        System.out.println("Entrou no update do topten");
         if(observable instanceof TopTen){
             List<Movie> topTenMovieList = (List<Movie>) obj1;
 
@@ -288,6 +316,10 @@ public class StatisticsFragment extends Fragment implements Observer {
                     }
                 }
             }).collect(Collectors.toList());
+        }
+
+        public void setTopTen(List<Movie> topTen) {
+            this.topTen = topTen;
         }
     }
 

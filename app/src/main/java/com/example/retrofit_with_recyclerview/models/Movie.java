@@ -16,7 +16,7 @@ public class Movie extends Media {
         this.budget = 0;
     }
 
-    public Movie(long id, String title, String posterPath, String mediaType, int revenue, int budget) {
+    public Movie(long id, String title, String posterPath, String mediaType, long revenue, long budget) {
         super(id, mediaType, title);
         this.id = id;
         this.title = title;
