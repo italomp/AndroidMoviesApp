@@ -72,7 +72,7 @@ public class SearchFragment extends Fragment {
 
     public void renderingMediasOrNotFoundMessage(View view, List<Media> mediaList){
         if (!mediaList.isEmpty()){
-            mediaAdapter.setMediaList(mediaList);
+            this.mediaAdapter.setMediaList(mediaList);
         }
 
         else
@@ -138,7 +138,6 @@ public class SearchFragment extends Fragment {
                                 else{
                                     Toast.makeText(
                                             view.getContext(),
-
                                             "HTTP Status Code: " + response.code(),
                                             Toast.LENGTH_LONG).show();
                                 }
@@ -162,16 +161,15 @@ public class SearchFragment extends Fragment {
         Set<Media> mediaSet = new HashSet<>();
 
         for(Media media : mediaList){
-            if(Util.isItMovie(media) || Util.isItShow(media)){
+            if(Util.isItMovie(media) || Util.isItShow(media))
                 mediaSet.add(media);
-            }
-            else{
+
+            else
                 mediaSet.addAll(((Person) media).getMoviesAndShows());
-            }
         }
 
         result.addAll(mediaSet);
-        return mediaList;
+        return result;
     }
 
 }
