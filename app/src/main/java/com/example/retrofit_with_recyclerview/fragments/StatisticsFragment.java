@@ -165,10 +165,12 @@ public class StatisticsFragment extends Fragment implements Observer {
         if(observable instanceof TopTen){
             List<Movie> topTenMovieList = (List<Movie>) obj1;
 
+
             System.out.println("TOP TEN. Size: " + topTenMovieList.size());
             topTenMovieList.stream().forEach(mv -> System.out.println(mv.getTitle() +
                     " budget: " + mv.getBudget() + " revenue:" + mv.getRevenue()));
             System.out.println("\n");
+
 
             List<BarEntry> entries = new ArrayList<>();
 
@@ -209,6 +211,10 @@ public class StatisticsFragment extends Fragment implements Observer {
 
                     System.out.println(movieTitle + " - " + e.getY());
 
+                    // Deixando de exibir o tooltip anterior, caso esteja sendo exibido
+                    toolTipsManager.dismissAll();
+
+                    // Exibindo novo tooltip
                     toolTipBuilder = new ToolTip.Builder(context,
                             barChart,
                             (ViewGroup) barChart.getParent(),
