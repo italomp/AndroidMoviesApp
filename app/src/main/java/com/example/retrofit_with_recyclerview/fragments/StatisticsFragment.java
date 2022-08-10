@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.example.retrofit_with_recyclerview.R;
@@ -30,10 +29,8 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.IBarLineScatterCandleBubbleDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.android.material.navigation.NavigationBarView;
 import com.tomergoldst.tooltips.ToolTip;
 import com.tomergoldst.tooltips.ToolTipsManager;
 
@@ -56,10 +53,8 @@ public class StatisticsFragment extends Fragment implements Observer {
     private final String SORT_BY_BUDGET = "budget.desc";
     BarChart barChart;
     Context context;
-
     ToolTipsManager toolTipsManager;
     ToolTip.Builder toolTipBuilder;
-
     Spinner spinnerYear;
     ArrayAdapter<CharSequence> spinnerAdapter;
 
@@ -70,40 +65,10 @@ public class StatisticsFragment extends Fragment implements Observer {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_statistics, container, false);
 
-        this.context = view.getContext();
-        this.barChart = view.findViewById(R.id.bar_chart);
-        this.topTenBudget = new TopTen(SORT_BY_BUDGET);
-        this.topTenRevenue = new TopTen(SORT_BY_REVENUE);
-        this.topTenBudget.addObserver(this);
-        this.topTenRevenue.addObserver(this);
-        this.toolTipsManager = new ToolTipsManager();
-
-        // Configurando Spinner
-        spinnerYear = view.findViewById(R.id.spinner_year);
-        spinnerAdapter = ArrayAdapter.createFromResource(view.getContext(),
-                R.array.select_year, android.R.layout.simple_spinner_item);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerYear.setAdapter(spinnerAdapter);
-        spinnerYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // limpar a listagem atual
-                ((TopTen) topTenRevenue).setTopTen(new ArrayList<>());
-
-                int year = Integer.parseInt(spinnerYear.getSelectedItem().toString());
-                System.out.println("valor do spinner: " + spinnerYear.getSelectedItem().toString());
-                getMoviesByYear(year, SORT_BY_REVENUE, (TopTen) topTenRevenue);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        this.setViewsAndVariables(view);
+        this.setSpinnerYear(view);
 
         int year = Integer.parseInt(spinnerYear.getSelectedItem().toString());
-        System.out.println("valor do spinner: " + spinnerYear.getSelectedItem().toString());
-
         //this.getMoviesByYear(year, this.SORT_BY_BUDGET, (TopTen) this.topTenBudget);
         this.getMoviesByYear(year, this.SORT_BY_REVENUE, (TopTen) this.topTenRevenue);
 
@@ -118,7 +83,6 @@ public class StatisticsFragment extends Fragment implements Observer {
      * @param topTen é um observable que encapsula a lista à qual eu quero adicionar os filmes retornados
      */
     public void getMoviesByYear(int year, String sortBy, TopTen topTen){
-        System.out.println("entrou no getMoviesByYear");
         ApiService.getMovieService()
                 .getMoviesByYear(Constants.API_KEY, year, sortBy)
                 .enqueue(new Callback<MediaResponseList>() {
@@ -126,9 +90,8 @@ public class StatisticsFragment extends Fragment implements Observer {
                     @Override
                     public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
                         if(response.isSuccessful()){
-                            System.out.println("entrou no onResponse do getMoviesByYear");
                             List<MediaResponse> mediaResponseList = response.body().getMediaList();
-                            getBudgetAndRevenue(mediaResponseList, topTen);
+                            getMoviesRevenue(mediaResponseList, topTen);
                         }
                         else{
                             showMessageError("Status code: " + response.code());
@@ -137,7 +100,8 @@ public class StatisticsFragment extends Fragment implements Observer {
 
                     @Override
                     public void onFailure(Call<MediaResponseList> call, Throwable t) {
-
+                        showMessageError("Falha ao pesquisar filmes do ano: " + year);
+                        t.printStackTrace();
                     }
                 });
     }
@@ -150,8 +114,7 @@ public class StatisticsFragment extends Fragment implements Observer {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void getBudgetAndRevenue(List<MediaResponse> mediaResponseList, TopTen topTen){
-        System.out.println("entrou no getBudgetAndRevenue");
+    public void getMoviesRevenue(List<MediaResponse> mediaResponseList, TopTen topTen){
         int totalAmount = 10;
 
         for(int i = 0; i < mediaResponseList.size(); i++){
@@ -165,11 +128,8 @@ public class StatisticsFragment extends Fragment implements Observer {
                         @Override
                         public void onResponse(Call<MediaDetailsResponse> call, Response<MediaDetailsResponse> response) {
                             if(response.isSuccessful()){
-                                System.out.println("entrou no onResponse do getBudgetAndRevenue");
-                                System.out.println("topTen.size ANTES de adicionar os movies: " + topTen.topTen.size());
                                 Movie movie = MediaMapper.fromMediaDetailsToMovie(response.body());
                                 topTen.addMovie(movie);
-                                System.out.println("topTen.size DEPOIS de adicionar os movies: " + topTen.topTen.size());
                             }
                             else{
                                 showMessageError("Http Status code: " + response.code());
@@ -189,77 +149,103 @@ public class StatisticsFragment extends Fragment implements Observer {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void update(Observable observable, Object obj1){
-        System.out.println("Entrou no update do topten");
         if(observable instanceof TopTen){
             List<Movie> topTenMovieList = (List<Movie>) obj1;
-
-
-            System.out.println("TOP TEN. Size: " + topTenMovieList.size());
-            topTenMovieList.stream().forEach(mv -> System.out.println(mv.getTitle() +
-                    " budget: " + mv.getBudget() + " revenue:" + mv.getRevenue()));
-            System.out.println("\n");
-
-
             List<BarEntry> entries = new ArrayList<>();
 
-            for(int i = 0; i < topTenMovieList.size(); i++){
-                Movie mv = topTenMovieList.get(i);
-                long barValue = mv.getRevenue();
-                entries.add(new BarEntry(i, barValue, mv));
+            setEntriesToBarChar(topTenMovieList, entries);
+            setBarChar(entries);
+        }
+    }
+
+    public void setSpinnerYear(View view){
+        spinnerYear = view.findViewById(R.id.spinner_year);
+        spinnerAdapter = ArrayAdapter.createFromResource(view.getContext(),
+                R.array.select_year, android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerYear.setAdapter(spinnerAdapter);
+        spinnerYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // limpar a listagem anterior
+                ((TopTen) topTenRevenue).setTopTen(new ArrayList<>());
+
+                int year = Integer.parseInt(spinnerYear.getSelectedItem().toString());
+                getMoviesByYear(year, SORT_BY_REVENUE, (TopTen) topTenRevenue);
             }
 
-            BarDataSet dataSet = new BarDataSet(entries, "Top 10 - Filmes Mais Lucrativos");
-            BarData data = new BarData(dataSet);
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-            // Adicionando cor às barras
-            dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+            }
+        });
+    }
 
-            // Removendo exibição de valores das barras
-            data.setDrawValues(false);
+    public void setViewsAndVariables(View view){
+        this.context = view.getContext();
+        this.barChart = view.findViewById(R.id.bar_chart);
+        this.topTenBudget = new TopTen(SORT_BY_BUDGET);
+        this.topTenRevenue = new TopTen(SORT_BY_REVENUE);
+        this.topTenBudget.addObserver(this);
+        this.topTenRevenue.addObserver(this);
+        this.toolTipsManager = new ToolTipsManager();
+    }
 
-            // Espaço entre as barras
-            data.setBarWidth(0.9f);
-
-            barChart.setData(data);
-
-            // Pondo as barras centralizadas aos pontos de X
-            barChart.setFitBars(true);
-
-            // Fazer refresh
-            barChart.invalidate();
-
-            // Adicionar evento de click às barras
-            barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-                @RequiresApi(api = Build.VERSION_CODES.O)
-                @Override
-                public void onValueSelected(Entry e, Highlight h) {
-                    String movieTitle = ((Movie) barChart
-                            .getDataSetByTouchPoint(e.getX(), e.getY())
-                            .getEntryForIndex((int) e.getX()).getData()).getTitle();
-
-                    System.out.println(movieTitle + " - " + e.getY());
-
-                    // Deixando de exibir o tooltip anterior, caso esteja sendo exibido
-                    toolTipsManager.dismissAll();
-
-                    // Exibindo novo tooltip
-                    toolTipBuilder = new ToolTip.Builder(context,
-                            barChart,
-                            (ViewGroup) barChart.getParent(),
-                            movieTitle,
-                            ToolTip.POSITION_ABOVE);
-                    toolTipBuilder.setBackgroundColor(getResources().getColor(R.color.gray));
-                    toolTipsManager.show(toolTipBuilder.build());
-
-                }
-
-                @Override
-                public void onNothingSelected() {
-
-                }
-            });
-
+    public void setEntriesToBarChar(List<Movie> topTenMovieList, List<BarEntry> entries){
+        for(int i = 0; i < topTenMovieList.size(); i++){
+            Movie mv = topTenMovieList.get(i);
+            long barValue = mv.getRevenue();
+            entries.add(new BarEntry(i, barValue, mv));
         }
+    }
+
+    public void setBarChar(List<BarEntry> entries){
+        BarDataSet dataSet = new BarDataSet(entries, "Top 10 - Filmes Mais Lucrativos");
+        BarData data = new BarData(dataSet);
+
+        // Adicionando cor às barras
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+
+        // Removendo exibição de valores das barras
+        data.setDrawValues(false);
+
+        // Espaço entre as barras
+        data.setBarWidth(0.9f);
+
+        barChart.setData(data);
+
+        // Pondo as barras centralizadas aos pontos de X
+        barChart.setFitBars(true);
+
+        // Fazer refresh
+        barChart.invalidate();
+
+        // Adicionar evento de click às barras
+        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                String movieTitle = ((Movie) barChart
+                        .getDataSetByTouchPoint(e.getX(), e.getY())
+                        .getEntryForIndex((int) e.getX()).getData()).getTitle();
+
+                // Deixando de exibir o tooltip anterior, caso esteja sendo exibido
+                toolTipsManager.dismissAll();
+
+                // Exibindo novo tooltip
+                toolTipBuilder = new ToolTip.Builder(context,
+                        barChart,
+                        (ViewGroup) barChart.getParent(),
+                        movieTitle,
+                        ToolTip.POSITION_ABOVE);
+                toolTipBuilder.setBackgroundColor(getResources().getColor(R.color.gray));
+                toolTipsManager.show(toolTipBuilder.build());
+            }
+
+            @Override
+            public void onNothingSelected() {
+            }
+        });
     }
 
 
@@ -302,6 +288,7 @@ public class StatisticsFragment extends Fragment implements Observer {
             }).collect(Collectors.toList());
         }
 
+        /*
         @RequiresApi(api = Build.VERSION_CODES.N)
         public List<Movie> sortDescByBudget(){
             return this.topTen.stream().sorted(new Comparator<Movie>() {
@@ -317,6 +304,7 @@ public class StatisticsFragment extends Fragment implements Observer {
                 }
             }).collect(Collectors.toList());
         }
+        */
 
         public void setTopTen(List<Movie> topTen) {
             this.topTen = topTen;
