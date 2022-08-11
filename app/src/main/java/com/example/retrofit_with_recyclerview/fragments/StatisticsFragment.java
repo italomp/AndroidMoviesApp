@@ -24,12 +24,14 @@ import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.Constants;
 import com.example.retrofit_with_recyclerview.util.MediaMapper;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.renderer.XAxisRenderer;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.tomergoldst.tooltips.ToolTip;
 import com.tomergoldst.tooltips.ToolTipsManager;
@@ -200,6 +202,10 @@ public class StatisticsFragment extends Fragment implements Observer {
         BarDataSet dataSet = new BarDataSet(entries, "Top 10 - Filmes Mais Lucrativos");
         BarData data = new BarData(dataSet);
 
+        // Configurando estilo dos eixos X e Y
+        barChart.getAxisRight().setEnabled(false); // Removendo valor à direita do  eixo Y
+        barChart.getXAxis().setDrawLabels(false);  // Removendo valor do eixo X
+
         // Adicionando cor às barras
         dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
 
@@ -229,7 +235,8 @@ public class StatisticsFragment extends Fragment implements Observer {
                 toolTipsManager.dismissAll();
 
                 // Exibindo novo tooltip
-                toolTipBuilder = new ToolTip.Builder(context,
+                toolTipBuilder = new ToolTip.Builder(
+                        context,
                         barChart,
                         (ViewGroup) barChart.getParent(),
                         movieTitle,
