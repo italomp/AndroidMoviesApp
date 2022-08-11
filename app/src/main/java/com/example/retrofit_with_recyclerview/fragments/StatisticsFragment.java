@@ -58,7 +58,6 @@ public class StatisticsFragment extends Fragment implements Observer {
     Spinner spinnerYear;
     ArrayAdapter<CharSequence> spinnerAdapter;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,7 +68,6 @@ public class StatisticsFragment extends Fragment implements Observer {
         this.setSpinnerYear(view);
 
         int year = Integer.parseInt(spinnerYear.getSelectedItem().toString());
-        //this.getMoviesByYear(year, this.SORT_BY_BUDGET, (TopTen) this.topTenBudget);
         this.getMoviesByYear(year, this.SORT_BY_REVENUE, (TopTen) this.topTenRevenue);
 
         return view;
@@ -146,7 +144,6 @@ public class StatisticsFragment extends Fragment implements Observer {
     }
 
     // POSTERIORMENTE IREI CHAMAR O MTODO QUE PLOTA OS GRFICOS NESSE METODO
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void update(Observable observable, Object obj1){
         if(observable instanceof TopTen){
@@ -222,7 +219,6 @@ public class StatisticsFragment extends Fragment implements Observer {
 
         // Adicionar evento de click às barras
         barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 String movieTitle = ((Movie) barChart
@@ -287,24 +283,6 @@ public class StatisticsFragment extends Fragment implements Observer {
                 }
             }).collect(Collectors.toList());
         }
-
-        /*
-        @RequiresApi(api = Build.VERSION_CODES.N)
-        public List<Movie> sortDescByBudget(){
-            return this.topTen.stream().sorted(new Comparator<Movie>() {
-                @Override
-                public int compare(Movie mv1, Movie mv2) {
-                    if (mv1.getBudget() < mv2.getBudget())
-                        return 1;
-                    else if (mv1.getBudget() == mv2.getBudget())
-                        return 0;
-                    else{
-                        return -1;
-                    }
-                }
-            }).collect(Collectors.toList());
-        }
-        */
 
         public void setTopTen(List<Movie> topTen) {
             this.topTen = topTen;
