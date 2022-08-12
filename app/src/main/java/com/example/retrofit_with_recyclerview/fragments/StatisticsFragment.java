@@ -1,6 +1,7 @@
 package com.example.retrofit_with_recyclerview.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -24,6 +25,8 @@ import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.Constants;
 import com.example.retrofit_with_recyclerview.util.MediaMapper;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -59,6 +62,7 @@ public class StatisticsFragment extends Fragment implements Observer {
     ToolTip.Builder toolTipBuilder;
     Spinner spinnerYear;
     ArrayAdapter<CharSequence> spinnerAdapter;
+    int[] colorArray = new int[10];
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -201,13 +205,15 @@ public class StatisticsFragment extends Fragment implements Observer {
     public void setBarChar(List<BarEntry> entries){
         BarDataSet dataSet = new BarDataSet(entries, "Top 10 - Filmes Mais Lucrativos");
         BarData data = new BarData(dataSet);
+        LegendEntry[] legendEntries = new LegendEntry[10];
+        this.initColorArray();
 
         // Configurando estilo dos eixos X e Y
         barChart.getAxisRight().setEnabled(false); // Removendo valor à direita do  eixo Y
         barChart.getXAxis().setDrawLabels(false);  // Removendo valor do eixo X
 
         // Adicionando cor às barras
-        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        dataSet.setColors(this.colorArray, this.context);
 
         // Removendo exibição de valores das barras
         data.setDrawValues(false);
@@ -224,6 +230,36 @@ public class StatisticsFragment extends Fragment implements Observer {
         barChart.invalidate();
 
         // Adicionar evento de click às barras
+        this.addEventClickListenerOnTheChart();
+    }
+
+    public void initColorArray(){
+        colorArray[0] = R.color.bar_color_1;
+        colorArray[1] = R.color.bar_color_2;
+        colorArray[2] = R.color.bar_color_3;
+        colorArray[3] = R.color.bar_color_4;
+        colorArray[4] = R.color.bar_color_5;
+        colorArray[5] = R.color.bar_color_6;
+        colorArray[6] = R.color.bar_color_7;
+        colorArray[7] = R.color.bar_color_8;
+        colorArray[8] = R.color.bar_color_9;
+        colorArray[9] = R.color.bar_color_10;
+
+        /*
+        colorArray[0] = Color.RED;
+        colorArray[1] = Color.BLACK;
+        colorArray[2] = Color.GREEN;
+        colorArray[3] = Color.GRAY;
+        colorArray[4] = Color.BLUE;
+        colorArray[5] = Color.DKGRAY;
+        colorArray[6] = Color.YELLOW;
+        colorArray[7] = Color.LTGRAY;
+        colorArray[8] = Color.YELLOW;
+        colorArray[9] = Color.MAGENTA;
+        */
+    }
+
+    public void addEventClickListenerOnTheChart(){
         barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
@@ -250,7 +286,6 @@ public class StatisticsFragment extends Fragment implements Observer {
             }
         });
     }
-
 
     public class TopTen extends Observable {
         private List<Movie> topTen;
