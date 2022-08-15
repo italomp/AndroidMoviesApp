@@ -1,7 +1,6 @@
 package com.example.retrofit_with_recyclerview.fragments;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -13,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -61,6 +61,7 @@ public class StatisticsFragment extends Fragment implements Observer {
     ArrayAdapter<CharSequence> spinnerAdapter;
     int[] colorArray = new int[10];
     int[] colorLegendArray = new int[10];
+    ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,6 +73,8 @@ public class StatisticsFragment extends Fragment implements Observer {
         this.setSpinnerYear(view);
 
         int year = Integer.parseInt(spinnerYear.getSelectedItem().toString());
+
+        showProgressBarAndHiddenBarChart();
         this.getMoviesByYear(year, this.SORT_BY_REVENUE, (TopTen) this.topTenRevenue);
 
         return view;
@@ -156,6 +159,7 @@ public class StatisticsFragment extends Fragment implements Observer {
 
             setEntriesToBarChar(topTenMovieList, entries);
             setBarChar(entries);
+            hiddenProgressBarAndShowBarChart();
         }
     }
 
@@ -168,6 +172,8 @@ public class StatisticsFragment extends Fragment implements Observer {
         spinnerYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                showProgressBarAndHiddenBarChart();
+
                 // limpar a listagem anterior
                 ((TopTen) topTenRevenue).setTopTen(new ArrayList<>());
 
@@ -190,6 +196,7 @@ public class StatisticsFragment extends Fragment implements Observer {
         this.topTenBudget.addObserver(this);
         this.topTenRevenue.addObserver(this);
         this.toolTipsManager = new ToolTipsManager();
+        this.progressBar = view.findViewById(R.id.progress_bar);
     }
 
     public void setEntriesToBarChar(List<Movie> topTenMovieList, List<BarEntry> entries){
@@ -314,6 +321,16 @@ public class StatisticsFragment extends Fragment implements Observer {
             public void onNothingSelected() {
             }
         });
+    }
+
+    public void showProgressBarAndHiddenBarChart(){
+        this.barChart.setVisibility(View.INVISIBLE);
+        this.progressBar.setVisibility(View.VISIBLE);
+    }
+
+    public void hiddenProgressBarAndShowBarChart(){
+        this.barChart.setVisibility(View.VISIBLE);
+        this.progressBar.setVisibility(View.INVISIBLE);
     }
 
     public class TopTen extends Observable {
