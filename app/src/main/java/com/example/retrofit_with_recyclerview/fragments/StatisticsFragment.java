@@ -27,15 +27,12 @@ import com.example.retrofit_with_recyclerview.util.MediaMapper;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LegendEntry;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.renderer.XAxisRenderer;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.tomergoldst.tooltips.ToolTip;
 import com.tomergoldst.tooltips.ToolTipsManager;
 
@@ -63,6 +60,7 @@ public class StatisticsFragment extends Fragment implements Observer {
     Spinner spinnerYear;
     ArrayAdapter<CharSequence> spinnerAdapter;
     int[] colorArray = new int[10];
+    int[] colorLegendArray = new int[10];
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -202,11 +200,17 @@ public class StatisticsFragment extends Fragment implements Observer {
         }
     }
 
+    /**
+     * As barras aceitam as cores que do colorArray, as legerndas NÃO.
+     *
+     * Solução: achar um formato comum ou converter de um para outro
+     * @param entries
+     */
     public void setBarChar(List<BarEntry> entries){
-        BarDataSet dataSet = new BarDataSet(entries, "Top 10 - Filmes Mais Lucrativos");
+        BarDataSet dataSet = new BarDataSet(entries, "");
         BarData data = new BarData(dataSet);
         LegendEntry[] legendEntries = new LegendEntry[10];
-        this.initColorArray();
+        this.launchColorArray();
 
         // Configurando estilo dos eixos X e Y
         barChart.getAxisRight().setEnabled(false); // Removendo valor à direita do  eixo Y
@@ -231,9 +235,22 @@ public class StatisticsFragment extends Fragment implements Observer {
 
         // Adicionar evento de click às barras
         this.addEventClickListenerOnTheChart();
+
+        // Configurando legendas
+        Legend legend = barChart.getLegend();
+        legend.setForm(Legend.LegendForm.SQUARE);
+        this.launchColorLegendArray();
+
+        for(int i = 0; i < legendEntries.length; i++){
+            LegendEntry legendEntry = new LegendEntry();
+            legendEntry.formColor = this.colorLegendArray[i];
+            legendEntry.label = "filme " + i;
+            legendEntries[i] = legendEntry;
+        }
+        legend.setCustom(legendEntries);
     }
 
-    public void initColorArray(){
+    public void launchColorArray(){
         colorArray[0] = R.color.bar_color_1;
         colorArray[1] = R.color.bar_color_2;
         colorArray[2] = R.color.bar_color_3;
@@ -245,18 +262,30 @@ public class StatisticsFragment extends Fragment implements Observer {
         colorArray[8] = R.color.bar_color_9;
         colorArray[9] = R.color.bar_color_10;
 
-        /*
-        colorArray[0] = Color.RED;
-        colorArray[1] = Color.BLACK;
-        colorArray[2] = Color.GREEN;
-        colorArray[3] = Color.GRAY;
-        colorArray[4] = Color.BLUE;
-        colorArray[5] = Color.DKGRAY;
-        colorArray[6] = Color.YELLOW;
-        colorArray[7] = Color.LTGRAY;
-        colorArray[8] = Color.YELLOW;
-        colorArray[9] = Color.MAGENTA;
-        */
+    }
+
+    public void launchColorLegendArray(){
+        int BAR_COLOR_1 = 0xFFF21F26;
+        int BAR_COLOR_2 = 0xFFF3D915;
+        int BAR_COLOR_3 = 0xFFBA5252;
+        int BAR_COLOR_5 = 0xFFD4D9A1;
+        int BAR_COLOR_4 = 0xFFC09491;
+        int BAR_COLOR_6 = 0xFFF8EDD1;
+        int BAR_COLOR_7 = 0xFFD88A8A;
+        int BAR_COLOR_8 = 0xFF474843;
+        int BAR_COLOR_9 = 0xFF9D9D93;
+        int BAR_COLOR_10 = 0xFFC5CFC6;
+
+        this.colorLegendArray[0] = BAR_COLOR_1;
+        this.colorLegendArray[1] = BAR_COLOR_2;
+        this.colorLegendArray[2] = BAR_COLOR_3;
+        this.colorLegendArray[3] = BAR_COLOR_4;
+        this.colorLegendArray[4] = BAR_COLOR_5;
+        this.colorLegendArray[5] = BAR_COLOR_6;
+        this.colorLegendArray[6] = BAR_COLOR_7;
+        this.colorLegendArray[7] = BAR_COLOR_8;
+        this.colorLegendArray[8] = BAR_COLOR_9;
+        this.colorLegendArray[9] = BAR_COLOR_10;
     }
 
     public void addEventClickListenerOnTheChart(){
