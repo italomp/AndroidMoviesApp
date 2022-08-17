@@ -150,7 +150,7 @@ public class StatisticsFragment extends Fragment implements Observer {
         }
     }
 
-    // POSTERIORMENTE IREI CHAMAR O MTODO QUE PLOTA OS GRFICOS NESSE METODO
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void update(Observable observable, Object obj1){
         if(observable instanceof TopTen){
@@ -213,47 +213,48 @@ public class StatisticsFragment extends Fragment implements Observer {
      * Solução: achar um formato comum ou converter de um para outro
      * @param entries
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void setBarChar(List<BarEntry> entries){
         BarDataSet dataSet = new BarDataSet(entries, "");
         BarData data = new BarData(dataSet);
-        LegendEntry[] legendEntries = new LegendEntry[10];
-        this.launchColorArray();
 
-        // Configurando estilo dos eixos X e Y
+        barChart.getDescription().setEnabled(false);  // Removendo descrição
         barChart.getAxisRight().setEnabled(false); // Removendo valor à direita do  eixo Y
         barChart.getXAxis().setDrawLabels(false);  // Removendo valor do eixo X
+        barChart.setFitBars(true); // Pondo as barras centralizadas aos pontos de X
 
-        // Adicionando cor às barras
-        dataSet.setColors(this.colorArray, this.context);
+        this.launchColorArray();
+        dataSet.setColors(this.colorArray, this.context); // Adicionando cor às barras
+        data.setDrawValues(false); // Removendo exibição de valores das barras
+        data.setBarWidth(0.9f); // Espaço entre as barras
 
-        // Removendo exibição de valores das barras
-        data.setDrawValues(false);
-
-        // Espaço entre as barras
-        data.setBarWidth(0.9f);
+        this.addEventClickListenerOnTheChart();
+        this.setLegends(barChart); // Configurando legendas do gráfico
 
         barChart.setData(data);
+        barChart.invalidate(); // Fazer refresh
+        barChart.animateY(500); //Adicionando animação vertical às barras do gráfico
+    }
 
-        // Pondo as barras centralizadas aos pontos de X
-        barChart.setFitBars(true);
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void setLegends(BarChart barChart){
+        LegendEntry[] legendEntries = new LegendEntry[10];
 
-        // Fazer refresh
-        barChart.invalidate();
-
-        // Adicionar evento de click às barras
-        this.addEventClickListenerOnTheChart();
-
-        // Configurando legendas
         Legend legend = barChart.getLegend();
         legend.setForm(Legend.LegendForm.SQUARE);
-        this.launchColorLegendArray();
+        legend.setWordWrapEnabled(true);
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        legend.setOrientation(Legend.LegendOrientation.VERTICAL);
 
+        this.launchColorLegendArray();
         for(int i = 0; i < legendEntries.length; i++){
             LegendEntry legendEntry = new LegendEntry();
             legendEntry.formColor = this.colorLegendArray[i];
-            legendEntry.label = "filme " + i;
+            legendEntry.label = ((TopTen) this.topTenRevenue).getTopTenRevenueDesc().get(i).getTitle();
             legendEntries[i] = legendEntry;
         }
+
         legend.setCustom(legendEntries);
     }
 
@@ -268,7 +269,6 @@ public class StatisticsFragment extends Fragment implements Observer {
         colorArray[7] = R.color.bar_color_8;
         colorArray[8] = R.color.bar_color_9;
         colorArray[9] = R.color.bar_color_10;
-
     }
 
     public void launchColorLegendArray(){
