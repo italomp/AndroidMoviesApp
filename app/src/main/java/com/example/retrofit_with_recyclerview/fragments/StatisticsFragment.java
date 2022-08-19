@@ -23,16 +23,19 @@ import com.example.retrofit_with_recyclerview.responses.MediaResponse;
 import com.example.retrofit_with_recyclerview.responses.MediaResponseList;
 import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.Constants;
+import com.example.retrofit_with_recyclerview.util.CustomMarkerView;
 import com.example.retrofit_with_recyclerview.util.MediaMapper;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LegendEntry;
+import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.MPPointF;
 import com.tomergoldst.tooltips.ToolTip;
 import com.tomergoldst.tooltips.ToolTipsManager;
 
@@ -55,13 +58,14 @@ public class StatisticsFragment extends Fragment implements Observer {
     private final String SORT_BY_BUDGET = "budget.desc";
     BarChart barChart;
     Context context;
-    ToolTipsManager toolTipsManager;
-    ToolTip.Builder toolTipBuilder;
+    //ToolTipsManager toolTipsManager;
+    //ToolTip.Builder toolTipBuilder;
     Spinner spinnerYear;
     ArrayAdapter<CharSequence> spinnerAdapter;
     int[] colorArray = new int[10];
     int[] colorLegendArray = new int[10];
     ProgressBar progressBar;
+    CustomMarkerView customMarkerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -195,8 +199,9 @@ public class StatisticsFragment extends Fragment implements Observer {
         this.topTenRevenue = new TopTen(SORT_BY_REVENUE);
         this.topTenBudget.addObserver(this);
         this.topTenRevenue.addObserver(this);
-        this.toolTipsManager = new ToolTipsManager();
+        //this.toolTipsManager = new ToolTipsManager();
         this.progressBar = view.findViewById(R.id.progress_bar);
+        this.customMarkerView = new CustomMarkerView(getContext(), R.layout.marker_view);
     }
 
     public void setEntriesToBarChar(List<Movie> topTenMovieList, List<BarEntry> entries){
@@ -296,25 +301,15 @@ public class StatisticsFragment extends Fragment implements Observer {
     }
 
     public void addEventClickListenerOnTheChart(){
-        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 String movieTitle = ((Movie) barChart
                         .getDataSetByTouchPoint(e.getX(), e.getY())
                         .getEntryForIndex((int) e.getX()).getData()).getTitle();
 
-                // Deixando de exibir o tooltip anterior, caso esteja sendo exibido
-                toolTipsManager.dismissAll();
-
-                // Exibindo novo tooltip
-                toolTipBuilder = new ToolTip.Builder(
-                        context,
-                        barChart,
-                        (ViewGroup) barChart.getParent(),
-                        movieTitle,
-                        ToolTip.POSITION_ABOVE);
-                toolTipBuilder.setBackgroundColor(getResources().getColor(R.color.gray));
-                toolTipsManager.show(toolTipBuilder.build());
+                customMarkerView.setTextView(movieTitle);
+                barChart.setMarker(customMarkerView);
             }
 
             @Override
