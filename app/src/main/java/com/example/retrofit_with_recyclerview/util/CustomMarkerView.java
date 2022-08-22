@@ -8,6 +8,7 @@ import com.example.retrofit_with_recyclerview.R;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.utils.MPPointF;
 
 public class CustomMarkerView extends MarkerView {
     public TextView textView;
@@ -28,10 +29,14 @@ public class CustomMarkerView extends MarkerView {
         //tvContent.setText("" + e.getVal()); // set the entry-value as the display text
     }
 
-
-    public int getXOffset(float xpos) {
+    /**
+     * Retorna o deslocamento do Marker (tooltip).
+     * Os parâmetros de MPPointF são os deslocamentos de x e y, respectivametne.
+     */
+    @Override
+    public MPPointF getOffset() {
         // this will center the marker-view horizontally
-        return -(getWidth() / 2);
+        return new MPPointF(-(getWidth() / 2), -(getHeight() / 2));
     }
 
 

@@ -8,16 +8,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="some text"
+        android:text="some text some text some text"
         android:textSize="12dp"
+        android:textAlignment="center"
         android:textColor="@color/white"
         android:background="@color/gray"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_marginLeft="1dp"
-        android:autoSizeTextType="uniform"
         />
 
 </RelativeLayout>
