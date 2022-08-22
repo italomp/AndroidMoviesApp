@@ -1,10 +1,10 @@
 package com.example.retrofit_with_recyclerview.util;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.TextView;
 
 import com.example.retrofit_with_recyclerview.R;
+import com.example.retrofit_with_recyclerview.models.Media;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
@@ -12,6 +12,7 @@ import com.github.mikephil.charting.utils.MPPointF;
 
 public class CustomMarkerView extends MarkerView {
     public TextView textView;
+    private int xAxisValue;
     /**
      * Constructor. Sets up the MarkerView with a custom layout resource.
      *
@@ -20,32 +21,35 @@ public class CustomMarkerView extends MarkerView {
      */
     public CustomMarkerView(Context context, int layoutResource) {
         super(context, layoutResource);
-
+        this.xAxisValue = 0;
         this.textView = findViewById(R.id.marker_view);
     }
 
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
-        //tvContent.setText("" + e.getVal()); // set the entry-value as the display text
+        this.xAxisValue = (int) e.getX();
+
+        textView.setText(((Media) e.getData()).getTitle());
+        super.refreshContent(e, highlight); // Faz o marker ajustar-se ao tamanho do texto
     }
 
     /**
-     * Retorna o deslocamento do Marker (tooltip).
-     * Os parâmetros de MPPointF são os deslocamentos de x e y, respectivametne.
+     * Retorna um MMPointF que posicionar o marker.
+     * O primeiro parâmetro desse objeto posiciona o marker horizontalmente e o segundo posiciona
+     * verticalmetne.
+     *
+     * -(getWidth() / 2), no primeiro parâmetro, centraliza o marker horizontalmente sobre a barra.
+     * -getHeight(), posiciona o marker sobre a barra.
+     *
+     * Se a barra selecionada, for alguma da primeira (índice 0) à sétima (índice 6), centralizo o
+     * marker horizontalmente sobre a barra.
+     * Se for da sétima em diante, alinho o marker à esquerda da barra.
      */
     @Override
     public MPPointF getOffset() {
-        // this will center the marker-view horizontally
-        return new MPPointF(-(getWidth() / 2), -(getHeight() / 2));
-    }
+        if (this.xAxisValue < 7)
+            return new MPPointF(-(getWidth() / 2), -getHeight());
 
-
-    public int getYOffset(float ypos) {
-        // this will cause the marker-view to be above the selected value
-        return -getHeight();
-    }
-
-    public void setTextView(String text) {
-        this.textView.setText(text);
+        return new MPPointF(-getWidth(), -getHeight());
     }
 }

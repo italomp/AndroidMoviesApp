@@ -28,16 +28,12 @@ import com.example.retrofit_with_recyclerview.util.MediaMapper;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LegendEntry;
-import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.MPPointF;
-import com.tomergoldst.tooltips.ToolTip;
-import com.tomergoldst.tooltips.ToolTipsManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -58,8 +54,6 @@ public class StatisticsFragment extends Fragment implements Observer {
     private final String SORT_BY_BUDGET = "budget.desc";
     BarChart barChart;
     Context context;
-    //ToolTipsManager toolTipsManager;
-    //ToolTip.Builder toolTipBuilder;
     Spinner spinnerYear;
     ArrayAdapter<CharSequence> spinnerAdapter;
     int[] colorArray = new int[10];
@@ -199,7 +193,6 @@ public class StatisticsFragment extends Fragment implements Observer {
         this.topTenRevenue = new TopTen(SORT_BY_REVENUE);
         this.topTenBudget.addObserver(this);
         this.topTenRevenue.addObserver(this);
-        //this.toolTipsManager = new ToolTipsManager();
         this.progressBar = view.findViewById(R.id.progress_bar);
         this.customMarkerView = new CustomMarkerView(getContext(), R.layout.marker_view);
     }
@@ -304,11 +297,6 @@ public class StatisticsFragment extends Fragment implements Observer {
             barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
-                String movieTitle = ((Movie) barChart
-                        .getDataSetByTouchPoint(e.getX(), e.getY())
-                        .getEntryForIndex((int) e.getX()).getData()).getTitle();
-
-                customMarkerView.setTextView(movieTitle);
                 barChart.setMarker(customMarkerView);
             }
 
