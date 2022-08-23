@@ -17,6 +17,9 @@
         android:paddingBottom="5dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
+        android:maxWidth="300dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         />
 
 </RelativeLayout>
