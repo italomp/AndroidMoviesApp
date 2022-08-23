@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.retrofit_with_recyclerview.R;
@@ -23,7 +23,6 @@ import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.Constants;
 import com.example.retrofit_with_recyclerview.util.MediaMapper;
 import com.example.retrofit_with_recyclerview.util.Util;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -38,8 +37,7 @@ import retrofit2.Response;
 public class SearchFragment extends Fragment {
     RecyclerView recyclerView;
     MediaAdapter mediaAdapter;
-    TextInputEditText inputSearch;
-    Button searchButton;
+    SearchView searchView;
 
 
     @Override
@@ -76,10 +74,7 @@ public class SearchFragment extends Fragment {
         }
 
         else
-            Toast.makeText(
-                    view.getContext(),
-                    "Nenhuma mídia foi encontrada.",
-                    Toast.LENGTH_LONG).show();
+            showErrorMessage(view, "Nenhuma mídia foi encontrada.");
     }
 
     public void getMovies(View view){
@@ -108,18 +103,19 @@ public class SearchFragment extends Fragment {
     }
 
     public void setSearchViews(View view){
-        this.inputSearch = view.findViewById(R.id.searchInput);
-        this.searchButton = view.findViewById(R.id.searchButton);
-
-
-        this.searchButton.setOnClickListener(new View.OnClickListener() {
+        this.searchView = view.findViewById(R.id.search_view);
+        this.searchView.clearFocus();
+        this.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onClick(View v) {
-                String inputValue = inputSearch.getText().toString();
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
                 // Pesquisando Filmes, Shows e Pessoas
                 ApiService.getMediaService()
-                        .multiSearch(Constants.API_KEY, inputValue)
+                        .multiSearch(Constants.API_KEY, newText)
                         .enqueue(new Callback<MediaResponseList>() {
                             @Override
                             public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
@@ -136,10 +132,7 @@ public class SearchFragment extends Fragment {
                                     renderingMediasOrNotFoundMessage(view, mediaList);
                                 }
                                 else{
-                                    Toast.makeText(
-                                            view.getContext(),
-                                            "HTTP Status Code: " + response.code(),
-                                            Toast.LENGTH_LONG).show();
+                                    showErrorMessage(view, "HTTP Status Code: " + response.code());
                                 }
                             }
 
@@ -148,6 +141,8 @@ public class SearchFragment extends Fragment {
 
                             }
                         });
+
+                return true;
             }
         });
     }
