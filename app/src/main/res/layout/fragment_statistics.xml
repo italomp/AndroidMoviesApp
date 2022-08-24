@@ -6,6 +6,7 @@
     tools:context=".fragments.StatisticsFragment">
 
     <RelativeLayout
+        android:id="@+id/fragment_statistics"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -45,7 +46,6 @@
                 android:clipToPadding="false"
                 android:paddingBottom="10dp">
 
-                <!-- Essa margem do top é uma gambiarra temporrária para exibir o tooltip -->
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/bar_chart"
                     android:layout_width="match_parent"

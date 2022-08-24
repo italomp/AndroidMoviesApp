@@ -1,59 +1,57 @@
 package com.example.retrofit_with_recyclerview.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager2.widget.ViewPager2;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.example.retrofit_with_recyclerview.R;
-import com.example.retrofit_with_recyclerview.adapters.ViewPagerAdapter;
-import com.google.android.material.tabs.TabLayout;
+import com.example.retrofit_with_recyclerview.fragments.SearchFragment;
+import com.example.retrofit_with_recyclerview.fragments.StatisticsFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 public class MainActivity extends AppCompatActivity {
-    TabLayout tabLayout;
-    ViewPager2 viewPager;
-    ViewPagerAdapter viewPagerAdapter;
-
+    BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        replaceFragment(new SearchFragment());
 
-        this.setTabLayout();
+        this.setBottomNavigationView();
     }
 
-    private void setTabLayout(){
-        tabLayout = findViewById(R.id.tab_layout);
-        viewPager = findViewById(R.id.view_pager);
-        viewPagerAdapter = new ViewPagerAdapter(this);
-        viewPager.setAdapter(viewPagerAdapter);
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+    public void setBottomNavigationView(){
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-
-                tabLayout.getTabAt(position).select();
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                System.out.println("entoru no onNavigationItemSelected");
+                switch (item.getItemId()){
+                    case R.id.menu_item_home:
+                        System.out.println("entrou no R.id.fragment_search");
+                        replaceFragment(new SearchFragment());
+                        break;
+                    case R.id.menu_item_statistics:
+                        System.out.println("entrou no R.id.fragment_statistics");
+                        replaceFragment(new StatisticsFragment());
+                        break;
+                }
+                return false;
             }
         });
     }
 
+    public void replaceFragment(Fragment fragment){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_layout, fragment);
+        fragmentTransaction.commit();
+    }
 }
