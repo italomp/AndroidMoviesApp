@@ -48,7 +48,6 @@ public class SearchFragment extends Fragment {
         setRecyclerView(view);
         setSearchViews(view);
         getMovies(view);
-
         return view;
     }
 
@@ -105,6 +104,7 @@ public class SearchFragment extends Fragment {
     public void setSearchViews(View view){
         this.searchView = view.findViewById(R.id.search_view);
         this.searchView.clearFocus();
+
         this.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
