@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -18,6 +17,7 @@ import com.example.retrofit_with_recyclerview.responses.MediaDetailsResponse;
 import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.Constants;
 import com.example.retrofit_with_recyclerview.util.Util;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -28,7 +28,7 @@ import retrofit2.Response;
 
 public class MediaDetailsActivity extends AppCompatActivity {
     private Media media;
-    ImageView posterView;
+    ShapeableImageView posterView;
     TextView titleView;
     TextView noteAverageView;
     TextView overviewView;
@@ -58,8 +58,8 @@ public class MediaDetailsActivity extends AppCompatActivity {
     public void getViewsReferences(){
         this.posterView = findViewById(R.id.details_media_poster);
         this.titleView = findViewById(R.id.details_media_title);
-        this.noteAverageView = findViewById(R.id.vote_avarage);
-        this.overviewView = findViewById(R.id.details_media_sinopse);
+        this.noteAverageView = findViewById(R.id.vote_average);
+        this.overviewView = findViewById(R.id.details_media_overview);
         this.loadScreen = findViewById(R.id.load_screen);
         this.mediaDetailsScroll = findViewById(R.id.media_details_scroll);
         this.layoutCrewList = findViewById(R.id.crew_list);
