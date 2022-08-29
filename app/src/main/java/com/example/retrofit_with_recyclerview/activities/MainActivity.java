@@ -32,14 +32,11 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                System.out.println("entoru no onNavigationItemSelected");
                 switch (item.getItemId()){
                     case R.id.menu_item_home:
-                        System.out.println("entrou no R.id.fragment_search");
                         replaceFragment(new SearchFragment());
                         break;
                     case R.id.menu_item_statistics:
-                        System.out.println("entrou no R.id.fragment_statistics");
                         replaceFragment(new StatisticsFragment());
                         break;
                 }
