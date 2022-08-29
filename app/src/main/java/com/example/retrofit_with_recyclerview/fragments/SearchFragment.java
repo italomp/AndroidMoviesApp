@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ public class SearchFragment extends Fragment {
     RecyclerView recyclerView;
     MediaAdapter mediaAdapter;
     SearchView searchView;
+    ProgressBar progressBar;
 
 
     @Override
@@ -45,10 +47,15 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        setRecyclerView(view);
+        setViews(view);
         setSearchViews(view);
         getMovies(view);
         return view;
+    }
+
+    public void setViews(View view){
+        this.progressBar = view.findViewById(R.id.progress_bar_search_fragment);
+        this.setRecyclerView(view);
     }
 
     public void setRecyclerView(View view){
@@ -68,15 +75,15 @@ public class SearchFragment extends Fragment {
     }
 
     public void renderingMediasOrNotFoundMessage(View view, List<Media> mediaList){
-        if (!mediaList.isEmpty()){
+        if (!mediaList.isEmpty())
             this.mediaAdapter.setMediaList(mediaList);
-        }
 
         else
             showErrorMessage(view, "Nenhuma mídia foi encontrada.");
     }
 
     public void getMovies(View view){
+        Util.showProgressBarAndHiddenView(this.progressBar, view.findViewById(R.id.scroll_search_views));
         ApiService.getMovieService().getMovies(Constants.API_KEY).enqueue(new Callback<MediaResponseList>() {
             @Override
             public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
@@ -85,11 +92,11 @@ public class SearchFragment extends Fragment {
                     List<MediaResponse> mediaResponseList = response.body().getMediaList();
                     List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
                     mediaAdapter.setMediaList(mediaList);
+                    Util.hiddenProgressBarAndShowView(progressBar, view.findViewById(R.id.scroll_search_views));
                 }
                 else{
                     // Poderia tratar alguns casos de erro específicos...
                     showErrorMessage(view, "HTTP Status Code: " + response.code());
-
                 }
             }
 

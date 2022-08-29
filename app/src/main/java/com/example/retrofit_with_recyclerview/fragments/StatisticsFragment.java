@@ -194,7 +194,7 @@ public class StatisticsFragment extends Fragment implements Observer {
         this.topTenRevenue = new TopTen(SORT_BY_REVENUE);
         this.topTenBudget.addObserver(this);
         this.topTenRevenue.addObserver(this);
-        this.progressBar = view.findViewById(R.id.progress_bar);
+        this.progressBar = view.findViewById(R.id.progress_bar_statistics_fragment);
         this.customMarkerView = new CustomMarkerView(getContext(), R.layout.marker_view);
     }
 
