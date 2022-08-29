@@ -25,6 +25,7 @@ import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.Constants;
 import com.example.retrofit_with_recyclerview.util.CustomMarkerView;
 import com.example.retrofit_with_recyclerview.util.MediaMapper;
+import com.example.retrofit_with_recyclerview.util.Util;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LegendEntry;
@@ -72,7 +73,7 @@ public class StatisticsFragment extends Fragment implements Observer {
 
         int year = Integer.parseInt(spinnerYear.getSelectedItem().toString());
 
-        showProgressBarAndHiddenBarChart();
+        Util.showProgressBarAndHiddenView(this.progressBar, this.barChart);
         this.getMoviesByYear(year, this.SORT_BY_REVENUE, (TopTen) this.topTenRevenue);
 
         return view;
@@ -157,7 +158,7 @@ public class StatisticsFragment extends Fragment implements Observer {
 
             setEntriesToBarChar(topTenMovieList, entries);
             setBarChar(entries);
-            hiddenProgressBarAndShowBarChart();
+            Util.hiddenProgressBarAndShowView(progressBar, barChart);
         }
     }
 
@@ -170,7 +171,7 @@ public class StatisticsFragment extends Fragment implements Observer {
         spinnerYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                showProgressBarAndHiddenBarChart();
+                Util.showProgressBarAndHiddenView(progressBar, barChart);
 
                 // limpar a listagem anterior
                 ((TopTen) topTenRevenue).setTopTen(new ArrayList<>());
@@ -304,16 +305,6 @@ public class StatisticsFragment extends Fragment implements Observer {
             public void onNothingSelected() {
             }
         });
-    }
-
-    public void showProgressBarAndHiddenBarChart(){
-        this.barChart.setVisibility(View.INVISIBLE);
-        this.progressBar.setVisibility(View.VISIBLE);
-    }
-
-    public void hiddenProgressBarAndShowBarChart(){
-        this.barChart.setVisibility(View.VISIBLE);
-        this.progressBar.setVisibility(View.INVISIBLE);
     }
 
     public class TopTen extends Observable {
