@@ -224,7 +224,7 @@ public class StatisticsFragment extends Fragment implements Observer {
         this.launchColorArray();
         dataSet.setColors(this.colorArray, this.context); // Adicionando cor às barras
         data.setDrawValues(false); // Removendo exibição de valores das barras
-        data.setBarWidth(0.9f); // Espaço entre as barras
+        data.setBarWidth(0.8f); // Espaço entre as barras
 
         this.addEventClickListenerOnTheChart();
         this.setLegends(barChart); // Configurando legendas do gráfico
