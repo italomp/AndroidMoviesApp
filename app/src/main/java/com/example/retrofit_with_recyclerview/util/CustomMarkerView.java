@@ -5,6 +5,8 @@ import android.widget.TextView;
 
 import com.example.retrofit_with_recyclerview.R;
 import com.example.retrofit_with_recyclerview.models.Media;
+import com.example.retrofit_with_recyclerview.models.Movie;
+import com.example.retrofit_with_recyclerview.models.Show;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
@@ -27,9 +29,14 @@ public class CustomMarkerView extends MarkerView {
 
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
+        String title;
+        String revenue;
         this.xAxisValue = (int) e.getX();
 
-        textView.setText(((Media) e.getData()).getTitle());
+        title = ((Movie) e.getData()).getTitle();
+        revenue = "U$ " + ((Movie) e.getData()).getRevenue() + ".";
+
+        textView.setText(title + " " + revenue);
         super.refreshContent(e, highlight); // Faz o marker ajustar-se ao tamanho do texto
     }
 

@@ -37,9 +37,6 @@ public class MediaResponse {
     @Json(name = "revenue")
     private final long revenue;
 
-    @Json(name = "budget")
-    private final long budget;
-
     public MediaResponse(long id, String title, String name, String postPath,
                          List<MediaResponse> mediaResponse, String mediaType, long revenue, long budget) {
         this.id = id;
@@ -48,7 +45,6 @@ public class MediaResponse {
         this.postPath = postPath;
         this.moviesAndShows = mediaResponse;
         this.mediaType = mediaType;
-        this.budget = budget;
         this.revenue = revenue;
     }
 
@@ -80,9 +76,6 @@ public class MediaResponse {
         return revenue;
     }
 
-    public long getBudget() {
-        return budget;
-    }
 
     /**
      * Retorna o tipo específico (subtipo) de Media.
@@ -94,7 +87,7 @@ public class MediaResponse {
     public Media getEntity(){
         // Media é Movie
         if ((Constants.MOVIE_TYPE.equals(mediaType) || title != null) && moviesAndShows == null)
-            return new Movie(id, title, postPath, Constants.MOVIE_TYPE, this.revenue, this.budget);
+            return new Movie(id, title, postPath, Constants.MOVIE_TYPE, this.revenue);
 
         // Media é Person
         else if(Constants.PERSON_TYPE.equals(mediaType) || moviesAndShows != null)
