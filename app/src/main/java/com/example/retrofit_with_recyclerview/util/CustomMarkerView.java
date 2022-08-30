@@ -36,7 +36,7 @@ public class CustomMarkerView extends MarkerView {
         title = ((Movie) e.getData()).getTitle();
         revenue = "U$ " + ((Movie) e.getData()).getRevenue() + ".";
 
-        textView.setText(title + " " + revenue);
+        textView.setText(title + " - " + revenue);
         super.refreshContent(e, highlight); // Faz o marker ajustar-se ao tamanho do texto
     }
 
