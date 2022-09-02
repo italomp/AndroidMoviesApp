@@ -27,15 +27,22 @@ import com.example.retrofit_with_recyclerview.util.CustomMarkerView;
 import com.example.retrofit_with_recyclerview.util.MediaMapper;
 import com.example.retrofit_with_recyclerview.util.Util;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LegendEntry;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.formatter.LargeValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -222,6 +229,10 @@ public class StatisticsFragment extends Fragment implements Observer {
         barChart.getXAxis().setDrawLabels(false);  // Removendo valor do eixo X
         barChart.setFitBars(true); // Pondo as barras centralizadas aos pontos de X
 
+        // Formatando valores à esquerda do eixo Y.
+        YAxis yAxisLeft = barChart.getAxisLeft();
+        yAxisLeft.setValueFormatter(new LargeValueFormatter());
+
         this.launchColorArray();
         dataSet.setColors(this.colorArray, this.context); // Adicionando cor às barras
         data.setDrawValues(false); // Removendo exibição de valores das barras
@@ -350,5 +361,4 @@ public class StatisticsFragment extends Fragment implements Observer {
             this.topTen = topTen;
         }
     }
-
 }
