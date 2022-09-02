@@ -5,6 +5,10 @@
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.17300724637681159" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.19" />
+        <entry key="app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.1785" />
+        <entry key="app/src/main/res/drawable/ic_baseline_show_chart_24.xml" value="0.1785" />
+        <entry key="app/src/main/res/drawable/ic_bottom_nav_chart_24.xml" value="0.1165" />
+        <entry key="app/src/main/res/drawable/ic_bottom_nav_home_24.xml" value="0.1165" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.19" />
         <entry key="app/src/main/res/drawable/search_icon.xml" value="0.189" />
         <entry key="app/src/main/res/drawable/search_icon_background.xml" value="0.19" />

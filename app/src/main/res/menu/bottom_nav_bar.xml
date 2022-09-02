@@ -3,12 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_item_home"
-        android:icon="@drawable/ic_baseline_home_24"
+        android:id="@+id/bottom_nav_home_icon"
+        android:icon="@drawable/ic_bottom_nav_home_24"
         tools:ignore="MenuTitle" />
 
     <item
-        android:id="@+id/menu_item_statistics"
-        android:icon="@drawable/ic_baseline_show_chart_24"
+        android:id="@+id/bottom_nav_chart_icon"
+        android:icon="@drawable/ic_bottom_nav_chart_24"
         tools:ignore="MenuTitle"/>
 </menu>

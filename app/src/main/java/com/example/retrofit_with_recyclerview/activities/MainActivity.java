@@ -33,10 +33,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
-                    case R.id.menu_item_home:
+                    case R.id.bottom_nav_home_icon:
+                        item.setChecked(true);
                         replaceFragment(new SearchFragment());
                         break;
-                    case R.id.menu_item_statistics:
+                    case R.id.bottom_nav_chart_icon:
+                        item.setChecked(true);
                         replaceFragment(new StatisticsFragment());
                         break;
                 }
