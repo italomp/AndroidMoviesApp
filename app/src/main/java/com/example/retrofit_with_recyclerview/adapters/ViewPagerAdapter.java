@@ -6,8 +6,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.retrofit_with_recyclerview.fragments.SearchFragment;
-import com.example.retrofit_with_recyclerview.fragments.StatisticsFragment;
+import com.example.retrofit_with_recyclerview.fragments.search.SearchFragment;
+import com.example.retrofit_with_recyclerview.fragments.statistics.StatisticsFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
 

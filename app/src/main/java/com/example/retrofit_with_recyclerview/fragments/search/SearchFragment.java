@@ -1,4 +1,4 @@
-package com.example.retrofit_with_recyclerview.fragments;
+package com.example.retrofit_with_recyclerview.fragments.search;
 
 
 import android.os.Bundle;

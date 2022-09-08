@@ -1,4 +1,5 @@
-package com.example.retrofit_with_recyclerview.fragments;
+package com.example.retrofit_with_recyclerview.fragments.statistics;
+
 
 import android.content.Context;
 import android.os.Build;
@@ -12,8 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.retrofit_with_recyclerview.R;
@@ -27,22 +30,15 @@ import com.example.retrofit_with_recyclerview.util.CustomMarkerView;
 import com.example.retrofit_with_recyclerview.util.MediaMapper;
 import com.example.retrofit_with_recyclerview.util.Util;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
-import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -64,16 +60,16 @@ public class StatisticsFragment extends Fragment implements Observer {
     Context context;
     Spinner spinnerYear;
     ArrayAdapter<CharSequence> spinnerAdapter;
-    int[] colorArray = new int[10];
-    int[] colorLegendArray = new int[10];
+    int[] chartColorArray = new int[10];
     ProgressBar progressBar;
     CustomMarkerView customMarkerView;
+    View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_statistics, container, false);
+        view = inflater.inflate(R.layout.fragment_statistics, container, false);
 
         this.setViewsAndVariables(view);
         this.setSpinnerYear(view);
@@ -213,12 +209,6 @@ public class StatisticsFragment extends Fragment implements Observer {
         }
     }
 
-    /**
-     * As barras aceitam as cores que do colorArray, as legerndas NÃO.
-     *
-     * Solução: achar um formato comum ou converter de um para outro
-     * @param entries
-     */
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void setBarChar(List<BarEntry> entries){
         BarDataSet dataSet = new BarDataSet(entries, "");
@@ -233,13 +223,13 @@ public class StatisticsFragment extends Fragment implements Observer {
         YAxis yAxisLeft = barChart.getAxisLeft();
         yAxisLeft.setValueFormatter(new LargeValueFormatter());
 
-        this.launchColorArray();
-        dataSet.setColors(this.colorArray, this.context); // Adicionando cor às barras
+        this.launchChartColorArray();
+        dataSet.setColors(this.chartColorArray, this.context); // Adicionando cor às barras
         data.setDrawValues(false); // Removendo exibição de valores das barras
         data.setBarWidth(0.8f); // Espaço entre as barras
 
         this.addEventClickListenerOnTheChart();
-        this.setLegends(barChart); // Configurando legendas do gráfico
+        this.setChartLegends(barChart); // Configurando legendas do gráfico
 
         barChart.setData(data);
         barChart.invalidate(); // Fazer refresh
@@ -247,41 +237,56 @@ public class StatisticsFragment extends Fragment implements Observer {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void setLegends(BarChart barChart){
-        LegendEntry[] legendEntries = new LegendEntry[10];
+    public void setChartLegends(BarChart barChart){
+        this.setLegendIconColors();
 
-        Legend legend = barChart.getLegend();
-        legend.setForm(Legend.LegendForm.SQUARE);
-        legend.setWordWrapEnabled(true);
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-        legend.setOrientation(Legend.LegendOrientation.VERTICAL);
+        List<Movie> movieList = ((TopTen) this.topTenRevenue).getTopTenRevenueDesc();
 
-        this.launchColorLegendArray();
-        for(int i = 0; i < legendEntries.length; i++){
-            LegendEntry legendEntry = new LegendEntry();
-            legendEntry.formColor = this.colorLegendArray[i];
-            legendEntry.label = ((TopTen) this.topTenRevenue).getTopTenRevenueDesc().get(i).getTitle();
-            legendEntries[i] = legendEntry;
-        }
+        TextView txtRowOneColOne = this.view.findViewById(R.id.txt_row_1_col_1);
+        txtRowOneColOne.setText(movieList.get(0).getTitle());
 
-        legend.setCustom(legendEntries);
+        TextView txtRowOneColTwo = this.view.findViewById(R.id.txt_row_1_col_2);
+        txtRowOneColTwo.setText(movieList.get(1).getTitle());
+
+        TextView txtTwoOneColOne = this.view.findViewById(R.id.txt_row_2_col_1);
+        txtTwoOneColOne.setText(movieList.get(2).getTitle());
+
+        TextView txtTwoOneColTwo = this.view.findViewById(R.id.txt_row_2_col_2);
+        txtTwoOneColTwo.setText(movieList.get(3).getTitle());
+
+        TextView txtRowThreeColOne = this.view.findViewById(R.id.txt_row_3_col_1);
+        txtRowThreeColOne.setText(movieList.get(4).getTitle());
+
+        TextView txtRowThreeColTwo = this.view.findViewById(R.id.txt_row_3_col_2);
+        txtRowThreeColTwo.setText(movieList.get(5).getTitle());
+
+        TextView txtRowFourColOne = this.view.findViewById(R.id.txt_row_4_col_1);
+        txtRowFourColOne.setText(movieList.get(6).getTitle());
+
+        TextView txtRowFourColTwo = this.view.findViewById(R.id.txt_row_4_col_2);
+        txtRowFourColTwo.setText(movieList.get(7).getTitle());
+
+        TextView txtRowFiveColOne = this.view.findViewById(R.id.txt_row_5_col_1);
+        txtRowFiveColOne.setText(movieList.get(8).getTitle());
+
+        TextView txtRowFiveColTwo = this.view.findViewById(R.id.txt_row_5_col_2);
+        txtRowFiveColTwo.setText(movieList.get(9).getTitle());
     }
 
-    public void launchColorArray(){
-        colorArray[0] = R.color.bar_color_1;
-        colorArray[1] = R.color.bar_color_2;
-        colorArray[2] = R.color.bar_color_3;
-        colorArray[3] = R.color.bar_color_4;
-        colorArray[4] = R.color.bar_color_5;
-        colorArray[5] = R.color.bar_color_6;
-        colorArray[6] = R.color.bar_color_7;
-        colorArray[7] = R.color.bar_color_8;
-        colorArray[8] = R.color.bar_color_9;
-        colorArray[9] = R.color.bar_color_10;
+    public void launchChartColorArray(){
+        chartColorArray[0] = R.color.bar_color_1;
+        chartColorArray[1] = R.color.bar_color_2;
+        chartColorArray[2] = R.color.bar_color_3;
+        chartColorArray[3] = R.color.bar_color_4;
+        chartColorArray[4] = R.color.bar_color_5;
+        chartColorArray[5] = R.color.bar_color_6;
+        chartColorArray[6] = R.color.bar_color_7;
+        chartColorArray[7] = R.color.bar_color_8;
+        chartColorArray[8] = R.color.bar_color_9;
+        chartColorArray[9] = R.color.bar_color_10;
     }
 
-    public void launchColorLegendArray(){
+    public void setLegendIconColors(){
         int BAR_COLOR_1 = 0xFFF21F26;
         int BAR_COLOR_2 = 0xFFF3D915;
         int BAR_COLOR_3 = 0xFFBA5252;
@@ -293,16 +298,35 @@ public class StatisticsFragment extends Fragment implements Observer {
         int BAR_COLOR_9 = 0xFF9D9D93;
         int BAR_COLOR_10 = 0xFFC5CFC6;
 
-        this.colorLegendArray[0] = BAR_COLOR_1;
-        this.colorLegendArray[1] = BAR_COLOR_2;
-        this.colorLegendArray[2] = BAR_COLOR_3;
-        this.colorLegendArray[3] = BAR_COLOR_4;
-        this.colorLegendArray[4] = BAR_COLOR_5;
-        this.colorLegendArray[5] = BAR_COLOR_6;
-        this.colorLegendArray[6] = BAR_COLOR_7;
-        this.colorLegendArray[7] = BAR_COLOR_8;
-        this.colorLegendArray[8] = BAR_COLOR_9;
-        this.colorLegendArray[9] = BAR_COLOR_10;
+        ImageView imgRowOneColOne = this.view.findViewById(R.id.img_row_1_col_1);
+        imgRowOneColOne.setColorFilter(BAR_COLOR_1);
+
+        ImageView imgRowOneColTwo = this.view.findViewById(R.id.img_row_1_col_2);
+        imgRowOneColTwo.setColorFilter(BAR_COLOR_2);
+
+        ImageView imgRowTwoColOne = this.view.findViewById(R.id.img_row_2_col_1);
+        imgRowTwoColOne.setColorFilter(BAR_COLOR_3);
+
+        ImageView imgRowTwoColTwo = this.view.findViewById(R.id.img_row_2_col_2);
+        imgRowTwoColTwo.setColorFilter(BAR_COLOR_4);
+
+        ImageView imgRowThreeColOne = this.view.findViewById(R.id.img_row_3_col_1);
+        imgRowThreeColOne.setColorFilter(BAR_COLOR_5);
+
+        ImageView imgRowThreeColTwo = this.view.findViewById(R.id.img_row_3_col_2);
+        imgRowThreeColTwo.setColorFilter(BAR_COLOR_6);
+
+        ImageView imgRowFourColOne = this.view.findViewById(R.id.img_row_4_col_1);
+        imgRowFourColOne.setColorFilter(BAR_COLOR_7);
+
+        ImageView imgRowFourColTwo = this.view.findViewById(R.id.img_row_4_col_2);
+        imgRowFourColTwo.setColorFilter(BAR_COLOR_8);
+
+        ImageView imgRowFiveColOne = this.view.findViewById(R.id.img_row_5_col_1);
+        imgRowFiveColOne.setColorFilter(BAR_COLOR_9);
+
+        ImageView imgRowFiveColTwo = this.view.findViewById(R.id.img_row_5_col_2);
+        imgRowFiveColTwo.setColorFilter(BAR_COLOR_10);
     }
 
     public void addEventClickListenerOnTheChart(){

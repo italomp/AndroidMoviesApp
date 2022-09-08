@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.StatisticsFragment">
+    tools:context=".fragments.statistics.StatisticsFragment">
 
     <RelativeLayout
         android:id="@+id/fragment_statistics"
@@ -42,16 +42,213 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:clipChildren="false"
                 android:clipToPadding="false"
+                android:orientation="vertical"
                 android:paddingBottom="5dp">
 
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/bar_chart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="430dp"/>
+                    android:minHeight="350dp" />
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:paddingBottom="100dp">
+
+                    <TableRow
+                        android:id="@+id/row_1"
+                        android:layout_marginTop="5dp">
+
+                        <LinearLayout android:layout_weight="1">
+
+                            <ImageView
+                                android:id="@+id/img_row_1_col_1"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_chart_legend" />
+
+                            <TextView
+                                android:id="@+id/txt_row_1_col_1"
+                                android:text="Coluna 1"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_marginLeft="5dp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_weight="1"
+                            android:layout_marginLeft="5dp">
+
+                            <ImageView
+                                android:id="@+id/img_row_1_col_2"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_chart_legend" />
+                            <TextView
+                                android:id="@+id/txt_row_1_col_2"
+                                android:text="Coluna 2"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_marginLeft="5dp"/>
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/row_2"
+                        android:layout_marginTop="5dp">
+
+                        <LinearLayout android:layout_weight="1">
+
+                            <ImageView
+                                android:id="@+id/img_row_2_col_1"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_chart_legend" />
+
+                            <TextView
+                                android:id="@+id/txt_row_2_col_1"
+                                android:text="Coluna 1"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_marginLeft="5dp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_weight="1"
+                            android:layout_marginLeft="5dp">
+
+                            <ImageView
+                                android:id="@+id/img_row_2_col_2"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_chart_legend" />
+                            <TextView
+                                android:id="@+id/txt_row_2_col_2"
+                                android:text="Coluna 2"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_marginLeft="5dp"/>
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/row_3"
+                        android:layout_marginTop="5dp">
+
+                        <LinearLayout android:layout_weight="1">
+
+                            <ImageView
+                                android:id="@+id/img_row_3_col_1"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_chart_legend" />
+
+                            <TextView
+                                android:id="@+id/txt_row_3_col_1"
+                                android:text="Coluna 1"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_marginLeft="5dp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_weight="1"
+                            android:layout_marginLeft="5dp">
+
+                            <ImageView
+                                android:id="@+id/img_row_3_col_2"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_chart_legend" />
+                            <TextView
+                                android:id="@+id/txt_row_3_col_2"
+                                android:text="Coluna 2"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_marginLeft="5dp"/>
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/row_4"
+                        android:layout_marginTop="5dp">
+                        <LinearLayout android:layout_weight="1">
+
+                            <ImageView
+                                android:id="@+id/img_row_4_col_1"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_chart_legend" />
+
+                            <TextView
+                                android:id="@+id/txt_row_4_col_1"
+                                android:text="Coluna 1"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_marginLeft="5dp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_weight="1"
+                            android:layout_marginLeft="5dp">
+
+                            <ImageView
+                                android:id="@+id/img_row_4_col_2"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_chart_legend" />
+                            <TextView
+                                android:id="@+id/txt_row_4_col_2"
+                                android:text="Coluna 2"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_marginLeft="5dp"/>
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/row_5"
+                        android:layout_marginTop="5dp">
+                        <LinearLayout android:layout_weight="1">
+
+                            <ImageView
+                                android:id="@+id/img_row_5_col_1"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_chart_legend" />
+
+                            <TextView
+                                android:id="@+id/txt_row_5_col_1"
+                                android:text="Coluna 1"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_marginLeft="5dp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_weight="1"
+                            android:layout_marginLeft="5dp">
+
+                            <ImageView
+                                android:id="@+id/img_row_5_col_2"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_chart_legend" />
+                            <TextView
+                                android:id="@+id/txt_row_5_col_2"
+                                android:text="Coluna 2"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_marginLeft="5dp"/>
+                        </LinearLayout>
+                    </TableRow>
+
+                </TableLayout>
             </LinearLayout>
         </ScrollView>
 

@@ -37,7 +37,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View listItem = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.media_adapter, parent, false);
+                .inflate(R.layout.vh_media_adapter, parent, false);
         return new MovieViewHolder(listItem);
     }
 
