@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,18 +53,17 @@ import retrofit2.Response;
 
 
 public class StatisticsFragment extends Fragment implements Observer {
-    private Observable topTenBudget;
     private Observable topTenRevenue;
     private final String SORT_BY_REVENUE = "revenue.desc";
-    private final String SORT_BY_BUDGET = "budget.desc";
-    BarChart barChart;
-    Context context;
-    Spinner spinnerYear;
-    ArrayAdapter<CharSequence> spinnerAdapter;
-    int[] chartColorArray = new int[10];
-    ProgressBar progressBar;
-    CustomMarkerView customMarkerView;
-    View view;
+    private Context context;
+    private ProgressBar progressBar;
+    private Spinner spinnerYear;
+    private ArrayAdapter<CharSequence> spinnerAdapter;
+    private BarChart barChart;
+    private int[] chartColorArray = new int[10];
+    private CustomMarkerView customMarkerView;
+    private TableLayout chartLegends;
+    private View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,7 +76,7 @@ public class StatisticsFragment extends Fragment implements Observer {
 
         int year = Integer.parseInt(spinnerYear.getSelectedItem().toString());
 
-        Util.showProgressBarAndHiddenView(this.progressBar, this.barChart);
+        Util.showProgressBarAndHiddenView(this.progressBar, new View[]{this.barChart, this.chartLegends});
         this.getMoviesByYear(year, this.SORT_BY_REVENUE, (TopTen) this.topTenRevenue);
 
         return view;
@@ -161,7 +161,7 @@ public class StatisticsFragment extends Fragment implements Observer {
 
             setEntriesToBarChar(topTenMovieList, entries);
             setBarChar(entries);
-            Util.hiddenProgressBarAndShowView(progressBar, barChart);
+            Util.hiddenProgressBarAndShowView(progressBar, new View[] {barChart, chartLegends});
         }
     }
 
@@ -174,7 +174,7 @@ public class StatisticsFragment extends Fragment implements Observer {
         spinnerYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Util.showProgressBarAndHiddenView(progressBar, barChart);
+                Util.showProgressBarAndHiddenView(progressBar, new View[]{barChart, chartLegends});
 
                 // limpar a listagem anterior
                 ((TopTen) topTenRevenue).setTopTen(new ArrayList<>());
@@ -193,12 +193,11 @@ public class StatisticsFragment extends Fragment implements Observer {
     public void setViewsAndVariables(View view){
         this.context = view.getContext();
         this.barChart = view.findViewById(R.id.bar_chart);
-        this.topTenBudget = new TopTen(SORT_BY_BUDGET);
         this.topTenRevenue = new TopTen(SORT_BY_REVENUE);
-        this.topTenBudget.addObserver(this);
         this.topTenRevenue.addObserver(this);
         this.progressBar = view.findViewById(R.id.progress_bar_statistics_fragment);
         this.customMarkerView = new CustomMarkerView(getContext(), R.layout.marker_view);
+        this.chartLegends = view.findViewById(R.id.chart_legends);
     }
 
     public void setEntriesToBarChar(List<Movie> topTenMovieList, List<BarEntry> entries){
@@ -355,11 +354,7 @@ public class StatisticsFragment extends Fragment implements Observer {
         public void addMovie(Movie movie) {
             this.topTen.add(movie);
 
-            if(this.topTen.size() == 10 && this.orderBy == SORT_BY_REVENUE){
-                setChanged();                           // O estado mudou
-                notifyObservers(getTopTenRevenueDesc());   // Notificando objetos
-            }
-            else if(this.topTen.size() == 10 && this.orderBy == SORT_BY_BUDGET){
+            if(this.topTen.size() == 10){
                 setChanged();                           // O estado mudou
                 notifyObservers(getTopTenRevenueDesc());   // Notificando objetos
             }

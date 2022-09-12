@@ -18,13 +18,17 @@ public class Util {
         return Constants.PERSON_TYPE.equals(media.getSubType()) ? true : false;
     }
 
-    public static void showProgressBarAndHiddenView(View progressBar, View view){
+    public static void showProgressBarAndHiddenView(View progressBar, View[] views){
         progressBar.setVisibility(View.VISIBLE);
-        view.setVisibility(View.INVISIBLE);
+        for(int i = 0; i < views.length; i++){
+            views[i].setVisibility(View.INVISIBLE);
+        }
     }
 
-    public static void hiddenProgressBarAndShowView(View progressBar, View view){
+    public static void hiddenProgressBarAndShowView(View progressBar, View[] views){
         progressBar.setVisibility(View.INVISIBLE);
-        view.setVisibility(View.VISIBLE);
+        for(int i = 0; i < views.length; i++){
+            views[i].setVisibility(View.VISIBLE);
+        }
     }
 }

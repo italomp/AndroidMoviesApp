@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -83,7 +84,8 @@ public class SearchFragment extends Fragment {
     }
 
     public void getMovies(View view){
-        Util.showProgressBarAndHiddenView(this.progressBar, view.findViewById(R.id.scroll_search_views));
+        ScrollView scrollView = view.findViewById(R.id.scroll_search_views);
+        Util.showProgressBarAndHiddenView(this.progressBar, new View[]{scrollView});
         ApiService.getMovieService().getMovies(Constants.API_KEY).enqueue(new Callback<MediaResponseList>() {
             @Override
             public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
@@ -92,7 +94,7 @@ public class SearchFragment extends Fragment {
                     List<MediaResponse> mediaResponseList = response.body().getMediaList();
                     List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
                     mediaAdapter.setMediaList(mediaList);
-                    Util.hiddenProgressBarAndShowView(progressBar, view.findViewById(R.id.scroll_search_views));
+                    Util.hiddenProgressBarAndShowView(progressBar, new View[]{scrollView});
                 }
                 else{
                     // Poderia tratar alguns casos de erro específicos...
