@@ -4,9 +4,7 @@ import android.content.Context;
 import android.widget.TextView;
 
 import com.example.retrofit_with_recyclerview.R;
-import com.example.retrofit_with_recyclerview.models.Media;
 import com.example.retrofit_with_recyclerview.models.Movie;
-import com.example.retrofit_with_recyclerview.models.Show;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;

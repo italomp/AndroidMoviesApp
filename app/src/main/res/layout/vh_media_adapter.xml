@@ -16,7 +16,7 @@
             android:scaleType="fitXY" />
 
         <TextView
-            android:id="@+id/media_tittle"
+            android:id="@+id/media_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/image_media_poster"

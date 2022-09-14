@@ -58,7 +58,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
 
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.movieTittle = itemView.findViewById(R.id.media_tittle);
+            this.movieTittle = itemView.findViewById(R.id.media_title);
             this.imagePosterMovie = itemView.findViewById(R.id.image_media_poster);
         }
     }
