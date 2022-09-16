@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -19,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.retrofit_with_recyclerview.R;
-import com.example.retrofit_with_recyclerview.adapters.MediaAdapter;
 import com.example.retrofit_with_recyclerview.models.Media;
 import com.example.retrofit_with_recyclerview.models.Movie;
 import com.example.retrofit_with_recyclerview.models.Person;
@@ -123,34 +123,114 @@ public class SearchFragment extends Fragment {
     }
 
     public void fillItemList(List<Media> mediaList){
-        String mediaTitle = null;
-        String posterPath;
-        TextView textView;
-        ImageView imageView;
+        TextView titleMediaView = new TextView(getContext());
+        ImageView posterMediaView = new ImageView(getContext());
+        int amountMediaInGridView = 20;
 
-        for(Media media: mediaList){
-            View item = LayoutInflater.from(getContext()).inflate(
-                    R.layout.vh_media_adapter, (ViewGroup) this.view, false);
-            textView = item.findViewById(R.id.media_title);
-            imageView = (ImageView) item.findViewById(R.id.image_media_poster);
-            posterPath = ((Movie) media).getPosterPath();
+        for(int i = 0; i < amountMediaInGridView; i++){
+            Media currentMedia = mediaList.get(i);
 
-            if(Util.isItMovie(media)){
-                mediaTitle = ((Movie) media).getTitle();
+            titleMediaView = (TextView) getMediaTitleView(i)[0];
+            posterMediaView = (ImageView) getMediaTitleView(i)[1];
+            setTitleMediaView(titleMediaView, currentMedia);
+            setPosterMovie(posterMediaView, currentMedia);
+
+            if(i == 15){
+                System.out.println("itme 15 " + currentMedia.getTitle());
             }
-            else if(Util.isItShow(media)){
-                mediaTitle = ((Show) media).getName();
-            }
-
-            textView.setText(mediaTitle);
-            Picasso.get()
-                    .load("https://image.tmdb.org/t/p/w342/" + posterPath)
-                    .into(imageView);
-
-            this.moviesList.addView(item);
         }
     }
 
+    public View[] getMediaTitleView(int i){
+        System.out.println("Entrou no getMediaTitleViewAndPosterView");
+        System.out.println("valor de i: " + i);
+        switch(i){
+            case 0:
+                System.out.println("entrou no case 0");
+                return new View[] {view.findViewById(R.id.media_title_1), view.findViewById(R.id.image_media_poster_1)};
+
+            case 1:
+                System.out.println("entrou no case 1");
+                return new View[] {view.findViewById(R.id.media_title_2), view.findViewById(R.id.image_media_poster_2)};
+
+            case 2:
+                System.out.println("entrou no case 2");
+                return new View[] {view.findViewById(R.id.media_title_3), view.findViewById(R.id.image_media_poster_3)};
+
+            case 3:
+                return new View[] {view.findViewById(R.id.media_title_4), view.findViewById(R.id.image_media_poster_4)};
+
+            case 4:
+                return new View[] {view.findViewById(R.id.media_title_5), view.findViewById(R.id.image_media_poster_5)};
+
+            case 5:
+                return new View[] {view.findViewById(R.id.media_title_6), view.findViewById(R.id.image_media_poster_6)};
+
+            case 6:
+                return new View[] {view.findViewById(R.id.media_title_7), view.findViewById(R.id.image_media_poster_7)};
+
+            case 7:
+                return new View[] {view.findViewById(R.id.media_title_8), view.findViewById(R.id.image_media_poster_8)};
+
+            case 8:
+                return new View[] {view.findViewById(R.id.media_title_9), view.findViewById(R.id.image_media_poster_9)};
+
+            case 9:
+                return new View[] {view.findViewById(R.id.media_title_10), view.findViewById(R.id.image_media_poster_10)};
+
+            case 10:
+                return new View[] {view.findViewById(R.id.media_title_11), view.findViewById(R.id.image_media_poster_11)};
+
+            case 11:
+                return new View[] {view.findViewById(R.id.media_title_12), view.findViewById(R.id.image_media_poster_12)};
+
+            case 12:
+                return new View[] {view.findViewById(R.id.media_title_13), view.findViewById(R.id.image_media_poster_13)};
+
+            case 13:
+                return new View[] {view.findViewById(R.id.media_title_14), view.findViewById(R.id.image_media_poster_14)};
+
+            case 14:
+                return new View[] {view.findViewById(R.id.media_title_15), view.findViewById(R.id.image_media_poster_15)};
+
+            case 15:
+                return new View[] {view.findViewById(R.id.media_title_16), view.findViewById(R.id.image_media_poster_16)};
+
+            case 16:
+                return new View[] {view.findViewById(R.id.media_title_17), view.findViewById(R.id.image_media_poster_17)};
+
+            case 17:
+                return new View[] {view.findViewById(R.id.media_title_18), view.findViewById(R.id.image_media_poster_18)};
+
+            case 18:
+                return new View[] {view.findViewById(R.id.media_title_19), view.findViewById(R.id.image_media_poster_19)};
+
+            case 19:
+                System.out.println("entrou no case 19");
+                return new View[] {view.findViewById(R.id.media_title_20), view.findViewById(R.id.image_media_poster_20)};
+        }
+        return null;
+    }
+
+    public void setPosterMovie(ImageView posterMediaView, Media media){
+        String posterPath = ((Movie) media).getPosterPath();
+        Picasso.get()
+                .load("https://image.tmdb.org/t/p/w342/" + posterPath)
+                .into(posterMediaView);
+    }
+
+    public void setTitleMediaView(TextView titleMediaView, Media media){
+        String mediaTitle = "";
+
+        if(Util.isItMovie(media)){
+            mediaTitle = ((Movie) media).getTitle();
+        }
+        else if(Util.isItShow(media)){
+            mediaTitle = ((Show) media).getName();
+        }
+
+        titleMediaView.setText(mediaTitle);
+    }
 
     public void setSearchViews(){
         this.searchView = this.view.findViewById(R.id.search_view);
