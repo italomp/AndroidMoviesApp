@@ -142,7 +142,6 @@ public class SearchFragment extends Fragment {
     }
 
     public View[] getMediaTitleView(int i){
-        System.out.println("Entrou no getMediaTitleViewAndPosterView");
         System.out.println("valor de i: " + i);
         switch(i){
             case 0:
