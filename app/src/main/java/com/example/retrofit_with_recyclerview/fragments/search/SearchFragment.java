@@ -1,17 +1,15 @@
 package com.example.retrofit_with_recyclerview.fragments.search;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -20,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.retrofit_with_recyclerview.R;
+import com.example.retrofit_with_recyclerview.activities.MediaDetailsActivity;
 import com.example.retrofit_with_recyclerview.models.Media;
 import com.example.retrofit_with_recyclerview.models.Movie;
 import com.example.retrofit_with_recyclerview.models.Person;
@@ -43,42 +42,25 @@ import retrofit2.Response;
 
 
 public class SearchFragment extends Fragment {
-//    RecyclerView recyclerView;
-//    MediaAdapter mediaAdapter;
     SearchView searchView;
     ProgressBar progressBar;
-    GridLayout moviesList;
     View view;
-
+    ArrayList<View[]> cardsComponentsList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        this.moviesList = view.findViewById(R.id.movies_list);
-
         setViews();
-        setSearchViews();
         getMovies();
+        setSearchViews();
         return view;
     }
 
     public void setViews(){
         this.progressBar = this.view.findViewById(R.id.progress_bar_search_fragment);
-        this.setRecyclerView(view);
-    }
-
-    public void setRecyclerView(View view){
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(view.getContext(), 2);
-//        this.mediaAdapter = new MediaAdapter(view.getContext());
-//        this.mediaAdapter.setHasStableIds(true);
-
-//        this.recyclerView = view.findViewById(R.id.recycler_medias);
-//
-//        this.recyclerView.setLayoutManager(layoutManager);
-//        this.recyclerView.setHasFixedSize(true);
-//        this.recyclerView.setAdapter(this.mediaAdapter);
+        this.fillCardsComponentsList();
     }
 
     public void showErrorMessage(View view, String msg){
@@ -86,6 +68,7 @@ public class SearchFragment extends Fragment {
     }
 
     public void renderingMediasOrNotFoundMessage(List<Media> mediaList){
+        System.out.println("dentro do renderingMediasOrNotFoundMessage");
         if (!mediaList.isEmpty())
             fillItemList(mediaList);
 
@@ -103,7 +86,6 @@ public class SearchFragment extends Fragment {
                 if(response.isSuccessful()){
                     List<MediaResponse> mediaResponseList = response.body().getMediaList();
                     List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
-//                    mediaAdapter.setMediaList(mediaList);
                     fillItemList(mediaList);
 
                     Util.hiddenProgressBarAndShowView(progressBar, new View[]{scrollView});
@@ -123,96 +105,160 @@ public class SearchFragment extends Fragment {
     }
 
     public void fillItemList(List<Media> mediaList){
-        TextView titleMediaView = new TextView(getContext());
-        ImageView posterMediaView = new ImageView(getContext());
+        System.out.println("dentro do fillItemList");
+        TextView titleMediaView;// = new TextView(getContext());
+        ImageView posterMediaView;// = new ImageView(getContext());
         int amountMediaInGridView = 20;
 
         for(int i = 0; i < amountMediaInGridView; i++){
             Media currentMedia = mediaList.get(i);
+//            View[] views = getMediaTitleViewAndMediaPosterView(i);
+            titleMediaView = (TextView) this.cardsComponentsList.get(i)[0];   // views[0];
+            posterMediaView = (ImageView) this.cardsComponentsList.get(i)[1];    // views[1];
 
-            titleMediaView = (TextView) getMediaTitleView(i)[0];
-            posterMediaView = (ImageView) getMediaTitleView(i)[1];
+            System.out.println("i dentro do fillItemList: " + i);
+            System.out.println("titleMediaView == null: " + (titleMediaView == null));
+            System.out.println("posterMediaView == null: " + (posterMediaView == null));
+
             setTitleMediaView(titleMediaView, currentMedia);
             setPosterMovie(posterMediaView, currentMedia);
 
-            if(i == 15){
-                System.out.println("itme 15 " + currentMedia.getTitle());
-            }
+            setOnClickListener(titleMediaView, currentMedia);
+            setOnClickListener(posterMediaView, currentMedia);
         }
     }
 
-    public View[] getMediaTitleView(int i){
-        System.out.println("valor de i: " + i);
-        switch(i){
-            case 0:
-                System.out.println("entrou no case 0");
-                return new View[] {view.findViewById(R.id.media_title_1), view.findViewById(R.id.image_media_poster_1)};
+    public void setOnClickListener(View view, Media media){
+        view.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), MediaDetailsActivity.class);
+                        intent.putExtra("media", media);
+                        startActivity(intent);
+                    }
+                }
+        );
+    }
 
-            case 1:
-                System.out.println("entrou no case 1");
-                return new View[] {view.findViewById(R.id.media_title_2), view.findViewById(R.id.image_media_poster_2)};
+    public void fillCardsComponentsList(){
+        this.cardsComponentsList = new ArrayList<>();
+        int maxAmountItems = 20;
 
-            case 2:
-                System.out.println("entrou no case 2");
-                return new View[] {view.findViewById(R.id.media_title_3), view.findViewById(R.id.image_media_poster_3)};
+        for(int i = 0; i < maxAmountItems; i++){
+            switch(i){
+                case 0:
+                     this.cardsComponentsList.add(new View[] {
+                             view.findViewById(R.id.media_title_1),
+                                view.findViewById(R.id.image_media_poster_1)});
 
-            case 3:
-                return new View[] {view.findViewById(R.id.media_title_4), view.findViewById(R.id.image_media_poster_4)};
+                case 1:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_2),
+                            view.findViewById(R.id.image_media_poster_2)});
 
-            case 4:
-                return new View[] {view.findViewById(R.id.media_title_5), view.findViewById(R.id.image_media_poster_5)};
+                case 2:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_3),
+                            view.findViewById(R.id.image_media_poster_3)});
 
-            case 5:
-                return new View[] {view.findViewById(R.id.media_title_6), view.findViewById(R.id.image_media_poster_6)};
+                case 3:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_4),
+                            view.findViewById(R.id.image_media_poster_4)});
 
-            case 6:
-                return new View[] {view.findViewById(R.id.media_title_7), view.findViewById(R.id.image_media_poster_7)};
+                case 4:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_5),
+                            view.findViewById(R.id.image_media_poster_5)});
 
-            case 7:
-                return new View[] {view.findViewById(R.id.media_title_8), view.findViewById(R.id.image_media_poster_8)};
+                case 5:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_6),
+                            view.findViewById(R.id.image_media_poster_6)});
 
-            case 8:
-                return new View[] {view.findViewById(R.id.media_title_9), view.findViewById(R.id.image_media_poster_9)};
+                case 6:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_7),
+                            view.findViewById(R.id.image_media_poster_7)});
 
-            case 9:
-                return new View[] {view.findViewById(R.id.media_title_10), view.findViewById(R.id.image_media_poster_10)};
+                case 7:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_8),
+                            view.findViewById(R.id.image_media_poster_8)});
 
-            case 10:
-                return new View[] {view.findViewById(R.id.media_title_11), view.findViewById(R.id.image_media_poster_11)};
+                case 8:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_9),
+                            view.findViewById(R.id.image_media_poster_9)});
 
-            case 11:
-                return new View[] {view.findViewById(R.id.media_title_12), view.findViewById(R.id.image_media_poster_12)};
+                case 9:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_10),
+                            view.findViewById(R.id.image_media_poster_10)});
 
-            case 12:
-                return new View[] {view.findViewById(R.id.media_title_13), view.findViewById(R.id.image_media_poster_13)};
+                case 10:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_11),
+                            view.findViewById(R.id.image_media_poster_11)});
 
-            case 13:
-                return new View[] {view.findViewById(R.id.media_title_14), view.findViewById(R.id.image_media_poster_14)};
+                case 11:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_12),
+                            view.findViewById(R.id.image_media_poster_12)});
 
-            case 14:
-                return new View[] {view.findViewById(R.id.media_title_15), view.findViewById(R.id.image_media_poster_15)};
+                case 12:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_13),
+                            view.findViewById(R.id.image_media_poster_13)});
 
-            case 15:
-                return new View[] {view.findViewById(R.id.media_title_16), view.findViewById(R.id.image_media_poster_16)};
+                case 13:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_14),
+                            view.findViewById(R.id.image_media_poster_14)});
 
-            case 16:
-                return new View[] {view.findViewById(R.id.media_title_17), view.findViewById(R.id.image_media_poster_17)};
+                case 14:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_15),
+                            view.findViewById(R.id.image_media_poster_15)});
 
-            case 17:
-                return new View[] {view.findViewById(R.id.media_title_18), view.findViewById(R.id.image_media_poster_18)};
+                case 15:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_16),
+                            view.findViewById(R.id.image_media_poster_16)});
 
-            case 18:
-                return new View[] {view.findViewById(R.id.media_title_19), view.findViewById(R.id.image_media_poster_19)};
+                case 16:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_17),
+                            view.findViewById(R.id.image_media_poster_17)});
 
-            case 19:
-                System.out.println("entrou no case 19");
-                return new View[] {view.findViewById(R.id.media_title_20), view.findViewById(R.id.image_media_poster_20)};
+                case 17:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_18),
+                            view.findViewById(R.id.image_media_poster_18)});
+
+                case 18:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_19),
+                            view.findViewById(R.id.image_media_poster_19)});
+
+                case 19:
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_20),
+                            view.findViewById(R.id.image_media_poster_20)});
+            }
         }
-        return null;
+
     }
 
     public void setPosterMovie(ImageView posterMediaView, Media media){
-        String posterPath = ((Movie) media).getPosterPath();
+        String posterPath = "";
+
+        if(Util.isItMovie(media))
+            posterPath = ((Movie) media).getPosterPath();
+        else if(Util.isItShow(media))
+            posterPath = ((Show) media).getPosterPath();
+
         Picasso.get()
                 .load("https://image.tmdb.org/t/p/w342/" + posterPath)
                 .into(posterMediaView);
@@ -221,12 +267,10 @@ public class SearchFragment extends Fragment {
     public void setTitleMediaView(TextView titleMediaView, Media media){
         String mediaTitle = "";
 
-        if(Util.isItMovie(media)){
+        if(Util.isItMovie(media))
             mediaTitle = ((Movie) media).getTitle();
-        }
-        else if(Util.isItShow(media)){
+        else if(Util.isItShow(media))
             mediaTitle = ((Show) media).getName();
-        }
 
         titleMediaView.setText(mediaTitle);
     }
@@ -249,10 +293,13 @@ public class SearchFragment extends Fragment {
                         .enqueue(new Callback<MediaResponseList>() {
                             @Override
                             public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
+                                System.out.println("onResponse dentro do setSearchViews");
                                 if(response.isSuccessful()){
-                                    // Limpando o recycler view
-//                                    mediaAdapter.setMediaList(new ArrayList<Media>());
-                                    moviesList.removeAllViews();
+                                    // removendo grid items
+                                    GridLayout gridLayout = view.findViewById(R.id.movies_list);
+                                    gridLayout.removeAllViews();
+                                    cardsComponentsList.clear();
+                                    fillCardsComponentsList();
 
                                     List<MediaResponse> mediaResponseList = response.body().getMediaList();
                                     List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
