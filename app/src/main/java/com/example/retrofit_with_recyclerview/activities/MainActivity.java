@@ -10,8 +10,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.retrofit_with_recyclerview.R;
-import com.example.retrofit_with_recyclerview.fragments.search.SearchFragment;
-import com.example.retrofit_with_recyclerview.fragments.statistics.StatisticsFragment;
+import com.example.retrofit_with_recyclerview.fragments.SearchFragment;
+import com.example.retrofit_with_recyclerview.fragments.StatisticsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 

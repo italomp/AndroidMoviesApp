@@ -1,4 +1,4 @@
-package com.example.retrofit_with_recyclerview.fragments.search;
+package com.example.retrofit_with_recyclerview.fragments;
 
 
 import android.content.Intent;
@@ -114,7 +114,7 @@ public class SearchFragment extends Fragment {
             Media currentMedia = mediaList.get(i);
             CardView newGridView = (CardView) LayoutInflater
                     .from(getContext())
-                    .inflate(R.layout.vh_media_adapter, gridLayout, false);
+                    .inflate(R.layout.media_card_view, gridLayout, false);
             TextView titleMediaView = newGridView.findViewById(R.id.media_title);
             ImageView posterMediaView = newGridView.findViewById(R.id.image_media_poster);
 
