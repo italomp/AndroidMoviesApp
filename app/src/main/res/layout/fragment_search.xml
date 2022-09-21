@@ -36,7 +36,7 @@
                     android:queryHint="@string/placeholder_search" />
 
                 <GridLayout
-                    android:id="@+id/movies_list"
+                    android:id="@+id/grid_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:alignmentMode="alignBounds"
@@ -47,8 +47,9 @@
 
                     <!-- LINHA 1 -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_1"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="0"
                         android:layout_column="0"
                         android:layout_marginStart="10dp"
@@ -80,8 +81,9 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_2"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="0"
                         android:layout_column="1"
                         android:layout_marginStart="8dp"
@@ -114,8 +116,9 @@
 
                     <!-- LINHA 2 -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_3"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="1"
                         android:layout_column="0"
                         android:layout_marginStart="8dp"
@@ -147,8 +150,9 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_4"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="1"
                         android:layout_column="1"
                         android:layout_marginStart="8dp"
@@ -181,8 +185,9 @@
 
                     <!-- LINHA 3 -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_5"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="2"
                         android:layout_column="0"
                         android:layout_marginStart="8dp"
@@ -214,8 +219,9 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_6"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="2"
                         android:layout_column="1"
                         android:layout_marginStart="8dp"
@@ -248,8 +254,9 @@
 
                     <!-- LINHA 4 -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_7"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="3"
                         android:layout_column="0"
                         android:layout_marginStart="8dp"
@@ -281,8 +288,9 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_8"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="3"
                         android:layout_column="1"
                         android:layout_marginStart="8dp"
@@ -315,8 +323,9 @@
 
                     <!-- LINHA 5 -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_9"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="4"
                         android:layout_column="0"
                         android:layout_marginStart="8dp"
@@ -348,8 +357,9 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_10"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="4"
                         android:layout_column="1"
                         android:layout_marginStart="8dp"
@@ -382,8 +392,9 @@
 
                     <!-- LINHA 6 -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_11"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="5"
                         android:layout_column="0"
                         android:layout_marginStart="8dp"
@@ -415,8 +426,9 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_12"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="5"
                         android:layout_column="1"
                         android:layout_marginStart="8dp"
@@ -449,8 +461,9 @@
 
                     <!-- LINHA 7 -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_13"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="6"
                         android:layout_column="0"
                         android:layout_marginStart="8dp"
@@ -482,8 +495,9 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_14"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="6"
                         android:layout_column="1"
                         android:layout_marginStart="8dp"
@@ -516,8 +530,9 @@
 
                     <!-- LINHA 8 -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_15"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="7"
                         android:layout_column="0"
                         android:layout_marginStart="8dp"
@@ -549,8 +564,9 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_16"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="7"
                         android:layout_column="1"
                         android:layout_marginStart="8dp"
@@ -583,8 +599,9 @@
 
                     <!-- LINHA 9 -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_17"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="8"
                         android:layout_column="0"
                         android:layout_marginStart="8dp"
@@ -616,8 +633,9 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_18"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="8"
                         android:layout_column="1"
                         android:layout_marginStart="8dp"
@@ -650,8 +668,9 @@
 
                     <!-- LINHA 10 -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_19"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="9"
                         android:layout_column="0"
                         android:layout_marginStart="8dp"
@@ -683,8 +702,9 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_20"
                         android:layout_width="180dp"
-                        android:layout_height="275dp"
+                        android:layout_height="wrap_content"
                         android:layout_row="9"
                         android:layout_column="1"
                         android:layout_marginStart="8dp"

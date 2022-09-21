@@ -4,12 +4,14 @@ package com.example.retrofit_with_recyclerview.fragments.search;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -46,6 +48,8 @@ public class SearchFragment extends Fragment {
     ProgressBar progressBar;
     View view;
     ArrayList<View[]> cardsComponentsList;
+    ArrayList<CardView> cardViews;
+//    Set<Media> mediaSet;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,8 +63,34 @@ public class SearchFragment extends Fragment {
     }
 
     public void setViews(){
+//        this.mediaSet = new HashSet<>();
         this.progressBar = this.view.findViewById(R.id.progress_bar_search_fragment);
+        this.fillCardViews();
         this.fillCardsComponentsList();
+    }
+
+    public void fillCardViews(){
+        this.cardViews = new ArrayList<>();
+        this.cardViews.add(this.view.findViewById(R.id.card_view_1));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_2));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_3));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_4));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_5));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_6));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_7));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_8));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_9));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_10));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_11));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_12));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_13));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_14));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_15));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_16));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_17));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_18));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_19));
+        this.cardViews.add(this.view.findViewById(R.id.card_view_20));
     }
 
     public void showErrorMessage(View view, String msg){
@@ -105,26 +135,38 @@ public class SearchFragment extends Fragment {
     }
 
     public void fillItemList(List<Media> mediaList){
-        System.out.println("dentro do fillItemList");
-        TextView titleMediaView;// = new TextView(getContext());
-        ImageView posterMediaView;// = new ImageView(getContext());
+        TextView titleMediaView;
+        ImageView posterMediaView;
         int amountMediaInGridView = 20;
 
-        for(int i = 0; i < amountMediaInGridView; i++){
-            Media currentMedia = mediaList.get(i);
-//            View[] views = getMediaTitleViewAndMediaPosterView(i);
-            titleMediaView = (TextView) this.cardsComponentsList.get(i)[0];   // views[0];
-            posterMediaView = (ImageView) this.cardsComponentsList.get(i)[1];    // views[1];
+        ArrayList<CardView> cardViewsThatWillBeExcluded = new ArrayList<>();
 
-            System.out.println("i dentro do fillItemList: " + i);
-            System.out.println("titleMediaView == null: " + (titleMediaView == null));
-            System.out.println("posterMediaView == null: " + (posterMediaView == null));
+        for(int i = 0; i < amountMediaInGridView; i++){
+            if(i >= mediaList.size()) {
+                for(int j = i; j < amountMediaInGridView; j++){
+                    CardView currCardView = this.cardViews.get(j);
+                    currCardView.setVisibility(View.INVISIBLE);
+//                    cardViewsThatWillBeExcluded.add(currCardView);
+                }
+                break;
+            }
+
+            Media currentMedia = mediaList.get(i);
+            titleMediaView = (TextView) this.cardsComponentsList.get(i)[0];
+            posterMediaView = (ImageView) this.cardsComponentsList.get(i)[1];
 
             setTitleMediaView(titleMediaView, currentMedia);
             setPosterMovie(posterMediaView, currentMedia);
 
             setOnClickListener(titleMediaView, currentMedia);
             setOnClickListener(posterMediaView, currentMedia);
+        }
+
+        if(!cardViewsThatWillBeExcluded.isEmpty()){
+            System.out.println("cardViewsThatWillBeExcluded.size(): " + cardViewsThatWillBeExcluded.size());
+            for(CardView cardView : cardViewsThatWillBeExcluded){
+
+            }
         }
     }
 
@@ -141,6 +183,101 @@ public class SearchFragment extends Fragment {
         );
     }
 
+    public void setPosterMovie(ImageView posterMediaView, Media media){
+        String posterPath = "";
+
+        if(Util.isItMovie(media))
+            posterPath = ((Movie) media).getPosterPath();
+        else if(Util.isItShow(media))
+            posterPath = ((Show) media).getPosterPath();
+
+        Picasso.get()
+                .load("https://image.tmdb.org/t/p/w342/" + posterPath)
+                .into(posterMediaView);
+    }
+
+    public void setTitleMediaView(TextView titleMediaView, Media media){
+        String mediaTitle = "";
+
+        if(Util.isItMovie(media))
+            mediaTitle = ((Movie) media).getTitle();
+        else if(Util.isItShow(media))
+            mediaTitle = ((Show) media).getName();
+
+        titleMediaView.setText(mediaTitle);
+    }
+
+    public void setSearchViews(){
+        this.searchView = this.view.findViewById(R.id.search_view);
+        this.searchView.clearFocus();
+
+        this.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Pesquisando Filmes, Shows e Pessoas
+                ApiService.getMediaService()
+                        .multiSearch(Constants.API_KEY, newText)
+                        .enqueue(new Callback<MediaResponseList>() {
+                            @Override
+                            public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
+                                System.out.println("onResponse dentro do setSearchViews");
+                                if(response.isSuccessful()){
+                                    // removendo grid items
+//                                    GridLayout gridLayout = view.findViewById(R.id.grid_layout);
+//                                    gridLayout.removeAllViews();
+//                                    cardsComponentsList.clear();
+                                    fillCardsComponentsList();
+                                    fillCardViews();
+
+                                    List<MediaResponse> mediaResponseList = response.body().getMediaList();
+                                    List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
+
+                                    // Extraindo Movies e Shows de objetos Person
+                                    mediaList = parseMedia(mediaList);
+
+                                    renderingMediasOrNotFoundMessage(mediaList);
+                                }
+                                else{
+                                    showErrorMessage(view, "HTTP Status Code: " + response.code());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<MediaResponseList> call, Throwable t) {
+
+                            }
+                        });
+
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Esse método recebe uma lista de Medias contendo Medias do tipo Person e retorna
+     * uma lista de Medias contendo apenas Movies e Shows.
+     */
+    public List<Media> parseMedia(List<Media> mediaList){
+        List<Media> result = new ArrayList<>();
+        Set<Media> mediaSet = new HashSet<>();
+
+        for(Media media : mediaList){
+            if(Util.isItMovie(media) || Util.isItShow(media))
+                mediaSet.add(media);
+
+            else
+                mediaSet.addAll(((Person) media).getMoviesAndShows());
+        }
+
+        result.addAll(mediaSet);
+        return result;
+    }
+
     public void fillCardsComponentsList(){
         this.cardsComponentsList = new ArrayList<>();
         int maxAmountItems = 20;
@@ -148,9 +285,9 @@ public class SearchFragment extends Fragment {
         for(int i = 0; i < maxAmountItems; i++){
             switch(i){
                 case 0:
-                     this.cardsComponentsList.add(new View[] {
-                             view.findViewById(R.id.media_title_1),
-                                view.findViewById(R.id.image_media_poster_1)});
+                    this.cardsComponentsList.add(new View[] {
+                            view.findViewById(R.id.media_title_1),
+                            view.findViewById(R.id.image_media_poster_1)});
 
                 case 1:
                     this.cardsComponentsList.add(new View[] {
@@ -250,99 +387,4 @@ public class SearchFragment extends Fragment {
         }
 
     }
-
-    public void setPosterMovie(ImageView posterMediaView, Media media){
-        String posterPath = "";
-
-        if(Util.isItMovie(media))
-            posterPath = ((Movie) media).getPosterPath();
-        else if(Util.isItShow(media))
-            posterPath = ((Show) media).getPosterPath();
-
-        Picasso.get()
-                .load("https://image.tmdb.org/t/p/w342/" + posterPath)
-                .into(posterMediaView);
-    }
-
-    public void setTitleMediaView(TextView titleMediaView, Media media){
-        String mediaTitle = "";
-
-        if(Util.isItMovie(media))
-            mediaTitle = ((Movie) media).getTitle();
-        else if(Util.isItShow(media))
-            mediaTitle = ((Show) media).getName();
-
-        titleMediaView.setText(mediaTitle);
-    }
-
-    public void setSearchViews(){
-        this.searchView = this.view.findViewById(R.id.search_view);
-        this.searchView.clearFocus();
-
-        this.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                // Pesquisando Filmes, Shows e Pessoas
-                ApiService.getMediaService()
-                        .multiSearch(Constants.API_KEY, newText)
-                        .enqueue(new Callback<MediaResponseList>() {
-                            @Override
-                            public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
-                                System.out.println("onResponse dentro do setSearchViews");
-                                if(response.isSuccessful()){
-                                    // removendo grid items
-                                    GridLayout gridLayout = view.findViewById(R.id.movies_list);
-                                    gridLayout.removeAllViews();
-                                    cardsComponentsList.clear();
-                                    fillCardsComponentsList();
-
-                                    List<MediaResponse> mediaResponseList = response.body().getMediaList();
-                                    List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
-
-                                    // Extraindo Movies e Shows de objetos Person
-                                    mediaList = parseMedia(mediaList);
-
-                                    renderingMediasOrNotFoundMessage(mediaList);
-                                }
-                                else{
-                                    showErrorMessage(view, "HTTP Status Code: " + response.code());
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<MediaResponseList> call, Throwable t) {
-
-                            }
-                        });
-
-                return true;
-            }
-        });
-    }
-
-    /**
-     * Esse método recebe uma lista de Medias contendo Medias do tipo Person e retorna
-     * uma lista de Medias contendo apenas Movies e Shows.
-     */
-    public List<Media> parseMedia(List<Media> mediaList){
-        List<Media> result = new ArrayList<>();
-        Set<Media> mediaSet = new HashSet<>();
-
-        for(Media media : mediaList){
-            if(Util.isItMovie(media) || Util.isItShow(media))
-                mediaSet.add(media);
-
-            else
-                mediaSet.addAll(((Person) media).getMoviesAndShows());
-        }
-
-        result.addAll(mediaSet);
-        return result;
-    }
-
 }
