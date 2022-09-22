@@ -3,7 +3,9 @@ package com.example.retrofit_with_recyclerview.responses;
 import com.squareup.moshi.Json;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CrewResponse {
     @Json(name = "crew")
@@ -26,7 +28,8 @@ public class CrewResponse {
     public String getToStringEmployeesByDepartment(String department, int maxLengthList){
         if(department == null) return null;
         String result = "";
-        List<String> employeeList = getEmployeesByDepartment(department, maxLengthList);
+        List<String> employeeList = new ArrayList<>();
+        employeeList.addAll(getEmployeesByDepartment(department, maxLengthList));
 
         for(int i = 0; i < employeeList.size(); i++){
             int lastPosition = employeeList.size() - 1;
@@ -39,17 +42,17 @@ public class CrewResponse {
         return result;
     }
 
-    public List<String> getEmployeesByDepartment(String department, int maxLengthList){
-        ArrayList<String> employeeList = new ArrayList<>();
+    public Set<String> getEmployeesByDepartment(String department, int maxLengthList){
+        HashSet<String> employeeSet = new HashSet<>();
         for(int i = 0; i < this.crew.size(); i++){
-            if (employeeList.size() == maxLengthList) break;
+            if (employeeSet.size() == maxLengthList) break;
 
             EmployeeResponse emp = this.crew.get(i);
             if (department.equalsIgnoreCase(emp.getDepartment())){
-                employeeList.add(emp.getName());
+                employeeSet.add(emp.getName());
             }
         }
-        return employeeList;
+        return employeeSet;
     }
 
 }
