@@ -55,4 +55,7 @@ public class CrewResponse {
         return employeeSet;
     }
 
+    public List<EmployeeResponse> getCrew() {
+        return crew;
+    }
 }

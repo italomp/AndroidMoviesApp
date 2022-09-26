@@ -1,9 +1,14 @@
 package com.example.retrofit_with_recyclerview.activities;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.viewpager2.widget.ViewPager2;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -11,11 +16,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.retrofit_with_recyclerview.R;
+import com.example.retrofit_with_recyclerview.models.Crew;
+import com.example.retrofit_with_recyclerview.models.Employee;
 import com.example.retrofit_with_recyclerview.models.Media;
 import com.example.retrofit_with_recyclerview.responses.CrewResponse;
 import com.example.retrofit_with_recyclerview.responses.MediaDetailsResponse;
 import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.Constants;
+import com.example.retrofit_with_recyclerview.util.CrewMapper;
 import com.example.retrofit_with_recyclerview.util.Util;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.squareup.picasso.Picasso;
@@ -37,6 +45,7 @@ public class MediaDetailsActivity extends AppCompatActivity {
     ScrollView mediaDetailsScroll;
 
     @Override
+    @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_details);
@@ -65,6 +74,7 @@ public class MediaDetailsActivity extends AppCompatActivity {
         this.layoutCrewList = findViewById(R.id.crew_list);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void getMediaDetails(){
         if(Util.isItMovie(this.media)){
             ApiService.getMovieService()
@@ -119,6 +129,7 @@ public class MediaDetailsActivity extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void getCrew(Media media) {
         if(Util.isItMovie(this.media)){
             ApiService.getMovieService()
@@ -127,7 +138,10 @@ public class MediaDetailsActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<CrewResponse> call, Response<CrewResponse> response) {
                             // HTTP status code de 200 a 299
-                            if (response.isSuccessful()) setCrewList(response);
+                            if (response.isSuccessful()){
+                                Crew crew = CrewMapper.mapperCrewResponseToCrew(response.body());
+                                setCrewList(crew);
+                            }
 
                             // HTTP status code diferente de 200 a 299
                             else showMessageError("HTTP status code: " + response.code());
@@ -151,7 +165,10 @@ public class MediaDetailsActivity extends AppCompatActivity {
                     .enqueue(new Callback<CrewResponse>() {
                         @Override
                         public void onResponse(Call<CrewResponse> call, Response<CrewResponse> response) {
-                            if(response.isSuccessful()) setCrewList(response);
+                            if(response.isSuccessful()){
+                                Crew crew = CrewMapper.mapperCrewResponseToCrew(response.body());
+                                setCrewList(crew);
+                            }
 
                             else showMessageError("HTTP status code: " + response.code());
 
@@ -204,29 +221,45 @@ public class MediaDetailsActivity extends AppCompatActivity {
         Toast.makeText(MediaDetailsActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    public void setCrewList(Response<CrewResponse> response){
-        CrewResponse crewResponse = response.body();
-        List<String> departments = crewResponse.getAllDepartments();
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void setCrewList(Crew crew){
+        List<String> departments = crew.getAllDepartments();
         LinearLayout layoutCrewList = findViewById(R.id.crew_list);
 
+
         for(String department: departments){
-            // Obtendo funcionários do departamento
-            int maxLength = 4;
-            String crewEmployees = crewResponse.getToStringEmployeesByDepartment(department, maxLength);
+            LinearLayout departmentLayout = new LinearLayout(getApplicationContext());
+            ViewPager2 currentDepartmentViewPager = new ViewPager2(getApplicationContext());
+            List<Employee> employeeListFromCurrentDepartment = crew.getEmployeesByDepartment(department);
+            CardView newCard;
+            TextView viewPagerTitle = new TextView(getApplicationContext());
 
-            // Setando valores do crew_list_item (departamento e funcionários)
-            View crewListItem = getLayoutInflater().inflate(R.layout.crew_list_item, null, false);
-            TextView departmentView = crewListItem.findViewById(R.id.department);
-            TextView employeesView = crewListItem.findViewById(R.id.department_employees);
+            departmentLayout.setOrientation(LinearLayout.VERTICAL);
+            viewPagerTitle.setText(department);
+            departmentLayout.addView(viewPagerTitle);
 
-            // Adicionando o crew_list_item à crew_list
-            if(!crewEmployees.equals("")){
-                departmentView.setText(department + ": ");
-                employeesView.setText(crewEmployees);
+            for(Employee emp: employeeListFromCurrentDepartment){
+                // obter a imagem, pegar o nome, montar card e adicionálo ao viewpager desse departamento
+                // obs: PRECISO criar o viewpager desse departamento também.
+                newCard = new CardView(getApplicationContext());
+                ImageView employeePhoto = new ImageView(getApplicationContext());
+                TextView employeeName = new TextView(getApplicationContext());
 
-                layoutCrewList.addView(crewListItem);
+                employeeName.setText(emp.getName());
+                employeePhoto.setMaxHeight(100);
+
+                String messageUri = "person/" + emp.getId() + "/images";
+                Picasso.get()
+                        .load("https://api.themoviedb.org/3/" + messageUri)
+                        .into(employeePhoto);
+
+                newCard.addView(employeePhoto);
+                newCard.addView(employeeName);
+                currentDepartmentViewPager.addView(newCard);
             }
+
+            departmentLayout.addView(currentDepartmentViewPager);
+            layoutCrewList.addView(departmentLayout);
         }
     }
 
