@@ -2,20 +2,21 @@ package com.example.retrofit_with_recyclerview.activities;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.retrofit_with_recyclerview.R;
+import com.example.retrofit_with_recyclerview.adapters.CrewListItemViewPagerAdapter;
 import com.example.retrofit_with_recyclerview.models.Crew;
 import com.example.retrofit_with_recyclerview.models.Employee;
 import com.example.retrofit_with_recyclerview.models.Media;
@@ -224,42 +225,22 @@ public class MediaDetailsActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void setCrewList(Crew crew){
         List<String> departments = crew.getAllDepartments();
-        LinearLayout layoutCrewList = findViewById(R.id.crew_list);
-
+        LinearLayout layoutCrewListView = findViewById(R.id.crew_list);
 
         for(String department: departments){
-            LinearLayout departmentLayout = new LinearLayout(getApplicationContext());
-            ViewPager2 currentDepartmentViewPager = new ViewPager2(getApplicationContext());
+            RelativeLayout departmentSectionView = (RelativeLayout) LayoutInflater
+                    .from(getApplicationContext())
+                    .inflate(R.layout.department_crew_section, layoutCrewListView, false);
+            TextView departmentNameView = departmentSectionView.findViewById(R.id.department_name);
+            ViewPager2 viewPager = departmentSectionView.findViewById(R.id.department_view_pager);
+
             List<Employee> employeeListFromCurrentDepartment = crew.getEmployeesByDepartment(department);
-            CardView newCard;
-            TextView viewPagerTitle = new TextView(getApplicationContext());
+            CrewListItemViewPagerAdapter adapter = new CrewListItemViewPagerAdapter(employeeListFromCurrentDepartment);
 
-            departmentLayout.setOrientation(LinearLayout.VERTICAL);
-            viewPagerTitle.setText(department);
-            departmentLayout.addView(viewPagerTitle);
+            departmentNameView.setText(department);
+            viewPager.setAdapter(adapter);
 
-            for(Employee emp: employeeListFromCurrentDepartment){
-                // obter a imagem, pegar o nome, montar card e adicionálo ao viewpager desse departamento
-                // obs: PRECISO criar o viewpager desse departamento também.
-                newCard = new CardView(getApplicationContext());
-                ImageView employeePhoto = new ImageView(getApplicationContext());
-                TextView employeeName = new TextView(getApplicationContext());
-
-                employeeName.setText(emp.getName());
-                employeePhoto.setMaxHeight(100);
-
-                String messageUri = "person/" + emp.getId() + "/images";
-                Picasso.get()
-                        .load("https://api.themoviedb.org/3/" + messageUri)
-                        .into(employeePhoto);
-
-                newCard.addView(employeePhoto);
-                newCard.addView(employeeName);
-                currentDepartmentViewPager.addView(newCard);
-            }
-
-            departmentLayout.addView(currentDepartmentViewPager);
-            layoutCrewList.addView(departmentLayout);
+            layoutCrewListView.addView(departmentSectionView);
         }
     }
 
