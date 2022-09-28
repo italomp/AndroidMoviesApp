@@ -37,9 +37,9 @@ public class CrewListItemViewPagerAdapter extends RecyclerView.Adapter<RecyclerV
         Employee employee = employeeList.get(position);
         ImageView employeePhotoView = ((EmployeeCardViewHolder) holder).employeePhoto;
         TextView employeeNameView = ((EmployeeCardViewHolder) holder).employeeName;
-        String url = Constants.API_BASE_URL + "person/" + employee.getId() + "/images";
+        String url = "https://image.tmdb.org/t/p/w342/" + employee.getPosterPath();
 
-        Picasso.get().load(url).into(employeePhotoView);
+        Picasso.get().load(url).error(R.drawable.employee_default_image).into(employeePhotoView);
         employeeNameView.setText(employee.getName());
     }
 
