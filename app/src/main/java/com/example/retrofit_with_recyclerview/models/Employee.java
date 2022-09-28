@@ -4,11 +4,13 @@ public class Employee implements Comparable{
     private long id;
     private String name;
     private String department;
+    private String posterPath;
 
-    public Employee(long id, String name, String department) {
+    public Employee(long id, String name, String department, String posterPath) {
         this.id = id;
         this.name = name;
         this.department = department;
+        this.posterPath = posterPath;
     }
 
     public String getName() {
@@ -23,6 +25,9 @@ public class Employee implements Comparable{
         return id;
     }
 
+    public String getPosterPath() {
+        return posterPath;
+    }
 
     @Override
     public int compareTo(Object o) {

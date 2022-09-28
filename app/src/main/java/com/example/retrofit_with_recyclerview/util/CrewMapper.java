@@ -19,7 +19,12 @@ public class CrewMapper {
         List<Employee> result = new ArrayList<>();
 
         for(EmployeeResponse empResp: empRespList){
-            Employee newEmployee = new Employee(empResp.getId(), empResp.getName(), empResp.getDepartment());
+            Employee newEmployee = new Employee(
+                    empResp.getId(),
+                    empResp.getName(),
+                    empResp.getDepartment(),
+                    empResp.getProfilePath());
+
             result.add(newEmployee);
         }
 
