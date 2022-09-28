@@ -8,4 +8,6 @@ public class Constants {
     public static String MOVIE_TYPE = "movie";
     public static String SHOW_TYPE = "tv";
     public static String PERSON_TYPE = "person";
+
+    public static String API_BASE_URL = "https://api.themoviedb.org/3/";
 }

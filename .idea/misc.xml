@@ -19,9 +19,11 @@
         <entry key="app/src/main/res/layout/activity_media_details.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_movie_details.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_search.xml" value="0.18177083333333333" />
-        <entry key="app/src/main/res/layout/crew_list_item.xml" value="0.22" />
-        <entry key="app/src/main/res/layout/fragment_search.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/crew_list_item.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/department_crew_section.xml" value="0.2826086956521739" />
+        <entry key="app/src/main/res/layout/fragment_search.xml" value="0.2308641975308642" />
         <entry key="app/src/main/res/layout/fragment_statistics.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/layout_crew_employee_card.xml" value="0.2826086956521739" />
         <entry key="app/src/main/res/layout/loading_dialog.xml" value="0.25" />
         <entry key="app/src/main/res/layout/marker_view.xml" value="0.27807971014492755" />
         <entry key="app/src/main/res/layout/media_adapter.xml" value="0.2826086956521739" />

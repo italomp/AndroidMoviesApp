@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.search.SearchFragment">
+    tools:context=".fragments.SearchFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -19,35 +19,33 @@
             <LinearLayout
                 android:id="@+id/fragment_search"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <SearchView
                     android:id="@+id/search_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:queryHint="@string/placeholder_search"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/search_view_background"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="30dp"
                     android:iconifiedByDefault="false"
                     android:queryBackground="@null"
-                    />
+                    android:queryHint="@string/placeholder_search" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_medias"
+                <GridLayout
+                    android:id="@+id/grid_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="1dp"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginEnd="1dp"
-                    android:layout_marginBottom="1dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_height="wrap_content"
+                    android:alignmentMode="alignBounds"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:columnCount="2"
+                    android:paddingBottom="70dp"
+                    android:layout_marginRight="8dp" />
+
             </LinearLayout>
         </ScrollView>
 

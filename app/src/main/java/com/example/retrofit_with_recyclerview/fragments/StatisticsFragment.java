@@ -1,4 +1,4 @@
-package com.example.retrofit_with_recyclerview.fragments.statistics;
+package com.example.retrofit_with_recyclerview.fragments;
 
 
 import android.content.Context;

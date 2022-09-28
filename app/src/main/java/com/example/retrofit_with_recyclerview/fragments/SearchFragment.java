@@ -1,30 +1,36 @@
-package com.example.retrofit_with_recyclerview.fragments.search;
+package com.example.retrofit_with_recyclerview.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.retrofit_with_recyclerview.R;
-import com.example.retrofit_with_recyclerview.adapters.MediaAdapter;
+import com.example.retrofit_with_recyclerview.activities.MediaDetailsActivity;
 import com.example.retrofit_with_recyclerview.models.Media;
+import com.example.retrofit_with_recyclerview.models.Movie;
 import com.example.retrofit_with_recyclerview.models.Person;
+import com.example.retrofit_with_recyclerview.models.Show;
 import com.example.retrofit_with_recyclerview.responses.MediaResponse;
 import com.example.retrofit_with_recyclerview.responses.MediaResponseList;
 import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.Constants;
 import com.example.retrofit_with_recyclerview.util.MediaMapper;
 import com.example.retrofit_with_recyclerview.util.Util;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,54 +43,42 @@ import retrofit2.Response;
 
 
 public class SearchFragment extends Fragment {
-    RecyclerView recyclerView;
-    MediaAdapter mediaAdapter;
     SearchView searchView;
     ProgressBar progressBar;
-
+    View view;
+    GridLayout gridLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_search, container, false);
+        view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        setViews(view);
-        setSearchViews(view);
-        getMovies(view);
+        setViews();
+        getMovies();
+        setSearchViews();
         return view;
     }
 
-    public void setViews(View view){
-        this.progressBar = view.findViewById(R.id.progress_bar_search_fragment);
-        this.setRecyclerView(view);
-    }
-
-    public void setRecyclerView(View view){
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(view.getContext(), 2);
-        this.mediaAdapter = new MediaAdapter(view.getContext());
-        this.mediaAdapter.setHasStableIds(true);
-
-        this.recyclerView = view.findViewById(R.id.recycler_medias);
-
-        this.recyclerView.setLayoutManager(layoutManager);
-        this.recyclerView.setHasFixedSize(true);
-        this.recyclerView.setAdapter(this.mediaAdapter);
+    public void setViews(){
+        this.progressBar = this.view.findViewById(R.id.progress_bar_search_fragment);
+        gridLayout = view.findViewById(R.id.grid_layout);
     }
 
     public void showErrorMessage(View view, String msg){
         Toast.makeText(view.getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
-    public void renderingMediasOrNotFoundMessage(View view, List<Media> mediaList){
+    public void renderingMediasOrNotFoundMessage(List<Media> mediaList){
+        System.out.println("dentro do renderingMediasOrNotFoundMessage");
         if (!mediaList.isEmpty())
-            this.mediaAdapter.setMediaList(mediaList);
+            fillItemList(mediaList);
 
         else
-            showErrorMessage(view, "Nenhuma mídia foi encontrada.");
+            showErrorMessage(this.view, "Nenhuma mídia foi encontrada.");
     }
 
-    public void getMovies(View view){
-        ScrollView scrollView = view.findViewById(R.id.scroll_search_views);
+    public void getMovies(){
+        ScrollView scrollView = this.view.findViewById(R.id.scroll_search_views);
         Util.showProgressBarAndHiddenView(this.progressBar, new View[]{scrollView});
         ApiService.getMovieService().getMovies(Constants.API_KEY).enqueue(new Callback<MediaResponseList>() {
             @Override
@@ -93,7 +87,8 @@ public class SearchFragment extends Fragment {
                 if(response.isSuccessful()){
                     List<MediaResponse> mediaResponseList = response.body().getMediaList();
                     List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
-                    mediaAdapter.setMediaList(mediaList);
+                    fillItemList(mediaList);
+
                     Util.hiddenProgressBarAndShowView(progressBar, new View[]{scrollView});
                 }
                 else{
@@ -110,8 +105,68 @@ public class SearchFragment extends Fragment {
         });
     }
 
-    public void setSearchViews(View view){
-        this.searchView = view.findViewById(R.id.search_view);
+    public void fillItemList(List<Media> mediaList){
+        int maxGridViewsAmount = 20;
+        if(mediaList.size() < 20)
+            maxGridViewsAmount = mediaList.size();
+
+        for(int i = 0; i < maxGridViewsAmount; i++){
+            Media currentMedia = mediaList.get(i);
+            CardView newGridView = (CardView) LayoutInflater
+                    .from(getContext())
+                    .inflate(R.layout.media_card_view, gridLayout, false);
+            TextView titleMediaView = newGridView.findViewById(R.id.media_title);
+            ImageView posterMediaView = newGridView.findViewById(R.id.image_media_poster);
+
+            setTitleMediaView(titleMediaView, currentMedia);
+            setPosterMovie(posterMediaView, currentMedia);
+
+            setOnClickListener(titleMediaView, currentMedia);
+            setOnClickListener(posterMediaView, currentMedia);
+
+            gridLayout.addView(newGridView);
+        }
+    }
+
+    public void setOnClickListener(View view, Media media){
+        view.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), MediaDetailsActivity.class);
+                        intent.putExtra("media", media);
+                        startActivity(intent);
+                    }
+                }
+        );
+    }
+
+    public void setPosterMovie(ImageView posterMediaView, Media media){
+        String posterPath = "";
+
+        if(Util.isItMovie(media))
+            posterPath = ((Movie) media).getPosterPath();
+        else if(Util.isItShow(media))
+            posterPath = ((Show) media).getPosterPath();
+
+        Picasso.get()
+                .load("https://image.tmdb.org/t/p/w342/" + posterPath)
+                .into(posterMediaView);
+    }
+
+    public void setTitleMediaView(TextView titleMediaView, Media media){
+        String mediaTitle = "";
+
+        if(Util.isItMovie(media))
+            mediaTitle = ((Movie) media).getTitle();
+        else if(Util.isItShow(media))
+            mediaTitle = ((Show) media).getName();
+
+        titleMediaView.setText(mediaTitle);
+    }
+
+    public void setSearchViews(){
+        this.searchView = this.view.findViewById(R.id.search_view);
         this.searchView.clearFocus();
 
         this.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -128,9 +183,10 @@ public class SearchFragment extends Fragment {
                         .enqueue(new Callback<MediaResponseList>() {
                             @Override
                             public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
+                                System.out.println("onResponse dentro do setSearchViews");
                                 if(response.isSuccessful()){
-                                    // Limpando o recycler view
-                                    mediaAdapter.setMediaList(new ArrayList<Media>());
+                                    // Removendo itens da listagem anterior
+                                    gridLayout.removeAllViews();
 
                                     List<MediaResponse> mediaResponseList = response.body().getMediaList();
                                     List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
@@ -138,7 +194,7 @@ public class SearchFragment extends Fragment {
                                     // Extraindo Movies e Shows de objetos Person
                                     mediaList = parseMedia(mediaList);
 
-                                    renderingMediasOrNotFoundMessage(view, mediaList);
+                                    renderingMediasOrNotFoundMessage(mediaList);
                                 }
                                 else{
                                     showErrorMessage(view, "HTTP Status Code: " + response.code());
@@ -175,5 +231,4 @@ public class SearchFragment extends Fragment {
         result.addAll(mediaSet);
         return result;
     }
-
 }
