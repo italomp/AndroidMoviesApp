@@ -1,5 +1,7 @@
 package com.example.retrofit_with_recyclerview.models;
 
+import java.util.Objects;
+
 public class Employee implements Comparable{
     private long id;
     private String name;
@@ -39,5 +41,18 @@ public class Employee implements Comparable{
             return 1;
         else
             return 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return getId() == employee.getId() && getName().equals(employee.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName());
     }
 }
