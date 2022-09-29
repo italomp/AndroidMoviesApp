@@ -1,7 +1,11 @@
 package com.example.retrofit_with_recyclerview.activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Build;
@@ -240,6 +244,19 @@ public class MediaDetailsActivity extends AppCompatActivity {
             departmentNameView.setText(department);
             viewPager.setAdapter(adapter);
 
+            viewPager.setOffscreenPageLimit(3);
+
+            CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+            compositePageTransformer.addTransformer(new MarginPageTransformer(40));
+            compositePageTransformer.addTransformer(new ViewPager2.PageTransformer() {
+                @Override
+                public void transformPage(@NonNull View page, float position) {
+                    float r = 1 - Math.abs(position);
+                    page.setScaleY(0.85f + r * 0.15f);
+                }
+            });
+
+            viewPager.setPageTransformer(compositePageTransformer);
             layoutCrewListView.addView(departmentSectionView);
         }
     }
