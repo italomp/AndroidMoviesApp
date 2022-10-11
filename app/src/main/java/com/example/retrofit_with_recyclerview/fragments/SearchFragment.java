@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.window.layout.WindowMetrics;
+import androidx.window.layout.WindowMetricsCalculator;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +63,51 @@ public class SearchFragment extends Fragment {
 
     public void setViews(){
         this.progressBar = this.view.findViewById(R.id.progress_bar_search_fragment);
+        this.setGridLayout();
+    }
+
+    public void setGridLayout(){
         gridLayout = view.findViewById(R.id.grid_layout);
+        WindowMetrics windowMetrics = WindowMetricsCalculator.getOrCreate()
+                .computeCurrentWindowMetrics(this.getActivity());
+        float density = getResources().getDisplayMetrics().density;
+        float widthDp = windowMetrics.getBounds().width() / density;
+        float heightDp = windowMetrics.getBounds().height() / density;
+        WindowSizeClass widthWindowSizeClass;
+        WindowSizeClass heightWindowSizeClass;
+
+        if(widthDp < 600f)
+            widthWindowSizeClass = WindowSizeClass.COMPACT;
+        else if(widthDp < 840f)
+            widthWindowSizeClass = WindowSizeClass.MEDIUM;
+        else
+            widthWindowSizeClass = WindowSizeClass.EXPANDED;
+
+        if(heightDp < 480f)
+            heightWindowSizeClass = WindowSizeClass.COMPACT;
+        else if(heightDp < 900)
+            heightWindowSizeClass = WindowSizeClass.MEDIUM;
+        else
+            heightWindowSizeClass = WindowSizeClass.EXPANDED;
+
+        // Phone port
+        if(widthWindowSizeClass == WindowSizeClass.COMPACT){
+            gridLayout.setColumnCount(2);
+        }
+        // Phone land
+        else if(heightWindowSizeClass == WindowSizeClass.COMPACT){
+            gridLayout.setColumnCount(3);
+        }
+        // Tablet port
+        else if(widthWindowSizeClass == WindowSizeClass.MEDIUM){
+            gridLayout.setColumnCount(4);
+        }
+        // Tablet land
+        else if(heightWindowSizeClass == WindowSizeClass.MEDIUM &&
+            widthWindowSizeClass == WindowSizeClass.EXPANDED){
+            gridLayout.setColumnCount(6);
+        }
+        System.out.println("gridLayout == null: " + (gridLayout == null));
     }
 
     public void showErrorMessage(View view, String msg){
@@ -113,7 +159,7 @@ public class SearchFragment extends Fragment {
         for(int i = 0; i < maxGridViewsAmount; i++){
             Media currentMedia = mediaList.get(i);
             CardView newGridView = (CardView) LayoutInflater
-                    .from(getContext())
+                    .from(view.getContext())
                     .inflate(R.layout.media_card_view, gridLayout, false);
             TextView titleMediaView = newGridView.findViewById(R.id.media_title);
             ImageView posterMediaView = newGridView.findViewById(R.id.image_media_poster);
@@ -231,4 +277,6 @@ public class SearchFragment extends Fragment {
         result.addAll(mediaSet);
         return result;
     }
+
+    public enum WindowSizeClass { COMPACT, MEDIUM, EXPANDED }
 }

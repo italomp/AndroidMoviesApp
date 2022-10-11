@@ -42,7 +42,7 @@
                     android:alignmentMode="alignBounds"
                     android:clipChildren="false"
                     android:clipToPadding="false"
-                    android:columnCount="2"
+
                     android:paddingBottom="70dp"
                     android:layout_marginRight="8dp" />
 

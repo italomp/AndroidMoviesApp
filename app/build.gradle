@@ -37,6 +37,17 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'com.tomergoldst.android:tooltips:1.1.1'
     implementation 'com.google.ar.sceneform:filament-android:1.17.1'
+    implementation "androidx.window:window:1.1.0-alpha03"
+
+    // For Java-friendly APIs to register and unregister callbacks
+    implementation "androidx.window:window-java:1.1.0-alpha03"
+    // For RxJava2 integration
+    implementation "androidx.window:window-rxjava2:1.1.0-alpha03"
+    // For RxJava3 integration
+    implementation "androidx.window:window-rxjava3:1.1.0-alpha03"
+    // For testing
+    implementation "androidx.window:window-testing:1.1.0-alpha03"
+
     testImplementation 'junit:junit:4.13.2'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
