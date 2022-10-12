@@ -31,6 +31,7 @@ import com.example.retrofit_with_recyclerview.responses.MediaResponseList;
 import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.Constants;
 import com.example.retrofit_with_recyclerview.util.MediaMapper;
+import com.example.retrofit_with_recyclerview.util.MyWindowMetrics;
 import com.example.retrofit_with_recyclerview.util.Util;
 import com.squareup.picasso.Picasso;
 
@@ -49,6 +50,8 @@ public class SearchFragment extends Fragment {
     ProgressBar progressBar;
     View view;
     GridLayout gridLayout;
+    MyWindowMetrics.WindowSizeClass widthWindowSizeClass;
+    MyWindowMetrics.WindowSizeClass heightWindowSizeClass;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,46 +71,27 @@ public class SearchFragment extends Fragment {
 
     public void setGridLayout(){
         gridLayout = view.findViewById(R.id.grid_layout);
-        WindowMetrics windowMetrics = WindowMetricsCalculator.getOrCreate()
-                .computeCurrentWindowMetrics(this.getActivity());
-        float density = getResources().getDisplayMetrics().density;
-        float widthDp = windowMetrics.getBounds().width() / density;
-        float heightDp = windowMetrics.getBounds().height() / density;
-        WindowSizeClass widthWindowSizeClass;
-        WindowSizeClass heightWindowSizeClass;
-
-        if(widthDp < 600f)
-            widthWindowSizeClass = WindowSizeClass.COMPACT;
-        else if(widthDp < 840f)
-            widthWindowSizeClass = WindowSizeClass.MEDIUM;
-        else
-            widthWindowSizeClass = WindowSizeClass.EXPANDED;
-
-        if(heightDp < 480f)
-            heightWindowSizeClass = WindowSizeClass.COMPACT;
-        else if(heightDp < 900)
-            heightWindowSizeClass = WindowSizeClass.MEDIUM;
-        else
-            heightWindowSizeClass = WindowSizeClass.EXPANDED;
+        MyWindowMetrics myWindowMetrics = new MyWindowMetrics(getActivity());
+        widthWindowSizeClass = myWindowMetrics.getWidthSizeClass();
+        heightWindowSizeClass = myWindowMetrics.getHeightSizeClass();
 
         // Phone port
-        if(widthWindowSizeClass == WindowSizeClass.COMPACT){
+        if(widthWindowSizeClass == MyWindowMetrics.WindowSizeClass.COMPACT){
             gridLayout.setColumnCount(2);
         }
         // Phone land
-        else if(heightWindowSizeClass == WindowSizeClass.COMPACT){
+        else if(heightWindowSizeClass == MyWindowMetrics.WindowSizeClass.COMPACT){
             gridLayout.setColumnCount(3);
         }
         // Tablet port
-        else if(widthWindowSizeClass == WindowSizeClass.MEDIUM){
+        else if(widthWindowSizeClass == MyWindowMetrics.WindowSizeClass.MEDIUM){
             gridLayout.setColumnCount(4);
         }
         // Tablet land
-        else if(heightWindowSizeClass == WindowSizeClass.MEDIUM &&
-            widthWindowSizeClass == WindowSizeClass.EXPANDED){
+        else if(heightWindowSizeClass == MyWindowMetrics.WindowSizeClass.MEDIUM &&
+            widthWindowSizeClass == MyWindowMetrics.WindowSizeClass.EXPANDED){
             gridLayout.setColumnCount(6);
         }
-        System.out.println("gridLayout == null: " + (gridLayout == null));
     }
 
     public void showErrorMessage(View view, String msg){
@@ -278,5 +262,5 @@ public class SearchFragment extends Fragment {
         return result;
     }
 
-    public enum WindowSizeClass { COMPACT, MEDIUM, EXPANDED }
+
 }
