@@ -29,6 +29,7 @@ import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.Constants;
 import com.example.retrofit_with_recyclerview.util.CustomMarkerView;
 import com.example.retrofit_with_recyclerview.util.MediaMapper;
+import com.example.retrofit_with_recyclerview.util.MyWindowMetrics;
 import com.example.retrofit_with_recyclerview.util.Util;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.YAxis;
@@ -68,10 +69,7 @@ public class StatisticsFragment extends Fragment implements Observer {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_statistics, container, false);
-
-        this.setViewsAndVariables(view);
+        this.setViewsAndVariables(inflater, container);
         this.setSpinnerYear(view);
 
         int year = Integer.parseInt(spinnerYear.getSelectedItem().toString());
@@ -190,7 +188,25 @@ public class StatisticsFragment extends Fragment implements Observer {
         });
     }
 
-    public void setViewsAndVariables(View view){
+    public void setViewsAndVariables(LayoutInflater inflater, ViewGroup container){
+        MyWindowMetrics myWindowMetrics = new MyWindowMetrics(getActivity());
+        MyWindowMetrics.WindowSizeClass widthWindowSizeClass = myWindowMetrics.getWidthSizeClass();
+        MyWindowMetrics.WindowSizeClass heightWindowSizeClass = myWindowMetrics.getHeightSizeClass();
+
+        // Phone port
+        if(widthWindowSizeClass == MyWindowMetrics.WindowSizeClass.COMPACT)
+            view = inflater.inflate(R.layout.fragment_statistics, container, false);
+        // Phone land
+        else if(heightWindowSizeClass == MyWindowMetrics.WindowSizeClass.COMPACT)
+            view = inflater.inflate(R.layout.fragment_statistics_phone_land, container, false);
+        // Tablet port
+        else if(widthWindowSizeClass == MyWindowMetrics.WindowSizeClass.MEDIUM)
+            view = inflater.inflate(R.layout.fragment_statistics_tablet_port, container, false);
+        // Tablet land
+        else if(widthWindowSizeClass == MyWindowMetrics.WindowSizeClass.EXPANDED &&
+                heightWindowSizeClass == MyWindowMetrics.WindowSizeClass.MEDIUM)
+            view = inflater.inflate(R.layout.fragment_statistics_tablet_land, container, false);
+
         this.context = view.getContext();
         this.barChart = view.findViewById(R.id.bar_chart);
         this.topTenRevenue = new TopTen(SORT_BY_REVENUE);

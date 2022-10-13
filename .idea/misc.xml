@@ -24,6 +24,8 @@
         <entry key="app/src/main/res/layout/department_crew_section.xml" value="0.2826086956521739" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_statistics.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_statistics_tablet_land.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/fragment_statistics_tablet_port.xml" value="0.67" />
         <entry key="app/src/main/res/layout/layout_crew_employee_card.xml" value="0.2826086956521739" />
         <entry key="app/src/main/res/layout/loading_dialog.xml" value="0.25" />
         <entry key="app/src/main/res/layout/marker_view.xml" value="0.27807971014492755" />
@@ -31,6 +33,7 @@
         <entry key="app/src/main/res/layout/media_card_view.xml" value="0.18177083333333333" />
         <entry key="app/src/main/res/layout/movie_list_item.xml" value="0.27807971014492755" />
         <entry key="app/src/main/res/layout/movies_adapter.xml" value="0.27807971014492755" />
+        <entry key="app/src/main/res/layout/statistics_fragment_phone_land.xml" value="0.23177083333333334" />
         <entry key="app/src/main/res/layout/vh_items_from_column_one.xml" value="0.2826086956521739" />
         <entry key="app/src/main/res/layout/vh_media_adapter.xml" value="0.17325227963525835" />
         <entry key="app/src/main/res/menu/bottom_nav_bar.xml" value="0.35520833333333335" />
