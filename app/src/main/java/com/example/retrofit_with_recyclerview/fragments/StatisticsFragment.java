@@ -41,6 +41,7 @@ import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -53,7 +54,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class StatisticsFragment extends Fragment implements Observer {
+public class StatisticsFragment extends Fragment implements Observer, Serializable {
     private Observable topTenRevenue;
     private final String SORT_BY_REVENUE = "revenue.desc";
     private Context context;
@@ -357,7 +358,7 @@ public class StatisticsFragment extends Fragment implements Observer {
         });
     }
 
-    public class TopTen extends Observable {
+    public class TopTen extends Observable implements Serializable {
         private List<Movie> topTen;
         private String orderBy;
 

@@ -35,6 +35,7 @@ import com.example.retrofit_with_recyclerview.util.MyWindowMetrics;
 import com.example.retrofit_with_recyclerview.util.Util;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -45,7 +46,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment implements Serializable {
     SearchView searchView;
     ProgressBar progressBar;
     View view;

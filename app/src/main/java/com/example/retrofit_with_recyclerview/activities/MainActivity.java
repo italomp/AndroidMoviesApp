@@ -15,8 +15,11 @@ import com.example.retrofit_with_recyclerview.fragments.StatisticsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+import java.io.Serializable;
+
 public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
+    private Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +38,14 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.bottom_nav_home_icon:
                         item.setChecked(true);
-                        replaceFragment(new SearchFragment());
+                        currentFragment = new SearchFragment();
+                        replaceFragment(currentFragment);
                         break;
+
                     case R.id.bottom_nav_chart_icon:
                         item.setChecked(true);
-                        replaceFragment(new StatisticsFragment());
+                        currentFragment = new StatisticsFragment();
+                        replaceFragment(currentFragment);
                         break;
                 }
                 return false;
@@ -52,5 +58,21 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    /* Quero registar qual fragmento estava sendo exibido */
+    public void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("currentFragment", (Serializable) currentFragment);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+        if(!savedInstanceState.isEmpty()) {
+            currentFragment = (Fragment) savedInstanceState.getSerializable("currentFragment");
+            replaceFragment(currentFragment);
+        }
     }
 }
