@@ -17,6 +17,8 @@
         <entry key="app/src/main/res/drawable/selector_background.xml" value="0.1225" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_media_details.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_media_details_phone_land.xml" value="0.23177083333333334" />
+        <entry key="app/src/main/res/layout/activity_media_details_tablet_land.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_movie_details.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_search.xml" value="0.18177083333333333" />
         <entry key="app/src/main/res/layout/crew_employee_card.xml" value="0.25" />

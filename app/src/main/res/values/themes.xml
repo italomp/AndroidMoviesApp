@@ -17,5 +17,6 @@
     <style name="imagesCorner" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">5dp</item>
+        <item name="minWidth">250dp</item>
     </style>
 </resources>

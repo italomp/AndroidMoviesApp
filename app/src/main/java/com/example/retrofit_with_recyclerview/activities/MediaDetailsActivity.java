@@ -29,6 +29,7 @@ import com.example.retrofit_with_recyclerview.responses.MediaDetailsResponse;
 import com.example.retrofit_with_recyclerview.services.ApiService;
 import com.example.retrofit_with_recyclerview.util.Constants;
 import com.example.retrofit_with_recyclerview.util.CrewMapper;
+import com.example.retrofit_with_recyclerview.util.MyWindowMetrics;
 import com.example.retrofit_with_recyclerview.util.Util;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.squareup.picasso.Picasso;
@@ -53,7 +54,7 @@ public class MediaDetailsActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_media_details);
+//        setContentView(R.layout.activity_media_details);
 
         getViewsReferences();
 
@@ -70,6 +71,24 @@ public class MediaDetailsActivity extends AppCompatActivity {
     }
 
     public void getViewsReferences(){
+        MyWindowMetrics myWindowMetrics = new MyWindowMetrics(this);
+        MyWindowMetrics.WindowSizeClass widthWindowSizeClass = myWindowMetrics.getWidthSizeClass();
+        MyWindowMetrics.WindowSizeClass heightWindowSizeClass = myWindowMetrics.getHeightSizeClass();
+
+        // Phone port
+        if(widthWindowSizeClass == MyWindowMetrics.WindowSizeClass.COMPACT)
+            setContentView(R.layout.activity_media_details);
+        // Phone land
+        else if(heightWindowSizeClass == MyWindowMetrics.WindowSizeClass.COMPACT)
+            setContentView(R.layout.activity_media_details_phone_land);
+        // Tablet port
+        else if(widthWindowSizeClass == MyWindowMetrics.WindowSizeClass.MEDIUM)
+            setContentView(R.layout.activity_media_details);
+        // Tablet land
+        else if(heightWindowSizeClass == MyWindowMetrics.WindowSizeClass.MEDIUM &&
+            widthWindowSizeClass == MyWindowMetrics.WindowSizeClass.EXPANDED)
+            setContentView(R.layout.activity_media_details_tablet_land);
+
         this.posterView = findViewById(R.id.details_media_poster);
         this.titleView = findViewById(R.id.details_media_title);
         this.noteAverageView = findViewById(R.id.vote_average);
