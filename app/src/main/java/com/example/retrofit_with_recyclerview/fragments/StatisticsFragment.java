@@ -73,8 +73,11 @@ public class StatisticsFragment extends Fragment implements Observer, Serializab
         this.setViewsAndVariables(inflater, container);
         this.setSpinnerYear(view);
         int year = Integer.parseInt(spinnerYear.getSelectedItem().toString());
+        loadTopTenRevenue(savedInstanceState, year);
+        return view;
+    }
 
-        // Se o ano for o mesmo do bundle e a lista não estiver vazia, não faço a requisição.
+    public void loadTopTenRevenue(Bundle savedInstanceState, int year){
         if(savedInstanceState != null){
             topTenRevenue = (TopTen) savedInstanceState.getSerializable("topTenRevenue");
         }
@@ -82,8 +85,6 @@ public class StatisticsFragment extends Fragment implements Observer, Serializab
             Util.showProgressBarAndHiddenView(this.progressBar, new View[]{this.barChart, this.chartLegends});
             this.getMoviesByYear(year, this.SORT_BY_REVENUE, (TopTen) this.topTenRevenue);
         }
-
-        return view;
     }
 
     /**

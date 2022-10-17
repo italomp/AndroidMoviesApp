@@ -16,16 +16,22 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.io.Serializable;
+import java.sql.SQLOutput;
 
 public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
+    private SearchFragment searchFragment;
+    private StatisticsFragment statisticsFragment;
     private Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        replaceFragment(new SearchFragment());
+
+        currentFragment = searchFragment = new SearchFragment();
+        statisticsFragment = new StatisticsFragment();
+        replaceFragment(currentFragment);
 
         this.setBottomNavigationView();
     }
@@ -38,13 +44,13 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.bottom_nav_home_icon:
                         item.setChecked(true);
-                        currentFragment = new SearchFragment();
+                        currentFragment = searchFragment;
                         replaceFragment(currentFragment);
                         break;
 
                     case R.id.bottom_nav_chart_icon:
                         item.setChecked(true);
-                        currentFragment = new StatisticsFragment();
+                        currentFragment = statisticsFragment;
                         replaceFragment(currentFragment);
                         break;
                 }
@@ -61,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    /* Quero registar qual fragmento estava sendo exibido */
     public void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
         outState.putSerializable("currentFragment", (Serializable) currentFragment);
@@ -70,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState){
         super.onRestoreInstanceState(savedInstanceState);
-        if(!savedInstanceState.isEmpty()) {
+        if(savedInstanceState != null) {
             currentFragment = (Fragment) savedInstanceState.getSerializable("currentFragment");
             replaceFragment(currentFragment);
         }

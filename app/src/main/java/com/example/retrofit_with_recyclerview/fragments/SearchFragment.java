@@ -39,6 +39,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 
 import retrofit2.Call;
@@ -51,30 +53,40 @@ public class SearchFragment extends Fragment implements Serializable {
     ProgressBar progressBar;
     View view;
     GridLayout gridLayout;
-    MyWindowMetrics.WindowSizeClass widthWindowSizeClass;
-    MyWindowMetrics.WindowSizeClass heightWindowSizeClass;
+    SerializableMediaList serializableMediaList; // Usado para salvar o estado do Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        System.out.println(this);
         view = inflater.inflate(R.layout.fragment_search, container, false);
-
         setViews();
-        getMovies();
+        loadMovies(savedInstanceState);
         setSearchViews();
         return view;
     }
 
+    public void loadMovies(Bundle savedInstanceState){
+        if(savedInstanceState != null){
+            serializableMediaList = (SerializableMediaList) savedInstanceState.getSerializable("serializableMediaList");
+            fillItemList(serializableMediaList.getMediaList());
+        }
+        else{
+            getMovies();
+        }
+    }
+
     public void setViews(){
         this.progressBar = this.view.findViewById(R.id.progress_bar_search_fragment);
+        this.serializableMediaList = new SerializableMediaList();
         this.setGridLayout();
     }
 
     public void setGridLayout(){
         gridLayout = view.findViewById(R.id.grid_layout);
         MyWindowMetrics myWindowMetrics = new MyWindowMetrics(getActivity());
-        widthWindowSizeClass = myWindowMetrics.getWidthSizeClass();
-        heightWindowSizeClass = myWindowMetrics.getHeightSizeClass();
+        MyWindowMetrics.WindowSizeClass widthWindowSizeClass = myWindowMetrics.getWidthSizeClass();
+        MyWindowMetrics.WindowSizeClass heightWindowSizeClass = myWindowMetrics.getHeightSizeClass();
 
         // Phone port
         if(widthWindowSizeClass == MyWindowMetrics.WindowSizeClass.COMPACT){
@@ -100,7 +112,6 @@ public class SearchFragment extends Fragment implements Serializable {
     }
 
     public void renderingMediasOrNotFoundMessage(List<Media> mediaList){
-        System.out.println("dentro do renderingMediasOrNotFoundMessage");
         if (!mediaList.isEmpty())
             fillItemList(mediaList);
 
@@ -118,6 +129,7 @@ public class SearchFragment extends Fragment implements Serializable {
                 if(response.isSuccessful()){
                     List<MediaResponse> mediaResponseList = response.body().getMediaList();
                     List<Media> mediaList = MediaMapper.fromMediaResponseToMedia(mediaResponseList);
+                    serializableMediaList.setMediaList(mediaList);
                     fillItemList(mediaList);
 
                     Util.hiddenProgressBarAndShowView(progressBar, new View[]{scrollView});
@@ -214,7 +226,6 @@ public class SearchFragment extends Fragment implements Serializable {
                         .enqueue(new Callback<MediaResponseList>() {
                             @Override
                             public void onResponse(Call<MediaResponseList> call, Response<MediaResponseList> response) {
-                                System.out.println("onResponse dentro do setSearchViews");
                                 if(response.isSuccessful()){
                                     // Removendo itens da listagem anterior
                                     gridLayout.removeAllViews();
@@ -224,7 +235,7 @@ public class SearchFragment extends Fragment implements Serializable {
 
                                     // Extraindo Movies e Shows de objetos Person
                                     mediaList = parseMedia(mediaList);
-
+                                    serializableMediaList.setMediaList(mediaList);
                                     renderingMediasOrNotFoundMessage(mediaList);
                                 }
                                 else{
@@ -263,5 +274,24 @@ public class SearchFragment extends Fragment implements Serializable {
         return result;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("serializableMediaList", serializableMediaList);
+    }
 
+    public class SerializableMediaList implements Serializable{
+        private List<Media> mediaList;
+
+        public SerializableMediaList(){
+        }
+
+        public List<Media> getMediaList() {
+            return mediaList;
+        }
+
+        public void setMediaList(List<Media> mediaList){
+            this.mediaList = mediaList;
+        }
+    }
 }
